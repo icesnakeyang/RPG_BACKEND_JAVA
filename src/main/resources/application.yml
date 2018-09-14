@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: rpgapi
+  datasource:
+    url: jdbc:mysql://rm-wz9v8xc42t1go7ptc0o.mysql.rds.aliyuncs.com:3306/gogorpg
+    username: root
+    password: 112233ccddEE
+
+server:
+  port: 9527
+logging:
+  level: debug
+  file: rpgapi.log
