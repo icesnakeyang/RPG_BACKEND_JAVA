@@ -1,12 +1,15 @@
 package com.gogoyang.rpgapi.user.service.impl;
 
+import com.gogoyang.rpgapi.user.dao.EmailDao;
+import com.gogoyang.rpgapi.user.dao.PhoneDao;
+import com.gogoyang.rpgapi.user.dao.RealNameDao;
 import com.gogoyang.rpgapi.user.dao.UserDao;
+import com.gogoyang.rpgapi.user.entity.Email;
+import com.gogoyang.rpgapi.user.entity.Phone;
+import com.gogoyang.rpgapi.user.entity.RealName;
 import com.gogoyang.rpgapi.user.entity.User;
 import com.gogoyang.rpgapi.user.service.IUserService;
-import com.gogoyang.rpgapi.user.vo.CreateUserRequest;
-import com.gogoyang.rpgapi.user.vo.CreateUserResponse;
-import com.gogoyang.rpgapi.user.vo.LoginRequest;
-import com.gogoyang.rpgapi.user.vo.LoginResponse;
+import com.gogoyang.rpgapi.user.vo.*;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,10 +21,16 @@ import java.util.UUID;
 @Service
 public class UserService implements IUserService {
     private final UserDao userDao;
+    private final EmailDao emailDao;
+    private final PhoneDao phoneDao;
+    private final RealNameDao realNameDao;
 
     @Autowired
-    public UserService(UserDao userDao) {
+    public UserService(UserDao userDao, EmailDao emailDao, PhoneDao phoneDao, RealNameDao realNameDao) {
         this.userDao = userDao;
+        this.emailDao = emailDao;
+        this.phoneDao = phoneDao;
+        this.realNameDao = realNameDao;
     }
 
     @Override
@@ -38,11 +47,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Response buildUserById(Integer id) {
+    public User buildUserById(Integer id) {
         Response response=new Response();
         User user=userDao.findOne(id);
-        response.setData(user);
-        return response;
+        return user;
     }
 
     @Override
@@ -61,7 +69,49 @@ public class UserService implements IUserService {
     @Override
     public User buildUserByToken(String token) {
         User user=userDao.findByToken(token);
-
         return user;
+    }
+
+    @Override
+    public User buildUserInfoByToken(String token){
+        User user=userDao.findByToken(token);
+        Email email=emailDao.findByUserId(user.getUserId());
+        if(email!=null) {
+            user.setEmail(email.getEmail());
+        }
+        Phone phone=phoneDao.findByUserId(user.getUserId());
+        if(phone!=null) {
+            user.setPhone(phone.getPhone());
+        }
+        RealName realName=realNameDao.findByUserId(user.getUserId());
+        if(realName!=null) {
+            user.setRealName(realName.getRealName());
+        }
+        return user;
+    }
+
+    @Override
+    @Transactional
+    public Response SaveContactInfo(SvaeConfirmContactInfo info) {
+        User user=userDao.findByToken(info.getToken());
+        Email email=new Email();
+        email.setCreatedTime(new Date());
+        email.setEmail(info.getEmail());
+        email.setUserId(user.getUserId());
+        emailDao.save(email);
+
+        Phone phone=new Phone();
+        phone.setCreatedTime(new Date());
+        phone.setPhone(info.getPhone());
+        phone.setUserId(user.getUserId());
+        phoneDao.save(phone);
+
+        RealName realName=new RealName();
+        realName.setRealName(info.getRealName());
+        realName.setUserId(user.getUserId());
+        realNameDao.save(realName);
+
+        Response response=new Response();
+        return response;
     }
 }

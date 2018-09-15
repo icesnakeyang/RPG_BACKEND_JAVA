@@ -1,9 +1,6 @@
 package com.gogoyang.rpgapi.job.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -36,6 +33,12 @@ public class Job {
 
     @Column(name = "category")
     private String category;
+
+    @Transient
+    private String createdUserName;
+
+    @Transient
+    private String detail;
 
     public Integer getJobId() {
         return jobId;
@@ -107,5 +110,21 @@ public class Job {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getCreatedUserName() {
+        return createdUserName;
+    }
+
+    public void setCreatedUserName(String createdUserName) {
+        this.createdUserName = createdUserName;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 }

@@ -23,6 +23,15 @@ public class User {
     private Date registerTime;
     private String token;
 
+    @Transient
+    private String email;
+
+    @Transient
+    private String phone;
+
+    @Transient
+    private String realName;
+
     public Integer getUserId() {
         return userId;
     }
@@ -61,5 +70,29 @@ public class User {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 }

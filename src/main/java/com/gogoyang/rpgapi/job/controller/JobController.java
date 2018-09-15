@@ -37,4 +37,10 @@ public class JobController {
     public Response JobPlaza(@PathVariable String category){
         return jobService.buildJobs(category);
     }
+
+    @ResponseBody
+    @GetMapping("/{jobId}")
+    public Response JobDetail(@PathVariable Integer jobId){
+        return jobService.buildJobInfo(jobId);
+    }
 }
