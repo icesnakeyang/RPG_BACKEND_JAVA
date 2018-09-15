@@ -11,8 +11,6 @@ public class Task {
 
     private String title;
 
-    private String detail;
-
     private Integer days;
 
     private Double price;
@@ -23,8 +21,13 @@ public class Task {
 
     private Integer pid;
 
+    private String code;
+
     @Transient
     private String createdUserName;
+
+    @Transient
+    private String detail;
 
     public Integer getTaskId() {
         return taskId;
@@ -40,14 +43,6 @@ public class Task {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
     }
 
     public Integer getDays() {
@@ -96,5 +91,21 @@ public class Task {
 
     public void setCreatedUserName(String createdUserName) {
         this.createdUserName = createdUserName;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

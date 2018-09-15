@@ -1,7 +1,9 @@
 package com.gogoyang.rpgapi.task.service.impl;
 
 import com.gogoyang.rpgapi.task.dao.TaskDao;
+import com.gogoyang.rpgapi.task.dao.TaskDetailDao;
 import com.gogoyang.rpgapi.task.entity.Task;
+import com.gogoyang.rpgapi.task.entity.TaskDetail;
 import com.gogoyang.rpgapi.task.service.ITaskService;
 import com.gogoyang.rpgapi.task.vo.CreateTaskRequest;
 import com.gogoyang.rpgapi.task.vo.CreateTaskResponse;
@@ -18,11 +20,13 @@ import java.util.List;
 public class TaskService implements ITaskService {
     private final UserDao userDao;
     private final TaskDao taskDao;
+    private final TaskDetailDao taskDetailDao;
 
     @Autowired
-    public TaskService(TaskDao taskDao, UserDao userDao) {
+    public TaskService(TaskDao taskDao, UserDao userDao, TaskDetailDao taskDetailDao) {
         this.taskDao = taskDao;
         this.userDao = userDao;
+        this.taskDetailDao = taskDetailDao;
     }
 
     @Override
@@ -31,6 +35,10 @@ public class TaskService implements ITaskService {
         Response response=new Response();
         CreateTaskResponse createTaskResponse=new CreateTaskResponse();
         createTaskResponse.setId(taskDao.save(request.toTask()).getTaskId());
+        TaskDetail taskDetail=new TaskDetail();
+        taskDetail.setTaskId(createTaskResponse.getId());
+        taskDetail.setDetail(request.getDetail());
+        taskDetailDao.save(taskDetail);
         response.setData(createTaskResponse);
         return response;
     }
@@ -41,6 +49,8 @@ public class TaskService implements ITaskService {
         Task task=taskDao.findByTaskId(id);
         User user=userDao.findByUserId(task.getCreatedUserId());
         task.setCreatedUserName(user.getUsername());
+        TaskDetail taskDetail=taskDetailDao.findByTaskId(task.getTaskId());
+        task.setDetail(taskDetail.getDetail());
         response.setData(task);
         return response;
     }

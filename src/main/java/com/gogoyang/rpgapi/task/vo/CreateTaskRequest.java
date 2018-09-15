@@ -1,28 +1,32 @@
 package com.gogoyang.rpgapi.task.vo;
 
 import com.gogoyang.rpgapi.task.entity.Task;
+import com.gogoyang.rpgapi.task.entity.TaskDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateTaskRequest {
+    private Integer taskId;
     private String title;
     private String detail;
     private String days;
     private String price;
     private String pid;
     private Integer createdUserId;
+    private String code;
 
     public Task toTask() {
         Task task = new Task();
 
+        task.setTaskId(taskId);
         task.setTitle(title);
-        task.setDetail(detail);
         if(days==null){
             days="3";
         }
@@ -31,12 +35,31 @@ public class CreateTaskRequest {
             pid="0";
         }
         task.setPid(Integer.parseInt(pid));
+        task.setCode(code);
 
         task.setCreatedTime(new Date());
 
         task.setCreatedUserId(createdUserId);
 
+        TaskDetail detail=new TaskDetail();
+
         return task;
+    }
+
+    public Integer getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(Integer taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getTitle() {
