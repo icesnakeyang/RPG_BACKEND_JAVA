@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.user.entity;
 
+import com.gogoyang.rpgapi.constant.RoleType;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -31,6 +33,9 @@ public class User {
 
     @Transient
     private String realName;
+
+    @Transient
+    private RoleType userRole;
 
     public Integer getUserId() {
         return userId;
@@ -94,5 +99,13 @@ public class User {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public RoleType getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(RoleType userRole) {
+        this.userRole = userRole;
     }
 }

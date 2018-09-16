@@ -1,21 +1,18 @@
 package com.gogoyang.rpgapi.user.service.impl;
 
-import com.gogoyang.rpgapi.user.dao.EmailDao;
-import com.gogoyang.rpgapi.user.dao.PhoneDao;
-import com.gogoyang.rpgapi.user.dao.RealNameDao;
-import com.gogoyang.rpgapi.user.dao.UserDao;
-import com.gogoyang.rpgapi.user.entity.Email;
-import com.gogoyang.rpgapi.user.entity.Phone;
-import com.gogoyang.rpgapi.user.entity.RealName;
-import com.gogoyang.rpgapi.user.entity.User;
+import com.gogoyang.rpgapi.constant.RoleType;
+import com.gogoyang.rpgapi.user.dao.*;
+import com.gogoyang.rpgapi.user.entity.*;
 import com.gogoyang.rpgapi.user.service.IUserService;
 import com.gogoyang.rpgapi.user.vo.*;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,13 +21,15 @@ public class UserService implements IUserService {
     private final EmailDao emailDao;
     private final PhoneDao phoneDao;
     private final RealNameDao realNameDao;
+    private final RoleUserDao roleUserDao;
 
     @Autowired
-    public UserService(UserDao userDao, EmailDao emailDao, PhoneDao phoneDao, RealNameDao realNameDao) {
+    public UserService(UserDao userDao, EmailDao emailDao, PhoneDao phoneDao, RealNameDao realNameDao, RoleUserDao roleUserDao) {
         this.userDao = userDao;
         this.emailDao = emailDao;
         this.phoneDao = phoneDao;
         this.realNameDao = realNameDao;
+        this.roleUserDao = roleUserDao;
     }
 
     @Override
@@ -87,7 +86,43 @@ public class UserService implements IUserService {
         if(realName!=null) {
             user.setRealName(realName.getRealName());
         }
+        List<RoleUser> roleUser=roleUserDao.findByUserIdAndDisableIsNull(user.getUserId());
+        if(roleUser.size()==1){
+            user.setUserRole(roleUser.get(0).getUserRole());
+        }
         return user;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void setAdmin(SetRoleRequest request) throws Exception{
+        /**
+         * 1、读取要设置的user，查看是否存在
+         * 2、设置user的role，保存
+         * 3、读取roleuser，如果存在，修改为disable，保存
+         * 4、保存新的roleuser
+         */
+        User user=userDao.findByUserId(request.getUserId());
+        if(user==null){
+            throw new Exception("no user exist");
+        }
+        user.setUserRole(request.getRole());
+        userDao.save(user);
+        List<RoleUser> roleUsers=roleUserDao.findByUserIdAndDisableIsNull(user.getUserId());
+        if(roleUsers.size()>0){
+            for(int i=0;i<roleUsers.size();i++){
+                if(roleUsers.get(i).getUserRole()==request.getRole()){
+                    //no need to set same permission
+                    return;
+                }
+            }
+        }
+        RoleUser roleUser=new RoleUser();
+        roleUser.setCreatedTime(new Date());
+        roleUser.setCreatedUserId(request.getOperatorId());
+        roleUser.setUserId(request.getUserId());
+        roleUser.setUserRole(request.getRole());
+        roleUserDao.save(roleUser);
     }
 
     @Override

@@ -47,14 +47,19 @@ public class JobService implements IJobService {
     }
 
     @Override
-    public Response buildJobInfo(Integer id) {
-        Job job = jobDao.findOne(id);
+    public Response buildJobInfo(Integer jobId) {
+        Job job = jobDao.findByJobId(jobId);
         User user = userDao.findByUserId(job.getCreatedUserId());
         job.setCreatedUserName(user.getUsername());
         job.setDetail(taskDetailDao.findByTaskId(job.getTaskId()).getDetail());
         Response response = new Response();
         response.setData(job);
         return response;
+    }
+
+    public Job loadJobInfoNoDetail(Integer jobId){
+        Job job=jobDao.findByJobId(jobId);
+        return job;
     }
 
     @Override
