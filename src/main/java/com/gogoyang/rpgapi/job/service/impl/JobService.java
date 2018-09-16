@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class JobService implements IJobService {
     @Override
     public Response buildJobs(String category) {
         Response response = new Response();
-        List<Job> jobs = jobDao.findAllByCategory(category);
+        List<Job> jobs = jobDao.findAllByCategoryAndAndApplyJobLogIdIsNull(category);
         for (int i = 0; i < jobs.size(); i++) {
             User user = userDao.findByUserId(jobs.get(i).getCreatedUserId());
             jobs.get(i).setCreatedUserName(user.getUsername());
@@ -85,15 +86,16 @@ public class JobService implements IJobService {
         applyLog.setJobId(request.getJobId());
         Response response = new Response();
         if(!canApplyJob(request)){
-            return response;
+            /**
+             * the job has been matched already, cannot apply anymore
+             */
+            throw new Exception("10003");
         }
         Integer applyLogId=jobApplyLogDao.save(applyLog).getIds();
         Job job=jobDao.findByJobId(request.getJobId());
         if(job==null){
             throw new Exception("update apply job error");
         }
-        job.setApplyJobLogId(applyLogId);
-        jobDao.save(job);
         response.setData(applyLogId);
         return response;
     }

@@ -63,8 +63,7 @@ public class JobController {
         try{
             jobService.applyJob(applyJobRequest);
         }catch (Exception ex){
-            response.setErrorCode(10002);
-            response.setErrorMsg(ex.getMessage());
+            response.setErrorCode(Integer.parseInt(ex.getMessage()));
             return response;
         }
         return response;
