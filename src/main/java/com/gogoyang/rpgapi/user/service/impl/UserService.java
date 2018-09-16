@@ -94,19 +94,29 @@ public class UserService implements IUserService {
     @Transactional
     public Response SaveContactInfo(SvaeConfirmContactInfo info) {
         User user=userDao.findByToken(info.getToken());
-        Email email=new Email();
+
+        Email email=emailDao.findByUserId(user.getUserId());
+        if(email==null){
+            email=new Email();
+        }
         email.setCreatedTime(new Date());
         email.setEmail(info.getEmail());
         email.setUserId(user.getUserId());
         emailDao.save(email);
 
-        Phone phone=new Phone();
+        Phone phone=phoneDao.findByUserId(user.getUserId());
+        if(phone==null) {
+            phone = new Phone();
+        }
         phone.setCreatedTime(new Date());
         phone.setPhone(info.getPhone());
         phone.setUserId(user.getUserId());
         phoneDao.save(phone);
 
-        RealName realName=new RealName();
+        RealName realName=realNameDao.findByUserId(user.getUserId());
+        if(realName==null) {
+            realName=new RealName();
+        }
         realName.setRealName(info.getRealName());
         realName.setUserId(user.getUserId());
         realNameDao.save(realName);

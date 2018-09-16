@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface JobDao extends JpaRepository<Job, Integer>{
     List findAllByCategory(String category);
+    Job findByJobId(Integer jobId);
 }

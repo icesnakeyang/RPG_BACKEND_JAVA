@@ -40,6 +40,9 @@ public class Job {
     @Transient
     private String detail;
 
+    @Column(name = "apply_job_log_id")
+    private Integer applyJobLogId;
+
     public Integer getJobId() {
         return jobId;
     }
@@ -126,5 +129,13 @@ public class Job {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public Integer getApplyJobLogId() {
+        return applyJobLogId;
+    }
+
+    public void setApplyJobLogId(Integer applyJobLogId) {
+        this.applyJobLogId = applyJobLogId;
     }
 }

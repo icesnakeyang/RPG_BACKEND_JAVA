@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.job.controller;
 
 import com.gogoyang.rpgapi.job.service.IJobService;
+import com.gogoyang.rpgapi.job.vo.ApplyJobRequest;
 import com.gogoyang.rpgapi.job.vo.CreateJobRequest;
 import com.gogoyang.rpgapi.user.entity.User;
 import com.gogoyang.rpgapi.user.service.IUserService;
@@ -42,5 +43,30 @@ public class JobController {
     @GetMapping("/{jobId}")
     public Response JobDetail(@PathVariable Integer jobId){
         return jobService.buildJobInfo(jobId);
+    }
+
+    @ResponseBody
+    @PostMapping("/applyJob")
+    public Response JobApply(@RequestBody ApplyJobRequest applyJobRequest,
+                             HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(token==null){
+            response.setErrorCode(10001);
+            return response;
+        }
+        if(applyJobRequest.getJobId()==null){
+            response.setErrorCode(10002);
+            return response;
+        }
+        applyJobRequest.setToken(token);
+        try{
+            jobService.applyJob(applyJobRequest);
+        }catch (Exception ex){
+            response.setErrorCode(10002);
+            response.setErrorMsg(ex.getMessage());
+            return response;
+        }
+        return response;
     }
 }
