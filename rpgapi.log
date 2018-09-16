@@ -16114,3 +16114,613 @@ java.lang.NullPointerException: null
 2018-09-16 10:26:59.677  INFO 1252 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
 2018-09-16 10:26:59.697  INFO 1252 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 20 ms
 2018-09-16 10:26:59.757  INFO 1252 --- [http-nio-9527-exec-2] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 17:31:14.746  INFO 12892 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 12892 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 17:31:14.746  INFO 12892 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 17:31:14.793  INFO 12892 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6c2ed0cd: startup date [Sun Sep 16 17:31:14 CST 2018]; root of context hierarchy
+2018-09-16 17:31:16.043  INFO 12892 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 17:31:16.043  INFO 12892 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 17:31:16.043  INFO 12892 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 17:31:16.153  INFO 12892 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 17:31:16.153  INFO 12892 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1360 ms
+2018-09-16 17:31:22.545  INFO 12892 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 17:31:22.561  INFO 12892 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 17:31:22.608  INFO 12892 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 17:31:22.624  INFO 12892 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 17:31:22.624  INFO 12892 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 17:31:22.655  INFO 12892 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 17:31:22.749  INFO 12892 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 17:31:23.233  INFO 12892 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 17:31:23.483  INFO 12892 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 17:31:23.483  INFO 12892 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 17:31:23.483  INFO 12892 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 17:31:23.483  INFO 12892 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 17:31:23.483  INFO 12892 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 17:31:23.483  INFO 12892 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 17:31:23.874  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6c2ed0cd: startup date [Sun Sep 16 17:31:14 CST 2018]; root of context hierarchy
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 17:31:23.936  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.952  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 17:31:23.952  INFO 12892 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 17:31:23.967  INFO 12892 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 17:31:23.967  INFO 12892 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 17:31:24.014  INFO 12892 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 17:31:24.374  INFO 12892 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 17:31:24.436  INFO 12892 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 17:31:24.436  INFO 12892 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 9.987 seconds (JVM running for 11.486)
+2018-09-16 17:39:47.507  INFO 12892 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 17:39:47.509  INFO 12892 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 17:39:47.557  INFO 12892 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 48 ms
+2018-09-16 17:39:47.638  INFO 12892 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 18:33:47.241  INFO 10600 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 10600 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 18:33:47.244  INFO 10600 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 18:33:47.285  INFO 10600 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@20ca951f: startup date [Sun Sep 16 18:33:47 CST 2018]; root of context hierarchy
+2018-09-16 18:33:48.633  INFO 10600 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 18:33:48.644  INFO 10600 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 18:33:48.645  INFO 10600 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 18:33:48.738  INFO 10600 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 18:33:48.738  INFO 10600 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1458 ms
+2018-09-16 18:34:08.557  INFO 10600 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 18:34:08.570  INFO 10600 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 18:34:08.646  INFO 10600 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 18:34:08.648  INFO 10600 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 18:34:08.649  INFO 10600 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 18:34:08.700  INFO 10600 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 18:34:08.830  INFO 10600 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 18:34:09.397  INFO 10600 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 18:34:09.781  INFO 10600 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 18:34:09.786  INFO 10600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 18:34:09.786  INFO 10600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 18:34:09.787  INFO 10600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 18:34:09.787  INFO 10600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 18:34:09.787  INFO 10600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 18:34:10.224  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@20ca951f: startup date [Sun Sep 16 18:33:47 CST 2018]; root of context hierarchy
+2018-09-16 18:34:10.282  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 18:34:10.283  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.283  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 18:34:10.284  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.284  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.285  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 18:34:10.285  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.286  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.286  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.287  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 18:34:10.287  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 18:34:10.287  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 18:34:10.289  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:34:10.289  INFO 10600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 18:34:10.319  INFO 10600 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:34:10.319  INFO 10600 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:34:10.352  INFO 10600 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:34:10.646  INFO 10600 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 18:34:10.705  INFO 10600 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 18:34:10.709  INFO 10600 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 23.769 seconds (JVM running for 25.943)
+2018-09-16 18:34:29.105  INFO 10600 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 18:34:29.105  INFO 10600 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 18:34:29.127  INFO 10600 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 22 ms
+2018-09-16 18:34:29.193  INFO 10600 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 18:51:02.323  INFO 13052 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 13052 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 18:51:02.326  INFO 13052 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 18:51:02.390  INFO 13052 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@20ca951f: startup date [Sun Sep 16 18:51:02 CST 2018]; root of context hierarchy
+2018-09-16 18:51:03.635  INFO 13052 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 18:51:03.645  INFO 13052 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 18:51:03.646  INFO 13052 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 18:51:03.739  INFO 13052 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 18:51:03.739  INFO 13052 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1352 ms
+2018-09-16 18:51:14.511  INFO 13052 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 18:51:14.520  INFO 13052 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 18:51:14.576  INFO 13052 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 18:51:14.578  INFO 13052 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 18:51:14.579  INFO 13052 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 18:51:14.616  INFO 13052 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 18:51:14.700  INFO 13052 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 18:51:15.171  INFO 13052 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 18:51:15.426  INFO 13052 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 18:51:15.431  INFO 13052 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 18:51:15.431  INFO 13052 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 18:51:15.431  INFO 13052 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 18:51:15.431  INFO 13052 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 18:51:15.431  INFO 13052 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 18:51:15.832  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@20ca951f: startup date [Sun Sep 16 18:51:02 CST 2018]; root of context hierarchy
+2018-09-16 18:51:15.890  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.891  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 18:51:15.891  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.891  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 18:51:15.892  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.892  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.893  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 18:51:15.894  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.894  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.895  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 18:51:15.895  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 18:51:15.895  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 18:51:15.897  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:51:15.897  INFO 13052 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 18:51:15.924  INFO 13052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:51:15.924  INFO 13052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:51:15.955  INFO 13052 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:51:16.252  INFO 13052 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 18:51:16.316  INFO 13052 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 18:51:16.320  INFO 13052 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 14.375 seconds (JVM running for 15.074)
+2018-09-16 18:51:48.709  INFO 13052 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 18:51:48.709  INFO 13052 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 18:51:48.734  INFO 13052 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 25 ms
+2018-09-16 18:51:48.794  INFO 13052 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 18:53:09.726 ERROR 13052 --- [http-nio-9527-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.dao.IncorrectResultSizeDataAccessException: result returns more than one elements; nested exception is javax.persistence.NonUniqueResultException: result returns more than one elements] with root cause
+
+javax.persistence.NonUniqueResultException: result returns more than one elements
+	at org.hibernate.jpa.internal.QueryImpl.getSingleResult(QueryImpl.java:539) ~[hibernate-entitymanager-5.0.12.Final.jar:5.0.12.Final]
+	at org.hibernate.jpa.criteria.compile.CriteriaQueryTypeQueryAdapter.getSingleResult(CriteriaQueryTypeQueryAdapter.java:54) ~[hibernate-entitymanager-5.0.12.Final.jar:5.0.12.Final]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$SingleEntityExecution.doExecute(JpaQueryExecution.java:206) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:85) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:116) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:106) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.doInvoke(RepositoryFactorySupport.java:483) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.invoke(RepositoryFactorySupport.java:461) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:61) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:282) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:136) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:133) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.repository.core.support.SurroundingTransactionDetectorMethodInterceptor.invoke(SurroundingTransactionDetectorMethodInterceptor.java:57) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:213) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at com.sun.proxy.$Proxy86.findByApplyUserIdAndResultIsNull(Unknown Source) ~[na:na]
+	at com.gogoyang.rpgapi.job.service.impl.JobApplyLogService.isApplied(JobApplyLogService.java:20) ~[classes/:na]
+	at com.gogoyang.rpgapi.job.controller.JobController.JobApply(JobController.java:92) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_60]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_60]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_60]
+	at java.lang.reflect.Method.invoke(Method.java:497) ~[na:1.8.0_60]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:897) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:661) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:742) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52) ~[tomcat-embed-websocket-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:96) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.HttpPutFormContentFilter.doFilterInternal(HttpPutFormContentFilter.java:105) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:81) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:197) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:198) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:478) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:140) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:80) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:799) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:861) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1455) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_60]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_60]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_60]
+
+2018-09-16 18:55:47.394 ERROR 13052 --- [http-nio-9527-exec-9] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.dao.IncorrectResultSizeDataAccessException: result returns more than one elements; nested exception is javax.persistence.NonUniqueResultException: result returns more than one elements] with root cause
+
+javax.persistence.NonUniqueResultException: result returns more than one elements
+	at org.hibernate.jpa.internal.QueryImpl.getSingleResult(QueryImpl.java:539) ~[hibernate-entitymanager-5.0.12.Final.jar:5.0.12.Final]
+	at org.hibernate.jpa.criteria.compile.CriteriaQueryTypeQueryAdapter.getSingleResult(CriteriaQueryTypeQueryAdapter.java:54) ~[hibernate-entitymanager-5.0.12.Final.jar:5.0.12.Final]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$SingleEntityExecution.doExecute(JpaQueryExecution.java:206) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:85) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:116) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:106) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.doInvoke(RepositoryFactorySupport.java:483) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.invoke(RepositoryFactorySupport.java:461) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:61) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:282) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:136) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:133) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.repository.core.support.SurroundingTransactionDetectorMethodInterceptor.invoke(SurroundingTransactionDetectorMethodInterceptor.java:57) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:213) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at com.sun.proxy.$Proxy86.findByApplyUserIdAndResultIsNull(Unknown Source) ~[na:na]
+	at com.gogoyang.rpgapi.job.service.impl.JobApplyLogService.isApplied(JobApplyLogService.java:20) ~[classes/:na]
+	at com.gogoyang.rpgapi.job.controller.JobController.JobApply(JobController.java:92) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_60]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_60]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_60]
+	at java.lang.reflect.Method.invoke(Method.java:497) ~[na:1.8.0_60]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:897) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:661) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:742) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52) ~[tomcat-embed-websocket-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:96) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.HttpPutFormContentFilter.doFilterInternal(HttpPutFormContentFilter.java:105) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:81) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:197) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:198) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:478) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:140) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:80) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:799) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:861) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1455) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_60]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_60]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_60]
+
+2018-09-16 18:57:36.582 ERROR 13052 --- [http-nio-9527-exec-6] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.dao.IncorrectResultSizeDataAccessException: result returns more than one elements; nested exception is javax.persistence.NonUniqueResultException: result returns more than one elements] with root cause
+
+javax.persistence.NonUniqueResultException: result returns more than one elements
+	at org.hibernate.jpa.internal.QueryImpl.getSingleResult(QueryImpl.java:539) ~[hibernate-entitymanager-5.0.12.Final.jar:5.0.12.Final]
+	at org.hibernate.jpa.criteria.compile.CriteriaQueryTypeQueryAdapter.getSingleResult(CriteriaQueryTypeQueryAdapter.java:54) ~[hibernate-entitymanager-5.0.12.Final.jar:5.0.12.Final]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution$SingleEntityExecution.doExecute(JpaQueryExecution.java:206) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.JpaQueryExecution.execute(JpaQueryExecution.java:85) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.doExecute(AbstractJpaQuery.java:116) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.jpa.repository.query.AbstractJpaQuery.execute(AbstractJpaQuery.java:106) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.doInvoke(RepositoryFactorySupport.java:483) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.data.repository.core.support.RepositoryFactorySupport$QueryExecutorMethodInterceptor.invoke(RepositoryFactorySupport.java:461) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:61) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:99) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:282) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:136) ~[spring-tx-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:133) ~[spring-data-jpa-1.11.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:92) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.data.repository.core.support.SurroundingTransactionDetectorMethodInterceptor.invoke(SurroundingTransactionDetectorMethodInterceptor.java:57) ~[spring-data-commons-1.13.3.RELEASE.jar:na]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:213) ~[spring-aop-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at com.sun.proxy.$Proxy86.findByApplyUserIdAndResultIsNull(Unknown Source) ~[na:na]
+	at com.gogoyang.rpgapi.job.service.impl.JobApplyLogService.isApplied(JobApplyLogService.java:20) ~[classes/:na]
+	at com.gogoyang.rpgapi.job.controller.JobController.JobApply(JobController.java:92) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_60]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_60]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_60]
+	at java.lang.reflect.Method.invoke(Method.java:497) ~[na:1.8.0_60]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:133) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:97) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:827) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:738) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:85) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:897) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:970) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:872) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:661) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:846) ~[spring-webmvc-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:742) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:52) ~[tomcat-embed-websocket-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:96) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:99) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.HttpPutFormContentFilter.doFilterInternal(HttpPutFormContentFilter.java:105) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.HiddenHttpMethodFilter.doFilterInternal(HiddenHttpMethodFilter.java:81) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:197) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:107) ~[spring-web-4.3.8.RELEASE.jar:4.3.8.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:198) ~[tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:478) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:140) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:80) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:342) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:799) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:66) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:861) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1455) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142) [na:1.8.0_60]
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617) [na:1.8.0_60]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) [tomcat-embed-core-8.5.14.jar:8.5.14]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_60]
+
+2018-09-16 18:59:13.372  INFO 11988 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 11988 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 18:59:13.375  INFO 11988 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 18:59:13.434  INFO 11988 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6c2ed0cd: startup date [Sun Sep 16 18:59:13 CST 2018]; root of context hierarchy
+2018-09-16 18:59:14.590  INFO 11988 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 18:59:14.599  INFO 11988 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 18:59:14.600  INFO 11988 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 18:59:14.686  INFO 11988 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 18:59:14.686  INFO 11988 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1256 ms
+2018-09-16 18:59:24.675  INFO 11988 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 18:59:24.686  INFO 11988 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 18:59:24.741  INFO 11988 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 18:59:24.742  INFO 11988 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 18:59:24.743  INFO 11988 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 18:59:24.796  INFO 11988 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 18:59:24.886  INFO 11988 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 18:59:25.342  INFO 11988 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 18:59:25.592  INFO 11988 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 18:59:25.596  INFO 11988 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 18:59:25.596  INFO 11988 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 18:59:25.596  INFO 11988 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 18:59:25.596  INFO 11988 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 18:59:25.597  INFO 11988 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 18:59:25.978  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6c2ed0cd: startup date [Sun Sep 16 18:59:13 CST 2018]; root of context hierarchy
+2018-09-16 18:59:26.037  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 18:59:26.037  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.038  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 18:59:26.038  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.039  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.039  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 18:59:26.039  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.040  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.040  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 18:59:26.040  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 18:59:26.041  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 18:59:26.041  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.042  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 18:59:26.042  INFO 11988 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 18:59:26.069  INFO 11988 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:59:26.069  INFO 11988 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:59:26.102  INFO 11988 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 18:59:26.386  INFO 11988 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 18:59:26.435  INFO 11988 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 18:59:26.438  INFO 11988 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 13.431 seconds (JVM running for 14.14)
+2018-09-16 18:59:38.720  INFO 11988 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 18:59:38.721  INFO 11988 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 18:59:38.741  INFO 11988 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 20 ms
+2018-09-16 18:59:38.793  INFO 11988 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 19:03:20.635  INFO 2736 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 2736 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 19:03:20.639  INFO 2736 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 19:03:20.703  INFO 2736 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6c2ed0cd: startup date [Sun Sep 16 19:03:20 CST 2018]; root of context hierarchy
+2018-09-16 19:03:21.788  INFO 2736 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 19:03:21.797  INFO 2736 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 19:03:21.798  INFO 2736 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 19:03:21.875  INFO 2736 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 19:03:21.875  INFO 2736 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1176 ms
+2018-09-16 19:03:31.894  INFO 2736 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 19:03:31.903  INFO 2736 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 19:03:31.969  INFO 2736 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 19:03:31.971  INFO 2736 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 19:03:31.971  INFO 2736 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 19:03:32.005  INFO 2736 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 19:03:32.092  INFO 2736 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 19:03:32.534  INFO 2736 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 19:03:32.771  INFO 2736 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 19:03:32.774  INFO 2736 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 19:03:32.775  INFO 2736 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 19:03:32.775  INFO 2736 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 19:03:32.775  INFO 2736 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 19:03:32.775  INFO 2736 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 19:03:33.179  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@6c2ed0cd: startup date [Sun Sep 16 19:03:20 CST 2018]; root of context hierarchy
+2018-09-16 19:03:33.238  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.239  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 19:03:33.239  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 19:03:33.239  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.240  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 19:03:33.240  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.241  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.242  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.242  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.242  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 19:03:33.243  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 19:03:33.243  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 19:03:33.245  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 19:03:33.245  INFO 2736 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 19:03:33.272  INFO 2736 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 19:03:33.272  INFO 2736 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 19:03:33.307  INFO 2736 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 19:03:33.600  INFO 2736 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 19:03:33.657  INFO 2736 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 19:03:33.662  INFO 2736 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 13.393 seconds (JVM running for 14.114)
+2018-09-16 19:03:46.185  INFO 2736 --- [http-nio-9527-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 19:03:46.185  INFO 2736 --- [http-nio-9527-exec-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 19:03:46.209  INFO 2736 --- [http-nio-9527-exec-2] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 24 ms
+2018-09-16 19:03:46.257  INFO 2736 --- [http-nio-9527-exec-2] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 19:12:55.100  INFO 8600 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 8600 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 19:12:55.102  INFO 8600 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 19:12:55.140  INFO 8600 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@1c39680d: startup date [Sun Sep 16 19:12:55 CST 2018]; root of context hierarchy
+2018-09-16 19:12:56.335  INFO 8600 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 19:12:56.345  INFO 8600 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 19:12:56.345  INFO 8600 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 19:12:56.439  INFO 8600 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 19:12:56.439  INFO 8600 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1302 ms
+2018-09-16 19:13:05.609  INFO 8600 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 19:13:05.618  INFO 8600 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 19:13:05.671  INFO 8600 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 19:13:05.673  INFO 8600 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 19:13:05.674  INFO 8600 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 19:13:05.711  INFO 8600 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 19:13:05.824  INFO 8600 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 19:13:06.273  INFO 8600 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 19:13:06.509  INFO 8600 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 19:13:06.513  INFO 8600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 19:13:06.513  INFO 8600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 19:13:06.513  INFO 8600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 19:13:06.513  INFO 8600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 19:13:06.513  INFO 8600 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 19:13:06.873  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@1c39680d: startup date [Sun Sep 16 19:12:55 CST 2018]; root of context hierarchy
+2018-09-16 19:13:06.931  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 19:13:06.932  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.932  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.932  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 19:13:06.933  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 19:13:06.933  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.933  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.934  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 19:13:06.934  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.935  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 19:13:06.935  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 19:13:06.935  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.936  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 19:13:06.937  INFO 8600 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 19:13:06.961  INFO 8600 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 19:13:06.962  INFO 8600 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 19:13:06.994  INFO 8600 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 19:13:07.266  INFO 8600 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 19:13:07.324  INFO 8600 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 19:13:07.328  INFO 8600 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 12.59 seconds (JVM running for 13.768)
+2018-09-16 19:13:23.022  INFO 8600 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 19:13:23.022  INFO 8600 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 19:13:23.043  INFO 8600 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 21 ms
+2018-09-16 19:13:23.093  INFO 8600 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-09-16 21:12:24.446  INFO 11628 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 11628 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-09-16 21:12:24.448  INFO 11628 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-09-16 21:12:24.489  INFO 11628 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@60410cd: startup date [Sun Sep 16 21:12:24 CST 2018]; root of context hierarchy
+2018-09-16 21:12:25.610  INFO 11628 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-09-16 21:12:25.619  INFO 11628 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-09-16 21:12:25.620  INFO 11628 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-09-16 21:12:25.701  INFO 11628 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-09-16 21:12:25.702  INFO 11628 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1215 ms
+2018-09-16 21:12:35.034  INFO 11628 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-09-16 21:12:35.043  INFO 11628 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-09-16 21:12:35.095  INFO 11628 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-09-16 21:12:35.097  INFO 11628 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-09-16 21:12:35.098  INFO 11628 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-09-16 21:12:35.143  INFO 11628 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-09-16 21:12:35.227  INFO 11628 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-09-16 21:12:35.670  INFO 11628 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-09-16 21:12:35.900  INFO 11628 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-09-16 21:12:35.903  INFO 11628 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-09-16 21:12:35.904  INFO 11628 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-09-16 21:12:35.904  INFO 11628 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-09-16 21:12:35.904  INFO 11628 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-09-16 21:12:35.904  INFO 11628 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-09-16 21:12:36.261  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@60410cd: startup date [Sun Sep 16 21:12:24 CST 2018]; root of context hierarchy
+2018-09-16 21:12:36.316  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.CreateJob(com.gogoyang.rpgapi.job.vo.CreateJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.317  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-09-16 21:12:36.317  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.vo.ApplyJobRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.318  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza/{category}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza(java.lang.String)
+2018-09-16 21:12:36.318  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.CreateTaskRequest,javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.318  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.publicTasks(javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.319  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.buildTaskInfo(java.lang.Integer)
+2018-09-16 21:12:36.320  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.ConfirmContactInfo(com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo,javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.320  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.LoginRequest)
+2018-09-16 21:12:36.320  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.createUser(com.gogoyang.rpgapi.user.vo.CreateUserRequest)
+2018-09-16 21:12:36.320  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.buildUser(java.lang.Integer)
+2018-09-16 21:12:36.320  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/profile],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.LoadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.322  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-09-16 21:12:36.322  INFO 11628 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-09-16 21:12:36.345  INFO 11628 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 21:12:36.345  INFO 11628 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 21:12:36.374  INFO 11628 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-09-16 21:12:36.633  INFO 11628 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-09-16 21:12:36.690  INFO 11628 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-09-16 21:12:36.693  INFO 11628 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 12.585 seconds (JVM running for 13.201)
+2018-09-16 21:16:50.918  INFO 11628 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-09-16 21:16:50.918  INFO 11628 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-09-16 21:16:50.940  INFO 11628 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 22 ms
+2018-09-16 21:16:50.995  INFO 11628 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
