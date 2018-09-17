@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RoleUserDao extends JpaRepository<RoleUser, Integer> {
-    List<RoleUser> findByUserIdAndDisableIsNull(Integer userId);
+    List<RoleUser> findByUserIdAndDisableTimeIsNull(Integer userId);
 }

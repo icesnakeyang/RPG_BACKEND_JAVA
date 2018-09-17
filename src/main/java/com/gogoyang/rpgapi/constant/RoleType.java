@@ -4,5 +4,6 @@ public enum RoleType {
     ROOT_ADMIN,
     SUPER_ADMIN,
     ADMINISTRATOR,
-    SECRETARY
+    SECRETARY,
+    NORMAL
 }

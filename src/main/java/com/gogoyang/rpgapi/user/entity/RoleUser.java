@@ -2,13 +2,11 @@ package com.gogoyang.rpgapi.user.entity;
 
 import com.gogoyang.rpgapi.constant.RoleType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "user_role")
 public class RoleUser {
     @Id
     @GeneratedValue
@@ -26,9 +24,6 @@ public class RoleUser {
 
     @Column(name = "created_user_id")
     private Integer createdUserId;
-
-    @Column(name = "disable")
-    private boolean disable;
 
     @Column(name = "disable_time")
     private Date disableTime;
@@ -77,14 +72,6 @@ public class RoleUser {
 
     public void setCreatedUserId(Integer createdUserId) {
         this.createdUserId = createdUserId;
-    }
-
-    public boolean isDisable() {
-        return disable;
-    }
-
-    public void setDisable(boolean disable) {
-        this.disable = disable;
     }
 
     public Date getDisableTime() {

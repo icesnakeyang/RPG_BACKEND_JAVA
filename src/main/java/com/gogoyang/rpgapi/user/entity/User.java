@@ -25,16 +25,16 @@ public class User {
     private Date registerTime;
     private String token;
 
-    @Transient
+    @Column(name = "email")
     private String email;
 
-    @Transient
+    @Column(name = "phone")
     private String phone;
 
-    @Transient
+    @Column(name = "real_name")
     private String realName;
 
-    @Transient
+    @Column(name = "role_type")
     private RoleType userRole;
 
     public Integer getUserId() {

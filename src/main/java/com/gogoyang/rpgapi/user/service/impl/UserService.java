@@ -7,9 +7,12 @@ import com.gogoyang.rpgapi.user.service.IUserService;
 import com.gogoyang.rpgapi.user.vo.*;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.Role;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +62,7 @@ public class UserService implements IUserService {
         User user=userDao.findByUsernameAndPassword(request.getUsername(),
                 request.getPassword());
         if(user!=null){
+            user=buildUserInfoByToken(user.getToken());
             loginResponse.setUser(user);
         }
         response.setData(loginResponse);
@@ -86,7 +90,7 @@ public class UserService implements IUserService {
         if(realName!=null) {
             user.setRealName(realName.getRealName());
         }
-        List<RoleUser> roleUser=roleUserDao.findByUserIdAndDisableIsNull(user.getUserId());
+        List<RoleUser> roleUser=roleUserDao.findByUserIdAndDisableTimeIsNull(user.getUserId());
         if(roleUser.size()==1){
             user.setUserRole(roleUser.get(0).getUserRole());
         }
@@ -108,7 +112,7 @@ public class UserService implements IUserService {
         }
         user.setUserRole(request.getRole());
         userDao.save(user);
-        List<RoleUser> roleUsers=roleUserDao.findByUserIdAndDisableIsNull(user.getUserId());
+        List<RoleUser> roleUsers=roleUserDao.findByUserIdAndDisableTimeIsNull(user.getUserId());
         if(roleUsers.size()>0){
             for(int i=0;i<roleUsers.size();i++){
                 if(roleUsers.get(i).getUserRole()==request.getRole()){
@@ -156,7 +160,21 @@ public class UserService implements IUserService {
         realName.setUserId(user.getUserId());
         realNameDao.save(realName);
 
+        user.setEmail(email.getEmail());
+        user.setPhone(phone.getPhone());
+        user.setRealName(realName.getRealName());
+        userDao.save(user);
+
         Response response=new Response();
         return response;
+    }
+
+    public Page<User> loadUsers(UserPageRequest userPageRequest, RoleType roleTypeNot){
+        Sort sort=new Sort(Sort.Direction.DESC, "userId");
+        Pageable pageable=new PageRequest(userPageRequest.getPageIndex(),
+                userPageRequest.getPageSize(), sort);
+        Page<User> userPages=userDao.findByUserRole(roleTypeNot,pageable);
+
+        return userPages;
     }
 }
