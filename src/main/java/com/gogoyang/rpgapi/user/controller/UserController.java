@@ -52,9 +52,38 @@ public class UserController {
     @PostMapping("/saveContactInfo")
     public Response ConfirmContactInfo(@RequestBody SvaeConfirmContactInfo info,
                                        HttpServletRequest httpServletRequest){
+        Response response=new Response();
         String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
         info.setToken(token);
-        return userService.SaveContactInfo(info);
+        try {
+            userService.SaveContactInfo(info);
+        }catch (Exception ex){
+            response.setErrorCode(10010);
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/saveProfile")
+    public Response SaveProfile(@RequestBody SaveProfileRequest request,
+                                HttpServletRequest httpRequest){
+        Response response=new Response();
+        String token=httpRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        request.setToken(token);
+        try {
+            userService.saveProfile(request);
+        }catch (Exception ex){
+            response.setErrorCode(10010);
+        }
+        return response;
     }
 
     @ResponseBody

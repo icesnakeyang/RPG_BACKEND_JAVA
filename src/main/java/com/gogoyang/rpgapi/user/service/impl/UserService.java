@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sun.security.krb5.internal.crypto.RsaMd5CksumType;
 
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -43,6 +44,7 @@ public class UserService implements IUserService {
         User user=request.toUser();
         user.setRegisterTime(new Date());
         user.setToken(UUID.randomUUID().toString().replace("-",""));
+        user.setUserRole(RoleType.NORMAL);
         createUserResponse.setId(userDao.save(user).getUserId());
         response.setData(createUserResponse);
         return response;
@@ -130,8 +132,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @Transactional
-    public Response SaveContactInfo(SvaeConfirmContactInfo info) {
+    @Transactional(rollbackOn = Exception.class)
+    public Response SaveContactInfo(SvaeConfirmContactInfo info) throws Exception{
         User user=userDao.findByToken(info.getToken());
 
         Email email=emailDao.findByUserId(user.getUserId());
@@ -166,6 +168,19 @@ public class UserService implements IUserService {
         userDao.save(user);
 
         Response response=new Response();
+        return response;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public Response saveProfile(SaveProfileRequest info) throws Exception{
+        Response response=new Response();
+        SvaeConfirmContactInfo contactInfo=new SvaeConfirmContactInfo();
+        contactInfo.setToken(info.getToken());
+        contactInfo.setEmail(info.getEmail());
+        contactInfo.setPhone(info.getPhone());
+        contactInfo.setRealName(info.getRealName());
+        SaveContactInfo(contactInfo);
         return response;
     }
 

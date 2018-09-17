@@ -15,7 +15,9 @@ public interface IUserService {
 
     User buildUserByToken(String token);
 
-    Response SaveContactInfo(SvaeConfirmContactInfo info);
+    Response SaveContactInfo(SvaeConfirmContactInfo info) throws Exception;
+
+    Response saveProfile(SaveProfileRequest info) throws Exception;
 
     User buildUserInfoByToken(String token);
 
