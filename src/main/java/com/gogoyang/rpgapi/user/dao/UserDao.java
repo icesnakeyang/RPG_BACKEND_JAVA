@@ -15,4 +15,6 @@ public interface UserDao extends JpaRepository<User, Integer> {
     User findByUserId(Integer id);
 
     Page<User> findByUserRole(RoleType roleType, Pageable pageable);
+
+    Page<User> findByUserRoleNot(RoleType roleType, Pageable pageable);
 }

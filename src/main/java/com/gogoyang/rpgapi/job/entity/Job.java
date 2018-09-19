@@ -40,8 +40,8 @@ public class Job {
     @Transient
     private String detail;
 
-    @Column(name = "apply_job_log_id")
-    private Integer applyJobLogId;
+    @Column(name = "match_log_id")
+    private Integer matchLogId;
 
     public Integer getJobId() {
         return jobId;
@@ -131,11 +131,11 @@ public class Job {
         this.detail = detail;
     }
 
-    public Integer getApplyJobLogId() {
-        return applyJobLogId;
+    public Integer getMatchLogId() {
+        return matchLogId;
     }
 
-    public void setApplyJobLogId(Integer applyJobLogId) {
-        this.applyJobLogId = applyJobLogId;
+    public void setMatchLogId(Integer matchLogId) {
+        this.matchLogId = matchLogId;
     }
 }

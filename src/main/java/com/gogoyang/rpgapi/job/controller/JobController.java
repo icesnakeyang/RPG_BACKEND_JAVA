@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.job.controller;
 
+import com.gogoyang.rpgapi.common.IRPGFUNC;
+import com.gogoyang.rpgapi.common.RPGFUNC;
 import com.gogoyang.rpgapi.job.entity.Job;
 import com.gogoyang.rpgapi.job.service.IJobApplyLogService;
 import com.gogoyang.rpgapi.job.service.IJobService;
@@ -7,6 +9,7 @@ import com.gogoyang.rpgapi.job.vo.ApplyJobRequest;
 import com.gogoyang.rpgapi.job.vo.CreateJobRequest;
 import com.gogoyang.rpgapi.user.entity.User;
 import com.gogoyang.rpgapi.user.service.IUserService;
+import com.gogoyang.rpgapi.vo.Request;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +22,14 @@ public class JobController {
     private final IJobService jobService;
     private final IUserService userService;
     private final IJobApplyLogService jobApplyLogService;
+    private final IRPGFUNC irpgfunc;
 
     @Autowired
-    public JobController(IJobService jobService, IUserService userService, IJobApplyLogService jobApplyLogService) {
+    public JobController(IJobService jobService, IUserService userService, IJobApplyLogService jobApplyLogService, IRPGFUNC irpgfunc) {
         this.jobService = jobService;
         this.userService = userService;
         this.jobApplyLogService = jobApplyLogService;
+        this.irpgfunc = irpgfunc;
     }
 
     @ResponseBody
@@ -83,13 +88,12 @@ public class JobController {
             return response;
         }
 
-        if (job.getApplyJobLogId() != null)
-        {
+        if (job.getMatchLogId() != null) {
             //the job contracted already
             response.setErrorCode(10006);
             return response;
         }
-        if(jobApplyLogService.isApplied(user.getUserId())){
+        if (jobApplyLogService.isApplied(user.getUserId())) {
             //the job has applied by current user already
             response.setErrorCode(10007);
             return response;
@@ -101,6 +105,25 @@ public class JobController {
             response.setErrorCode(Integer.parseInt(ex.getMessage()));
             return response;
         }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/loadJobToMatch")
+    public Response loadJobToMatch(@RequestBody Request request,
+                                   HttpServletRequest httpServletRequest) {
+        /** todo
+         * find job dao, job.matchLogId!=null
+         * the page index and page size in the request body.
+         */
+        Response response = new Response();
+        String token = httpServletRequest.getHeader("token");
+        if (!irpgfunc.checkToken(token)) {
+            response.setErrorCode(10004);
+            return response;
+        }
+
+
         return response;
     }
 }

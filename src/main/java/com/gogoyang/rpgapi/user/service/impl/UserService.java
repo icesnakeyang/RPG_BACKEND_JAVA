@@ -133,6 +133,31 @@ public class UserService implements IUserService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
+    public void setSecretary(SetRoleRequest request) throws Exception {
+        User user=userDao.findByUserId(request.getUserId());
+        if(user==null){
+            throw new Exception("no user exist");
+        }
+        user.setUserRole(request.getRole());
+        userDao.save(user);
+        List<RoleUser> roleUsers=roleUserDao.findByUserIdAndDisableTimeIsNull(user.getUserId());
+        if(roleUsers.size()>0){
+            for(int i=0;i<roleUsers.size();i++){
+                if(roleUsers.get(i).getUserRole()==request.getRole()){
+                    return;
+                }
+            }
+        }
+        RoleUser roleUser=new RoleUser();
+        roleUser.setCreatedTime(new Date());
+        roleUser.setCreatedUserId(request.getOperatorId());
+        roleUser.setUserId(request.getUserId());
+        roleUser.setUserRole(request.getRole());
+        roleUserDao.save(roleUser);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
     public Response SaveContactInfo(SvaeConfirmContactInfo info) throws Exception{
         User user=userDao.findByToken(info.getToken());
 
@@ -184,11 +209,20 @@ public class UserService implements IUserService {
         return response;
     }
 
-    public Page<User> loadUsers(UserPageRequest userPageRequest, RoleType roleTypeNot){
+    public Page<User> loadUsers(UserPageRequest userPageRequest, RoleType roleType){
         Sort sort=new Sort(Sort.Direction.DESC, "userId");
         Pageable pageable=new PageRequest(userPageRequest.getPageIndex(),
                 userPageRequest.getPageSize(), sort);
-        Page<User> userPages=userDao.findByUserRole(roleTypeNot,pageable);
+        Page<User> userPages=userDao.findByUserRole(roleType,pageable);
+
+        return userPages;
+    }
+
+    public Page<User> loadUsersNorRole(UserPageRequest userPageRequest, RoleType roleTypeNot){
+        Sort sort=new Sort(Sort.Direction.DESC, "userId");
+        Pageable pageable=new PageRequest(userPageRequest.getPageIndex(),
+                userPageRequest.getPageSize(), sort);
+        Page<User> userPages=userDao.findByUserRoleNot(roleTypeNot,pageable);
 
         return userPages;
     }

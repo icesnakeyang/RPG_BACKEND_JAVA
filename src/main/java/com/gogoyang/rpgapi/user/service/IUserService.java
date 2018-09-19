@@ -23,5 +23,9 @@ public interface IUserService {
 
     void setAdmin(SetRoleRequest request) throws Exception;
 
-    Page<User> loadUsers(UserPageRequest userPageRequest, RoleType roleTypeNot);
+    void setSecretary(SetRoleRequest request) throws Exception;
+
+    Page<User> loadUsers(UserPageRequest userPageRequest, RoleType roleType);
+
+    Page<User> loadUsersNorRole(UserPageRequest userPageRequest, RoleType roleTypeNot);
 }

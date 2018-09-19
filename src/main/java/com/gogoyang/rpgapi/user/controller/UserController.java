@@ -142,6 +142,41 @@ public class UserController {
     }
 
     @ResponseBody
+    @PostMapping("/setSecretary")
+    public Response SetSecretary(@RequestBody SetRoleRequest setRoleRequest,
+                             HttpServletRequest httpServletRequest){
+        /**
+         * token is the operator user
+         * userId is the user to set
+         */
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        User user=userService.buildUserInfoByToken(token);
+
+        if(user.getUserRole()!=RoleType.ROOT_ADMIN) {
+            if (user.getUserRole() != RoleType.SUPER_ADMIN) {
+                if (user.getUserRole() != RoleType.ADMINISTRATOR) {
+                    //the user do not has authority to set admin user
+                    response.setErrorCode(10008);
+                    return response;
+                }
+            }
+        }
+        setRoleRequest.setOperatorId(user.getUserId());
+        try {
+            userService.setSecretary(setRoleRequest);
+        }catch (Exception ex){
+            response.setErrorCode(10009);
+            return response;
+        }
+        return response;
+    }
+
+    @ResponseBody
     @PostMapping("/loadUsers")
     public Response LoadUsers(@RequestBody UserPageRequest userPageRequest,
                               HttpServletRequest httpServletRequest){
@@ -182,6 +217,21 @@ public class UserController {
             return response;
         }
         Page<User> userPage=userService.loadUsers(userPageRequest, RoleType.SECRETARY);
+        response.setData(userPage);
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/loadUnSecretary")
+    public Response LoadUnSecretary(@RequestBody UserPageRequest userPageRequest,
+                              HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        Page<User> userPage=userService.loadUsersNorRole(userPageRequest, RoleType.SECRETARY);
         response.setData(userPage);
         return response;
     }
