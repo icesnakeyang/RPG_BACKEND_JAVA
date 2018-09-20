@@ -3,8 +3,11 @@ package com.gogoyang.rpgapi.user.service;
 import com.gogoyang.rpgapi.constant.RoleType;
 import com.gogoyang.rpgapi.user.entity.User;
 import com.gogoyang.rpgapi.user.vo.*;
+import com.gogoyang.rpgapi.vo.Request;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.data.domain.Page;
+
+import java.util.ArrayList;
 
 public interface IUserService {
     Response createUser(CreateUserRequest request);
@@ -27,5 +30,7 @@ public interface IUserService {
 
     Page<User> loadUsers(UserPageRequest userPageRequest, RoleType roleType);
 
-    Page<User> loadUsersNorRole(UserPageRequest userPageRequest, RoleType roleTypeNot);
+    Page<User> loadUsersNotRole(UserPageRequest userPageRequest, RoleType roleTypeNot);
+
+    ArrayList<User> loadUsersUnJob(Request request);
 }

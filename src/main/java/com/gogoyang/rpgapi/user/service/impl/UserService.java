@@ -1,10 +1,15 @@
 package com.gogoyang.rpgapi.user.service.impl;
 
 import com.gogoyang.rpgapi.constant.RoleType;
+import com.gogoyang.rpgapi.job.dao.JobApplyLogDao;
+import com.gogoyang.rpgapi.job.dao.JobMatchLogDao;
+import com.gogoyang.rpgapi.job.entity.JobApplyLog;
+import com.gogoyang.rpgapi.job.entity.JobMatchLog;
 import com.gogoyang.rpgapi.user.dao.*;
 import com.gogoyang.rpgapi.user.entity.*;
 import com.gogoyang.rpgapi.user.service.IUserService;
 import com.gogoyang.rpgapi.user.vo.*;
+import com.gogoyang.rpgapi.vo.Request;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 import sun.security.krb5.internal.crypto.RsaMd5CksumType;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,14 +32,18 @@ public class UserService implements IUserService {
     private final PhoneDao phoneDao;
     private final RealNameDao realNameDao;
     private final RoleUserDao roleUserDao;
+    private final JobMatchLogDao jobMatchLogDao;
+    private final JobApplyLogDao jobApplyLogDao;
 
     @Autowired
-    public UserService(UserDao userDao, EmailDao emailDao, PhoneDao phoneDao, RealNameDao realNameDao, RoleUserDao roleUserDao) {
+    public UserService(UserDao userDao, EmailDao emailDao, PhoneDao phoneDao, RealNameDao realNameDao, RoleUserDao roleUserDao, JobMatchLogDao jobMatchLogDao, JobApplyLogDao jobApplyLogDao) {
         this.userDao = userDao;
         this.emailDao = emailDao;
         this.phoneDao = phoneDao;
         this.realNameDao = realNameDao;
         this.roleUserDao = roleUserDao;
+        this.jobMatchLogDao = jobMatchLogDao;
+        this.jobApplyLogDao = jobApplyLogDao;
     }
 
     @Override
@@ -218,12 +228,40 @@ public class UserService implements IUserService {
         return userPages;
     }
 
-    public Page<User> loadUsersNorRole(UserPageRequest userPageRequest, RoleType roleTypeNot){
+    public Page<User> loadUsersNotRole(UserPageRequest userPageRequest, RoleType roleTypeNot){
         Sort sort=new Sort(Sort.Direction.DESC, "userId");
         Pageable pageable=new PageRequest(userPageRequest.getPageIndex(),
                 userPageRequest.getPageSize(), sort);
         Page<User> userPages=userDao.findByUserRoleNot(roleTypeNot,pageable);
 
         return userPages;
+    }
+
+    /**
+     * load users that can be matched jobs
+     * 读取可以被分配任务的user
+     * @param request
+     * @return
+     */
+    public ArrayList<User> loadUsersUnJob(Request request){
+        /**
+         * 1、查找jobApplyLog.result==null and jobApplyLog.jobId=request.jobId
+         * 2、遍历jobApplyLog，查找每个applyUserId对应的user
+         * 3、返回查到的user list
+         *
+         * 1. query jobApplyLog where result==null and jobApplyLog.jobId=request.jobId
+         * 2. for each jobApplyLog, find out every user by the jobApplyLog.applyUserId
+         * 3. return this user list.
+         */
+        List<JobApplyLog> jobApplyLogs=jobApplyLogDao.findAllByJobIdAndResultIsNull(request.getJobId());
+        ArrayList<User> userList=new ArrayList<User>();
+        for(int i=0;i<jobApplyLogs.size();i++){
+            User user=userDao.findByUserId(jobApplyLogs.get(i).getApplyUserId());
+            if(user!=null){
+                userList.add(user);
+            }
+        }
+
+        return userList;
     }
 }

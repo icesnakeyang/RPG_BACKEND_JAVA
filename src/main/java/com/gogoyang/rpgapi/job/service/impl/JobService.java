@@ -11,8 +11,13 @@ import com.gogoyang.rpgapi.job.vo.CreateJobResponse;
 import com.gogoyang.rpgapi.task.dao.TaskDetailDao;
 import com.gogoyang.rpgapi.user.dao.UserDao;
 import com.gogoyang.rpgapi.user.entity.User;
+import com.gogoyang.rpgapi.vo.Request;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -63,20 +68,19 @@ public class JobService implements IJobService {
     }
 
     @Override
-    public Response buildJobs(String category) {
+    public Response buildJobs(Request request) {
         Response response = new Response();
-        List<Job> jobs = jobDao.findAllByCategoryAndAndApplyJobLogIdIsNull(category);
-        for (int i = 0; i < jobs.size(); i++) {
-            User user = userDao.findByUserId(jobs.get(i).getCreatedUserId());
-            jobs.get(i).setCreatedUserName(user.getUsername());
-        }
+
+        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable=new PageRequest(request.getPageIndex(),request.getPageSize(), sort);
+        Page<Job> jobs = jobDao.findAllByMatchLogIdIsNull(pageable);
         response.setData(jobs);
         return response;
     }
 
     public boolean canApplyJob(ApplyJobRequest request){
         Job job=jobDao.findByJobId(request.getJobId());
-        if(job.getApplyJobLogId()==null){
+        if(job.getMatchLogId()==null){
             return true;
         }
         return false;
@@ -103,5 +107,20 @@ public class JobService implements IJobService {
         }
         response.setData(applyLogId);
         return response;
+    }
+
+    /**
+     * load all jobs that waiting for match
+     * 读取等待分配的任务
+     * @param request
+     * @return
+     */
+    public Page<Job> loadJobToMatch(Request request){
+        Sort sort=new Sort(Sort.Direction.DESC, "createdTime");
+        Pageable pageable=new PageRequest(request.getPageIndex(),
+                request.getPageSize(), sort);
+
+        Page<Job> jobPage=jobDao.findAllByMatchLogIdIsNull(pageable);
+        return jobPage;
     }
 }

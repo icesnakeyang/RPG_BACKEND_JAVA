@@ -5,12 +5,14 @@ import com.gogoyang.rpgapi.constant.RoleType;
 import com.gogoyang.rpgapi.user.entity.User;
 import com.gogoyang.rpgapi.user.service.IUserService;
 import com.gogoyang.rpgapi.user.vo.*;
+import com.gogoyang.rpgapi.vo.Request;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -231,10 +233,22 @@ public class UserController {
             response.setErrorCode(10004);
             return response;
         }
-        Page<User> userPage=userService.loadUsersNorRole(userPageRequest, RoleType.SECRETARY);
+        Page<User> userPage=userService.loadUsersNotRole(userPageRequest, RoleType.SECRETARY);
         response.setData(userPage);
         return response;
     }
 
-
+    @ResponseBody
+    @PostMapping("/loadUsersAppliedJobAndWaiting")
+    public Response LoadUsersAppliedJobAndWaiting(@RequestBody Request request,
+                                                  HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+            return response;
+        }
+        response.setData(userService.loadUsersUnJob(request));
+        return response;
+    }
 }

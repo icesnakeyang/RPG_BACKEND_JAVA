@@ -12,6 +12,7 @@ public class UserPageRequest {
     private Integer pageIndex;
     private Integer pageSize;
     private String token;
+    private Integer jobId;
 
     public Integer getPageIndex() {
         return pageIndex;
@@ -35,5 +36,13 @@ public class UserPageRequest {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Integer getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
     }
 }

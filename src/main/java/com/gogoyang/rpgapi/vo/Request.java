@@ -11,6 +11,8 @@ public class Request {
     private Integer pageIndex;
     private Integer pageSize;
     private String token;
+    private Integer jobId;
+    private Integer matchUserId;
 
     public Integer getPageIndex() {
         return pageIndex;
@@ -34,5 +36,21 @@ public class Request {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public Integer getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
+    }
+
+    public Integer getMatchUserId() {
+        return matchUserId;
+    }
+
+    public void setMatchUserId(Integer matchUserId) {
+        this.matchUserId = matchUserId;
     }
 }

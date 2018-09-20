@@ -1,9 +1,9 @@
 package com.gogoyang.rpgapi.job.controller;
 
 import com.gogoyang.rpgapi.common.IRPGFUNC;
-import com.gogoyang.rpgapi.common.RPGFUNC;
 import com.gogoyang.rpgapi.job.entity.Job;
 import com.gogoyang.rpgapi.job.service.IJobApplyLogService;
+import com.gogoyang.rpgapi.job.service.IJobMatchLogService;
 import com.gogoyang.rpgapi.job.service.IJobService;
 import com.gogoyang.rpgapi.job.vo.ApplyJobRequest;
 import com.gogoyang.rpgapi.job.vo.CreateJobRequest;
@@ -12,9 +12,12 @@ import com.gogoyang.rpgapi.user.service.IUserService;
 import com.gogoyang.rpgapi.vo.Request;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/job")
@@ -23,13 +26,15 @@ public class JobController {
     private final IUserService userService;
     private final IJobApplyLogService jobApplyLogService;
     private final IRPGFUNC irpgfunc;
+    private final IJobMatchLogService jobMatchLogService;
 
     @Autowired
-    public JobController(IJobService jobService, IUserService userService, IJobApplyLogService jobApplyLogService, IRPGFUNC irpgfunc) {
+    public JobController(IJobService jobService, IUserService userService, IJobApplyLogService jobApplyLogService, IRPGFUNC irpgfunc, IJobMatchLogService jobMatchLogService) {
         this.jobService = jobService;
         this.userService = userService;
         this.jobApplyLogService = jobApplyLogService;
         this.irpgfunc = irpgfunc;
+        this.jobMatchLogService = jobMatchLogService;
     }
 
     @ResponseBody
@@ -43,9 +48,9 @@ public class JobController {
     }
 
     @ResponseBody
-    @GetMapping("/jobPlaza/{category}")
-    public Response JobPlaza(@PathVariable String category) {
-        return jobService.buildJobs(category);
+    @PostMapping("/jobPlaza")
+    public Response JobPlaza(@RequestBody Request request) {
+        return jobService.buildJobs(request);
     }
 
     @ResponseBody
@@ -113,7 +118,7 @@ public class JobController {
     public Response loadJobToMatch(@RequestBody Request request,
                                    HttpServletRequest httpServletRequest) {
         /** todo
-         * find job dao, job.matchLogId!=null
+         * find by jobDao, job.matchLogId!=null
          * the page index and page size in the request body.
          */
         Response response = new Response();
@@ -122,8 +127,30 @@ public class JobController {
             response.setErrorCode(10004);
             return response;
         }
+        Page<Job> jobPage = jobService.loadJobToMatch(request);
+        response.setData(jobPage);
 
+        return response;
+    }
 
+    @ResponseBody
+    @PostMapping("/addNewJobMatchLog")
+    public Response addNewJobMatchLog(@RequestBody Request request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        String token=httpServletRequest.getHeader("token");
+        if(!irpgfunc.checkToken(token)){
+            response.setErrorCode(10004);
+        }
+        try{
+            Map map =new HashMap();
+            map.put("jobId",request.getJobId());
+            map.put("matchUserId", request.getMatchUserId());
+            jobMatchLogService.addNewMatchJobLog(map);
+        }catch (Exception ex){
+            response.setErrorCode(10011);
+            return response;
+        }
         return response;
     }
 }

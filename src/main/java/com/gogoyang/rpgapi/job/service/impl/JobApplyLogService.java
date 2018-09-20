@@ -19,7 +19,7 @@ public class JobApplyLogService implements IJobApplyLogService {
 
     @Override
     public boolean isApplied(Integer userId) {
-        List<JobApplyLog> jobApplyLog = jobApplyLogDao.findByApplyUserIdAndResultIsNull(userId);
+        List<JobApplyLog> jobApplyLog = jobApplyLogDao.findAllByApplyUserIdAndResultIsNull(userId);
         if (jobApplyLog != null) {
             if (jobApplyLog.size() > 0) {
                 //the job has applied by current user already.
