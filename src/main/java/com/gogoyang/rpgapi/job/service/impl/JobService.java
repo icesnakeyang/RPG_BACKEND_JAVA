@@ -121,6 +121,12 @@ public class JobService implements IJobService {
                 request.getPageSize(), sort);
 
         Page<Job> jobPage=jobDao.findAllByMatchLogIdIsNull(pageable);
+        for(int i=0;i<jobPage.getContent().size();i++){
+            User user=userDao.findByUserId(jobPage.getContent().get(i).getCreatedUserId());
+            if(user!=null){
+                jobPage.getContent().get(i).setCreatedUserName(user.getUsername());
+            }
+        }
         return jobPage;
     }
 }
