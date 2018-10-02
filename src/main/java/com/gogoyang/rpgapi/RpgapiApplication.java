@@ -26,7 +26,7 @@ public class RpgapiApplication extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authCheckInterceptor)
-                .addPathPatterns("/task/create");
+                .addPathPatterns("/**");
         super.addInterceptors(registry);
     }
 

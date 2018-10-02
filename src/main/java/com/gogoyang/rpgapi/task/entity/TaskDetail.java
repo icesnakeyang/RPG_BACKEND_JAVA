@@ -13,6 +13,8 @@ public class TaskDetail {
     @Column(name = "detail")
     private String detail;
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public Integer getTaskId() {
         return taskId;
     }

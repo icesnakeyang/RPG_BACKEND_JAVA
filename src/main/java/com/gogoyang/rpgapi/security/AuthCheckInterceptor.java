@@ -1,8 +1,6 @@
 package com.gogoyang.rpgapi.security;
 
-import com.gogoyang.rpgapi.user.dao.UserDao;
-import com.gogoyang.rpgapi.user.entity.User;
-import org.apache.commons.lang.StringUtils;
+import com.gogoyang.rpgapi.user.userInfo.dao.UserInfoDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -13,24 +11,27 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthCheckInterceptor implements HandlerInterceptor {
-    private final UserDao userDao;
+    private final UserInfoDao userInfoDao;
 
     @Autowired
-    public AuthCheckInterceptor(UserDao userDao) {
-        this.userDao = userDao;
+    public AuthCheckInterceptor(UserInfoDao userInfoDao) {
+        this.userInfoDao = userInfoDao;
     }
+
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String token=httpServletRequest.getHeader("token");
-        if(StringUtils.isEmpty(token)){
-            throw new Exception("No token in header");
+//        if(StringUtils.isEmpty(token)){
+//            throw new Exception("No token in header");
+//        }
+//        User user=userDao.findByToken(token);
+//        if(user==null){
+//            throw new Exception("Token error");
+//        }
+        if(token!=null) {
+            AccessContext.setToken(token);
         }
-        User user=userDao.findByToken(token);
-        if(user==null){
-            throw new Exception("Token error");
-        }
-        AccessContext.setToken(token);
         return true;
     }
 

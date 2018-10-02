@@ -23,11 +23,20 @@ public class Task {
 
     private String code;
 
+    /**
+     * createdUserName从userInfo表里读取，
+     * 如果用户有realName，则为realName
+     * 如果没有realName则为email，
+     * 如果没有email，则为phone
+     * 如果没有phone，则为username
+     */
     @Transient
     private String createdUserName;
 
     @Transient
     private String detail;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getTaskId() {
         return taskId;

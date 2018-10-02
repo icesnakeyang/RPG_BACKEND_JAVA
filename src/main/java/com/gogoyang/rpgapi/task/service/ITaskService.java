@@ -1,12 +1,17 @@
 package com.gogoyang.rpgapi.task.service;
 
-import com.gogoyang.rpgapi.task.vo.CreateTaskRequest;
-import com.gogoyang.rpgapi.vo.Response;
+import com.gogoyang.rpgapi.task.entity.Task;
+
+import java.util.ArrayList;
 
 public interface ITaskService {
-    Response createTask(CreateTaskRequest request);
+    Task createTask(Task task) throws Exception;
 
-    Response buildTaskInfoById(Integer id);
+    void updateTask(Task task) throws Exception;
 
-    Response buildTasks(Integer id);
+    Task loadTaskByTaskId(Integer taskId) throws Exception;
+
+    ArrayList<Task> loadTaskByUserId(Integer userId) throws Exception;
+
+
 }
