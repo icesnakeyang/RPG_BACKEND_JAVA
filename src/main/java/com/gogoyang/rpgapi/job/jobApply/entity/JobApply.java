@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.job.jobApply.entity;
 
+import com.gogoyang.rpgapi.constant.LogStatus;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,7 +31,7 @@ public class JobApply {
     private Date readTime;
 
     @Column(name = "result")
-    private String result;
+    private LogStatus result;
 
     @Column(name = "process_time")
     private Date processTime;
@@ -87,14 +89,6 @@ public class JobApply {
         this.readTime = readTime;
     }
 
-    public String getResult() {
-        return result;
-    }
-
-    public void setResult(String result) {
-        this.result = result;
-    }
-
     public Date getProcessTime() {
         return processTime;
     }
@@ -109,5 +103,13 @@ public class JobApply {
 
     public void setProcessRemark(String processRemark) {
         this.processRemark = processRemark;
+    }
+
+    public LogStatus getResult() {
+        return result;
+    }
+
+    public void setResult(LogStatus result) {
+        this.result = result;
     }
 }

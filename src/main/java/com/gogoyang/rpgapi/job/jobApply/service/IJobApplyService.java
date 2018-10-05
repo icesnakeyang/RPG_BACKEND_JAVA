@@ -15,4 +15,6 @@ public interface IJobApplyService {
 
     ArrayList<JobApply> loadMyApplies(Integer userId) throws Exception;
 
+    void matchJobApply(JobApply jobApply) throws Exception;
+
 }

@@ -67,8 +67,17 @@ public class AdminService implements IAdminService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void matchJob(JobMatch jobMatch) throws Exception {
+        /**
+         * 创建一个jobMatch
+         * 搜索jobApply，把申请任务的用户的申请日志处理为已分配，MATCHED
+         */
         iJobMatchService.createJobMatch(jobMatch);
+        JobApply jobApply=new JobApply();
+        jobApply.setApplyUserId(jobMatch.getMatchUserId());
+        jobApply.setJobId(jobMatch.getJobId());
+        iJobApplyService.matchJobApply(jobApply);
     }
 
     /**
