@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.job.controller;
 
-import com.gogoyang.rpgapi.job.job.entity.Job;
+import com.gogoyang.rpgapi.constant.LogStatus;
+import com.gogoyang.rpgapi.job.ENTITY.job.Job;
 import com.gogoyang.rpgapi.job.job.vo.JobRequest;
 import com.gogoyang.rpgapi.job.jobApply.entity.JobApply;
 import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;
@@ -156,7 +157,7 @@ public class JobController {
                 return response;
             }
             //是否已成交
-            if (job.getMatch()!=null) {
+            if (job.getStatus()==LogStatus.MATCHED) {
                 response.setErrorCode(10006);
                 return response;
             }

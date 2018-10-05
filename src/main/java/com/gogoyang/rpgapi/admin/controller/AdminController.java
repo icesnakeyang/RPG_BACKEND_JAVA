@@ -5,7 +5,7 @@ import com.gogoyang.rpgapi.admin.service.IAdminService;
 import com.gogoyang.rpgapi.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.common.IRPGFunction;
 import com.gogoyang.rpgapi.constant.RoleType;
-import com.gogoyang.rpgapi.job.job.entity.Job;
+import com.gogoyang.rpgapi.job.ENTITY.job.Job;
 import com.gogoyang.rpgapi.job.job.service.IJobService;
 import com.gogoyang.rpgapi.job.jobMatch.entity.JobMatch;
 import com.gogoyang.rpgapi.user.userInfo.entity.UserInfo;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.concurrent.ExecutorCompletionService;
 
 @RestController
 @RequestMapping("/admin")

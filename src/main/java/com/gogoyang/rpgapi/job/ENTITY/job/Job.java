@@ -1,4 +1,6 @@
-package com.gogoyang.rpgapi.job.job.entity;
+package com.gogoyang.rpgapi.job.ENTITY.job;
+
+import com.gogoyang.rpgapi.constant.LogStatus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -28,6 +30,9 @@ public class Job {
     @Column(name = "created_user_id")
     private Integer createdUserId;
 
+    @Transient
+    private String partyAName;
+
     @Column(name = "created_time")
     private Date createdTime;
 
@@ -35,33 +40,42 @@ public class Job {
     private String category;
 
     @Transient
-    private String createdUserName;
-
-    @Transient
     private String detail;
 
     /**
-     * job是否已经成交
+     * job当前状态
      */
-    @Column(name = "is_match")
-    private Boolean isMatch;
+    @Column(name = "status")
+    private LogStatus status;
 
+    /**
+     * 签约时间
+     */
     @Column(name = "contract_time")
     private Date contractTime;
 
+    /**
+     * partyB id
+     */
     @Column(name = "partyb_id")
     private Integer partyBId;
 
     /**
-     * 申请的总人数
+     * 乙方的姓名
      */
     @Transient
+    private String partyBName;
+
+    /**
+     * 申请的总人数
+     */
+    @Column(name = "job_apply_num")
     private Integer jobApplyNum;
 
     /**
      * 任务被分配的人数
      */
-    @Transient
+    @Column(name = "job_match_num")
     private Integer jobMatchNum;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,14 +168,6 @@ public class Job {
         this.detail = detail;
     }
 
-    public Boolean getMatch() {
-        return isMatch;
-    }
-
-    public void setMatch(Boolean match) {
-        isMatch = match;
-    }
-
     public Integer getJobApplyNum() {
         return jobApplyNum;
     }
@@ -192,5 +198,21 @@ public class Job {
 
     public void setPartyBId(Integer partyBId) {
         this.partyBId = partyBId;
+    }
+
+    public LogStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(LogStatus status) {
+        this.status = status;
+    }
+
+    public String getPartyBName() {
+        return partyBName;
+    }
+
+    public void setPartyBName(String partyBName) {
+        this.partyBName = partyBName;
     }
 }

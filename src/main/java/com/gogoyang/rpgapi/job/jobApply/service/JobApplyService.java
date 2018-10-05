@@ -85,7 +85,7 @@ public class JobApplyService implements IJobApplyService {
     }
 
     /**
-     * load apply logs applied by userId
+     * load jobApply logs applied by userId
      *
      * @param userId
      * @return
@@ -109,7 +109,7 @@ public class JobApplyService implements IJobApplyService {
         JobApply updateJobApply = jobApplyDao.findByApplyUserIdAndJobIdAndResultIsNull(
                 jobApply.getApplyUserId(), jobApply.getJobId());
         if (updateJobApply == null) {
-            throw new Exception("error safnnxcv9872934:" + "no such job apply record");
+            throw new Exception("error safnnxcv9872934:" + "no such job jobApply record");
         }
         updateJobApply.setProcessTime(new Date());
         updateJobApply.setProcessUserId(-1);
