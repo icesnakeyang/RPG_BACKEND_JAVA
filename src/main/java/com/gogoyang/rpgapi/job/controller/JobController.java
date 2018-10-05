@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/job")
@@ -208,13 +210,18 @@ public class JobController {
 
             ArrayList<JobMatch> newMatchs = new ArrayList<JobMatch>();
             newMatchs = iJobMatchService.loadMyNewJobMatch(userInfo.getUserId());
-            ArrayList<Job> newJobs = new ArrayList<Job>();
+            ArrayList newJobs = new ArrayList();
             for (int i = 0; i < newMatchs.size(); i++) {
+                Map map=new HashMap();
                 Job job = iJobService.loadJobByJobIdTiny(newMatchs.get(i).getJobId());
-                job.setCreatedUserName(iUserInfoService.getUserName(job.getCreatedUserId()));
-                job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
-                job.setJobMatchNum(iJobMatchService.countMatchingUsers(job.getJobId()));
-                newJobs.add(job);
+                if(job!=null) {
+                    map.put("match", newMatchs.get(i));
+                    job.setCreatedUserName(iUserInfoService.getUserName(job.getCreatedUserId()));
+                    job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
+                    job.setJobMatchNum(iJobMatchService.countMatchingUsers(job.getJobId()));
+                    map.put("job", job);
+                    newJobs.add(map);
+                }
             }
             response.setData(newJobs);
         } catch (Exception ex) {
