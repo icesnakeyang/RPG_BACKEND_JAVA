@@ -145,7 +145,11 @@ public class JobController {
 
             //check token
             String token = httpServletRequest.getHeader("token");
-            AspectVariable.setToken(token);
+            UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+            if(userInfo==null){
+                response.setErrorCode(10004);
+                return response;
+            }
 
             //check job
             Job job = iJobService.loadJobByJobId(request.getJobId());

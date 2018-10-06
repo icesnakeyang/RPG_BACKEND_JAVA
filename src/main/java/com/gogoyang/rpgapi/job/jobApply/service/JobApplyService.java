@@ -43,7 +43,6 @@ public class JobApplyService implements IJobApplyService {
      * @throws Exception
      */
     @Override
-    @SignedUser
     @Transactional(rollbackOn = Exception.class)
     public void createJobApply(JobApply jobApply) throws Exception {
         jobApplyDao.save(jobApply);
