@@ -1,10 +1,7 @@
 package com.gogoyang.rpgapi.job.controller;
 
-import com.gogoyang.rpgapi.aop.AspectVariable;
-import com.gogoyang.rpgapi.aop.Secretary;
-import com.gogoyang.rpgapi.aop.SignedUser;
 import com.gogoyang.rpgapi.constant.LogStatus;
-import com.gogoyang.rpgapi.job.ENTITY.job.Job;
+import com.gogoyang.rpgapi.job.job.entity.Job;
 import com.gogoyang.rpgapi.job.job.vo.JobRequest;
 import com.gogoyang.rpgapi.job.jobApply.entity.JobApply;
 import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;

@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.job.job.service;
 
-import com.gogoyang.rpgapi.job.UI_ADAPTER.dao.JobDao;
-import com.gogoyang.rpgapi.job.ENTITY.job.Job;
+import com.gogoyang.rpgapi.job.job.dao.JobDao;
+import com.gogoyang.rpgapi.job.job.entity.Job;
 import com.gogoyang.rpgapi.job.jobApply.entity.JobApply;
 import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;
 import com.gogoyang.rpgapi.job.jobMatch.service.IJobMatchService;

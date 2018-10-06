@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.job.LOGICAL;
+package com.gogoyang.rpgapi.job.business.jobDetail;
 
 import java.util.Map;
 
@@ -7,14 +7,14 @@ import java.util.Map;
  * author：liuyang
  * 2018-10-5
  */
-public interface IJobDetailPage {
+public interface IJobDetail {
     /**
      * 读取job的详情信息
-     * @param jobId
+     * @param in
      * @return
      * @throws Exception
      */
-    Map loadJobDetail(Integer jobId) throws Exception;
+    Map loadJobDetail(Map in) throws Exception;
 
     /**
      * 用户申请该job
@@ -22,4 +22,8 @@ public interface IJobDetailPage {
      * @throws Exception
      */
     void applyJob(Map in) throws Exception;
+
+    void agreeMatch(Map in) throws Exception;
+
+    void rejectMatch(Map in) throws Exception;
 }

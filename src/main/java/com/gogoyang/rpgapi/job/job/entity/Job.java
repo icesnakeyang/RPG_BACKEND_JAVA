@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.job.ENTITY.job;
+package com.gogoyang.rpgapi.job.job.entity;
 
 import com.gogoyang.rpgapi.constant.LogStatus;
 

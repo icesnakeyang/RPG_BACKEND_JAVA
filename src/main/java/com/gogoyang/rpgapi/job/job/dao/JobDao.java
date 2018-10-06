@@ -1,7 +1,7 @@
-package com.gogoyang.rpgapi.job.UI_ADAPTER.dao;
+package com.gogoyang.rpgapi.job.job.dao;
 
 
-import com.gogoyang.rpgapi.job.ENTITY.job.Job;
+import com.gogoyang.rpgapi.job.job.entity.Job;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

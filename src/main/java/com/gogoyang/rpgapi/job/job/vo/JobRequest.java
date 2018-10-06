@@ -1,6 +1,6 @@
 package com.gogoyang.rpgapi.job.job.vo;
 
-import com.gogoyang.rpgapi.job.ENTITY.job.Job;
+import com.gogoyang.rpgapi.job.job.entity.Job;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.gogoyang.rpgapi.job.job.service;
 
-import com.gogoyang.rpgapi.job.ENTITY.job.Job;
+import com.gogoyang.rpgapi.job.job.entity.Job;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;

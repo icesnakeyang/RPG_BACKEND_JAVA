@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.job.LOGICAL;
+package com.gogoyang.rpgapi.job.business.jobDetail;
 
 import com.gogoyang.rpgapi.job.job.service.IJobService;
 import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;
@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class JobDetailPageService implements IJobDetailPage{
+public class JobDetailService implements IJobDetail {
     private IJobService iJobService;
     private IUserInfoService iUserInfoService;
     private ITaskService iTaskService;
     private IJobApplyService iJobApplyService;
     @Override
-    public Map loadJobDetail(Integer jobId) throws Exception {
+    public Map loadJobDetail(Map in) throws Exception {
         //todo
         /**
          * load data from IJobService, IUserInfoService, ITaskService
@@ -58,5 +58,15 @@ public class JobDetailPageService implements IJobDetailPage{
          * jobApply.applyUserId=userId
          * jobApply.applyRemark=remark
          */
+    }
+
+    @Override
+    public void agreeMatch(Map in) throws Exception {
+
+    }
+
+    @Override
+    public void rejectMatch(Map in) throws Exception {
+
     }
 }
