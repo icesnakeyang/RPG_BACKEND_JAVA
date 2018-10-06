@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.job.jobApply.service;
 
+import com.gogoyang.rpgapi.admin.entity.Admin;
+import com.gogoyang.rpgapi.aop.SignedUser;
 import com.gogoyang.rpgapi.constant.LogStatus;
 import com.gogoyang.rpgapi.job.jobApply.dao.JobApplyDao;
 import com.gogoyang.rpgapi.job.jobApply.entity.JobApply;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class JobApplyService implements IJobApplyService {
@@ -40,6 +43,7 @@ public class JobApplyService implements IJobApplyService {
      * @throws Exception
      */
     @Override
+    @SignedUser
     @Transactional(rollbackOn = Exception.class)
     public void createJobApply(JobApply jobApply) throws Exception {
         jobApplyDao.save(jobApply);

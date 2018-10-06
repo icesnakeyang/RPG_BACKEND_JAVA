@@ -1,5 +1,8 @@
 package com.gogoyang.rpgapi.job.controller;
 
+import com.gogoyang.rpgapi.aop.AspectVariable;
+import com.gogoyang.rpgapi.aop.Secretary;
+import com.gogoyang.rpgapi.aop.SignedUser;
 import com.gogoyang.rpgapi.constant.LogStatus;
 import com.gogoyang.rpgapi.job.ENTITY.job.Job;
 import com.gogoyang.rpgapi.job.job.vo.JobRequest;
@@ -142,13 +145,7 @@ public class JobController {
 
             //check token
             String token = httpServletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.checkToken(token);
-
-            if (userInfo == null) {
-                //no token in header
-                response.setErrorCode(10004);
-                return response;
-            }
+            AspectVariable.setToken(token);
 
             //check job
             Job job = iJobService.loadJobByJobId(request.getJobId());
@@ -217,7 +214,7 @@ public class JobController {
                 Job job = iJobService.loadJobByJobIdTiny(newMatchs.get(i).getJobId());
                 if(job!=null) {
                     map.put("match", newMatchs.get(i));
-                    job.setCreatedUserName(iUserInfoService.getUserName(job.getCreatedUserId()));
+                    job.setPartyAName(iUserInfoService.getUserName(job.getCreatedUserId()));
                     job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
                     job.setJobMatchNum(iJobMatchService.countMatchingUsers(job.getJobId()));
                     map.put("job", job);

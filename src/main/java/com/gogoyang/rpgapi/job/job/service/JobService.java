@@ -78,7 +78,7 @@ class JobService implements IJobService {
         Job job = jobDao.findByJobId(jobId);
 
         UserInfo userInfo = iUserInfoService.loadUserByUserId(job.getCreatedUserId());
-        job.setCreatedUserName(iUserInfoService.getUserName(userInfo.getUserId()));
+        job.setPartyAName(iUserInfoService.getUserName(userInfo.getUserId()));
 
         Task task = iTaskService.loadTaskByTaskId(job.getTaskId());
         job.setDetail(task.getDetail());
@@ -111,10 +111,10 @@ class JobService implements IJobService {
     public Page<Job> loadJobUnMatch(Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByIsMatchIsNull(pageable);
+        Page<Job> jobs = jobDao.findAllByStatusIsNull(pageable);
 
         for (int i = 0; i < jobs.getContent().size(); i++) {
-            jobs.getContent().get(i).setCreatedUserName(
+            jobs.getContent().get(i).setPartyAName(
                     iUserInfoService.getUserName(
                             jobs.getContent().get(i).getCreatedUserId())
             );
@@ -139,14 +139,14 @@ class JobService implements IJobService {
          */
         Sort sort = new Sort(Sort.Direction.ASC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByIsMatchIsNull(pageable);
+        Page<Job> jobs = jobDao.findAllByStatusIsNull(pageable);
 
         ArrayList<Job> jobsOut = new ArrayList<Job>();
         for (int i = 0; i < jobs.getContent().size(); i++) {
             ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(
                     jobs.getContent().get(i).getJobId());
             if (jobApplies.size() > 0) {
-                jobs.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
+                jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
                         jobs.getContent().get(i).getCreatedUserId()));
                 jobs.getContent().get(i).setJobApplyNum(iJobMatchService.countMatchingUsers(
                         jobs.getContent().get(i).getJobId()));
@@ -173,7 +173,7 @@ class JobService implements IJobService {
         for (int i = 0; i < myApplyList.size(); i++) {
             Job job = jobDao.findByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
-                job.setCreatedUserName(iUserInfoService.getUserName(job.getCreatedUserId()));
+                job.setPartyAName(iUserInfoService.getUserName(job.getCreatedUserId()));
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
                 Integer matchNum = iJobMatchService.countMatchingUsers(job.getJobId());
                 Map theMap = new HashMap();

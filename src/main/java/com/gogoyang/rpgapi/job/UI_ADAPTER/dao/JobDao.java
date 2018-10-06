@@ -10,5 +10,5 @@ public interface JobDao extends JpaRepository<Job, Integer>{
 //    List findAllByCategory(String category);
     Job findByJobId(Integer jobId);
 
-    Page<Job> findAllByIsMatchIsNull(Pageable pageable);
+    Page<Job> findAllByStatusIsNull(Pageable pageable);
 }

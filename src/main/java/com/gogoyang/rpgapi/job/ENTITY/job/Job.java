@@ -152,12 +152,12 @@ public class Job {
         this.category = category;
     }
 
-    public String getCreatedUserName() {
-        return createdUserName;
+    public String getPartyAName() {
+        return partyAName;
     }
 
-    public void setCreatedUserName(String createdUserName) {
-        this.createdUserName = createdUserName;
+    public void setPartyAName(String partyAName) {
+        this.partyAName = partyAName;
     }
 
     public String getDetail() {
