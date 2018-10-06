@@ -1,6 +1,6 @@
 package com.gogoyang.rpgapi.job.business.log;
 
-import com.gogoyang.rpgapi.job.jobLog.entity.JobLog;
+import com.gogoyang.rpgapi.job.meta.jobLog.entity.JobLog;
 
 import java.util.ArrayList;
 import java.util.Map;

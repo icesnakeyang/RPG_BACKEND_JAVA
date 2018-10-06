@@ -1,8 +1,7 @@
 package com.gogoyang.rpgapi.user.userInfo.service;
 
 import com.gogoyang.rpgapi.common.IRPGFunction;
-import com.gogoyang.rpgapi.job.jobApply.entity.JobApply;
-import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;
+import com.gogoyang.rpgapi.job.meta.jobApply.service.IJobApplyService;
 import com.gogoyang.rpgapi.user.email.entity.Email;
 import com.gogoyang.rpgapi.user.email.service.IEmailService;
 import com.gogoyang.rpgapi.user.phone.entity.Phone;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 

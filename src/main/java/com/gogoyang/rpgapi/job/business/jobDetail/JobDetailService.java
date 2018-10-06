@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.job.business.jobDetail;
 
-import com.gogoyang.rpgapi.job.job.service.IJobService;
-import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;
+import com.gogoyang.rpgapi.job.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.job.meta.jobApply.service.IJobApplyService;
 import com.gogoyang.rpgapi.task.service.ITaskService;
 import com.gogoyang.rpgapi.user.userInfo.service.IUserInfoService;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,15 @@
 package com.gogoyang.rpgapi.job.controller;
 
+import com.gogoyang.rpgapi.constant.JobStatus;
 import com.gogoyang.rpgapi.constant.LogStatus;
-import com.gogoyang.rpgapi.job.job.entity.Job;
-import com.gogoyang.rpgapi.job.job.vo.JobRequest;
-import com.gogoyang.rpgapi.job.jobApply.entity.JobApply;
-import com.gogoyang.rpgapi.job.jobApply.service.IJobApplyService;
-import com.gogoyang.rpgapi.job.jobApply.vo.JobApplyRequest;
-import com.gogoyang.rpgapi.job.jobMatch.entity.JobMatch;
-import com.gogoyang.rpgapi.job.jobMatch.service.IJobMatchService;
-import com.gogoyang.rpgapi.job.job.service.IJobService;
+import com.gogoyang.rpgapi.job.meta.job.entity.Job;
+import com.gogoyang.rpgapi.job.meta.job.vo.JobRequest;
+import com.gogoyang.rpgapi.job.meta.jobApply.entity.JobApply;
+import com.gogoyang.rpgapi.job.meta.jobApply.service.IJobApplyService;
+import com.gogoyang.rpgapi.job.meta.jobApply.vo.JobApplyRequest;
+import com.gogoyang.rpgapi.job.meta.jobMatch.entity.JobMatch;
+import com.gogoyang.rpgapi.job.meta.jobMatch.service.IJobMatchService;
+import com.gogoyang.rpgapi.job.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.user.userInfo.service.IUserInfoService;
 import com.gogoyang.rpgapi.vo.Response;
@@ -155,7 +156,7 @@ public class JobController {
                 return response;
             }
             //是否已成交
-            if (job.getStatus()==LogStatus.MATCHED) {
+            if (job.getStatus().ordinal()!=JobStatus.MATCHING.ordinal()) {
                 response.setErrorCode(10006);
                 return response;
             }
