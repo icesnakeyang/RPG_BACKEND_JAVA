@@ -40,6 +40,9 @@ public class Job {
     @Column(name = "category")
     private String category;
 
+    /**
+     * 任务详情保存在jobDetail表里
+     */
     @Transient
     private String detail;
 

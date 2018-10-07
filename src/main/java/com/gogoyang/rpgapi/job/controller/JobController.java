@@ -41,39 +41,6 @@ public class JobController {
     }
 
     /**
-     * 用户发布一条新任务
-     * User publish a new job
-     *
-     * @param request
-     * @param servletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/publish")
-    public Response CreateJob(@RequestBody JobRequest request,
-                              HttpServletRequest servletRequest) {
-        Response response = new Response();
-        try {
-            String token = servletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.checkToken(token);
-
-            Job job = request.toJob();
-            job.setCreatedUserId(userInfo.getUserId());
-            job = iJobService.createJob(job);
-            response.setData(job);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10032);
-                return response;
-            }
-        }
-        return response;
-    }
-
-    /**
      * 在任务广场显示一批目前正在等待交易的任务
      * read unassigned jobs to display in job plaza
      *

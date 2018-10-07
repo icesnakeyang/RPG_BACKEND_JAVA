@@ -1,7 +1,9 @@
 package com.gogoyang.rpgapi.job.meta.job.service;
 
 import com.gogoyang.rpgapi.job.meta.job.dao.JobDao;
+import com.gogoyang.rpgapi.job.meta.job.dao.JobDetailDao;
 import com.gogoyang.rpgapi.job.meta.job.entity.Job;
+import com.gogoyang.rpgapi.job.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.job.meta.jobApply.entity.JobApply;
 import com.gogoyang.rpgapi.job.meta.jobApply.service.IJobApplyService;
 import com.gogoyang.rpgapi.job.meta.jobMatch.service.IJobMatchService;
@@ -29,14 +31,16 @@ class JobService implements IJobService {
     private final ITaskService iTaskService;
     private final IJobApplyService iJobApplyService;
     private final IJobMatchService iJobMatchService;
+    private final JobDetailDao jobDetailDao;
 
     @Autowired
-    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService, IJobApplyService iJobApplyService, IJobMatchService iJobMatchService) {
+    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService, IJobApplyService iJobApplyService, IJobMatchService iJobMatchService, JobDetailDao jobDetailDao) {
         this.jobDao = jobDao;
         this.iUserInfoService = iUserInfoService;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
         this.iJobMatchService = iJobMatchService;
+        this.jobDetailDao = jobDetailDao;
     }
 
     /**
@@ -48,20 +52,21 @@ class JobService implements IJobService {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Job createJob(Job job) throws Exception {
-        /**
-         * 1、新增一个job
-         * 2、把job复制给task，保存
-         */
+    public Job insertJob(Job job) throws Exception {
+        //确保jobId为null，否则为修改
+        if(job.getJobId()!=null){
+            throw new Exception("10032");
+        }
+        if(job.getTitle()==null){
+            throw new Exception("10032");
+        }
         job = jobDao.save(job);
 
-        Task task = new Task();
-        task.setTaskId(job.getTaskId());
-        task.setDetail(job.getDetail());
-        task.setDays(job.getDays());
-        task.setCode(job.getCode());
-        task.setTitle(job.getTitle());
-        iTaskService.updateTask(task);
+        //保存jobDetail表
+        JobDetail jobDetail=new JobDetail();
+        jobDetail.setJobId(job.getJobId());
+        jobDetail.setDetail(job.getDetail());
+        jobDetailDao.save(jobDetail);
 
         return job;
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 public interface IJobService {
-    Job createJob(Job job) throws Exception;
+    Job insertJob(Job job) throws Exception;
 
     Job loadJobByJobId(Integer jobId) throws Exception;
 

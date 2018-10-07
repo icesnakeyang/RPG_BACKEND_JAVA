@@ -55,7 +55,7 @@ public class MyNewJobService implements IMyNewJobService{
         job.setStatus(JobStatus.PROGRESS);
         job.setContractTime(new Date());
         job.setPartyBId(userId);
-        iJobService.createJob(job);
+        iJobService.updateJob(job);
 
         ArrayList<JobApply> jobApplies=iJobApplyService.loadJobApplyByJobId(jobMatch.getJobId());
         for(int i=0;i<jobApplies.size();i++){
