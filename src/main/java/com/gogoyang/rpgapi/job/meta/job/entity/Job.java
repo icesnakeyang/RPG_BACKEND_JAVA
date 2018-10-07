@@ -25,11 +25,11 @@ public class Job {
     @Column(name = "days")
     private Integer days;
 
-    @Column(name = "reward")
-    private Double reward;
+    @Column(name = "price")
+    private Double price;
 
-    @Column(name = "created_user_id")
-    private Integer createdUserId;
+    @Column(name = "partya_id")
+    private Integer partyAId;
 
     @Transient
     private String partyAName;
@@ -58,6 +58,9 @@ public class Job {
     @Column(name = "contract_time")
     private Date contractTime;
 
+    @Column(name = "match_id")
+    private Integer matchId;
+
     /**
      * partyB id
      */
@@ -81,6 +84,9 @@ public class Job {
      */
     @Column(name = "job_match_num")
     private Integer jobMatchNum;
+
+    @Column(name = "account_balance")
+    private Double accountBalance;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,22 +128,6 @@ public class Job {
 
     public void setDays(Integer days) {
         this.days = days;
-    }
-
-    public Double getReward() {
-        return reward;
-    }
-
-    public void setReward(Double reward) {
-        this.reward = reward;
-    }
-
-    public Integer getCreatedUserId() {
-        return createdUserId;
-    }
-
-    public void setCreatedUserId(Integer createdUserId) {
-        this.createdUserId = createdUserId;
     }
 
     public Date getCreatedTime() {
@@ -218,5 +208,37 @@ public class Job {
 
     public void setPartyBName(String partyBName) {
         this.partyBName = partyBName;
+    }
+
+    public Double getAccountBalance() {
+        return accountBalance;
+    }
+
+    public void setAccountBalance(Double accountBalance) {
+        this.accountBalance = accountBalance;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Integer getPartyAId() {
+        return partyAId;
+    }
+
+    public void setPartyAId(Integer partyAId) {
+        this.partyAId = partyAId;
+    }
+
+    public Integer getMatchId() {
+        return matchId;
+    }
+
+    public void setMatchId(Integer matchId) {
+        this.matchId = matchId;
     }
 }

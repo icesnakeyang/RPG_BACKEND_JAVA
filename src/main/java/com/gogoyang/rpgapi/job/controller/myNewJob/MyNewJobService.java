@@ -38,26 +38,29 @@ public class MyNewJobService implements IMyNewJobService{
     @Transactional(rollbackOn = Exception.class)
     public void acceptNewJob(Map in) throws Exception {
         /**
+         * 参数：jobId, userId
          * 修改jobMatch
          * 修改job
          * 修改其他用户的jobApply
          * 修改其他用户的jobMatch
+         * 把任务金额转到乙方账户，乙方账户增加price
          */
-        Integer jobMatchId=(Integer)in.get("jobMatchId");
+        Integer jobId=(Integer)in.get("jobId");
         Integer userId=(Integer)in.get("userId");
 
-        JobMatch jobMatch=iJobMatchService.loadJobMatchByJobMatchId(jobMatchId);
+        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(userId, jobId);
         jobMatch.setProcessResult(LogStatus.ACCEPT);
         jobMatch.setProcessTime(new Date());
         iJobMatchService.updateJobMatch(jobMatch);
 
-        Job job=iJobService.loadJobByJobIdTiny(jobMatch.getJobId());
+        Job job=iJobService.loadJobByJobIdTiny(jobId);
         job.setStatus(JobStatus.PROGRESS);
         job.setContractTime(new Date());
         job.setPartyBId(userId);
+        job.setMatchId(jobMatch.getJobMatchId());
         iJobService.updateJob(job);
 
-        ArrayList<JobApply> jobApplies=iJobApplyService.loadJobApplyByJobId(jobMatch.getJobId());
+        ArrayList<JobApply> jobApplies=iJobApplyService.loadJobApplyByJobId(jobId);
         for(int i=0;i<jobApplies.size();i++){
             if(jobApplies.get(i).getApplyUserId()!=userId) {
                 jobApplies.get(i).setProcessTime(new Date());
@@ -67,7 +70,7 @@ public class MyNewJobService implements IMyNewJobService{
             }
         }
 
-        ArrayList<JobMatch> jobMatches=iJobMatchService.loadJobMatchByJobId(jobMatch.getJobId());
+        ArrayList<JobMatch> jobMatches=iJobMatchService.loadJobMatchByJobId(jobId);
         for(int i=0;i<jobMatches.size();i++){
             if(jobMatches.get(i).getMatchUserId()!=userId){
                 jobMatches.get(i).setProcessTime(new Date());

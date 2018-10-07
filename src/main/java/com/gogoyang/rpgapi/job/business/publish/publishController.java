@@ -40,11 +40,11 @@ public class publishController {
 
             Map in = new HashMap();
 
-            in.put("userId", request.getUserId());
+            in.put("userId", userInfo.getUserId());
             in.put("code", request.getCode());
             in.put("days", request.getDays());
             in.put("detail", request.getJobDetail());
-            in.put("price", request.getReward());
+            in.put("price", request.getPrice());
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
 

@@ -1,6 +1,8 @@
 package com.gogoyang.rpgapi.job.controller.myNewJob;
 
 import com.gogoyang.rpgapi.job.meta.job.vo.JobRequest;
+import com.gogoyang.rpgapi.user.userInfo.entity.UserInfo;
+import com.gogoyang.rpgapi.user.userInfo.service.IUserInfoService;
 import com.gogoyang.rpgapi.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +15,12 @@ import java.util.Map;
 @RequestMapping("/job")
 public class myNewJobController {
     private final IMyNewJobService iMyNewJobService;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public myNewJobController(IMyNewJobService iMyNewJobService) {
+    public myNewJobController(IMyNewJobService iMyNewJobService, IUserInfoService iUserInfoService) {
         this.iMyNewJobService = iMyNewJobService;
+        this.iUserInfoService = iUserInfoService;
     }
 
     /**
@@ -32,9 +36,15 @@ public class myNewJobController {
                                  HttpServletRequest httpServletRequest){
         Response response=new Response();
         try {
+            String token=httpServletRequest.getHeader("token");
+            UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+            if(userInfo==null){
+                response.setErrorCode(10004);
+                return response;
+            }
             Map in=new HashMap();
-            in.put("jobMatchId", request.getJobMatchId());
-            in.put("userId", request.getUserId());
+            in.put("jobId", request.getJobId());
+            in.put("userId", userInfo.getUserId());
             iMyNewJobService.acceptNewJob(in);
         }catch (Exception ex){
             try {

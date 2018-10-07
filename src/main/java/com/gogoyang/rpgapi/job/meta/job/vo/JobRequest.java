@@ -1,11 +1,8 @@
 package com.gogoyang.rpgapi.job.meta.job.vo;
 
-import com.gogoyang.rpgapi.job.meta.job.entity.Job;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -15,29 +12,11 @@ public class JobRequest {
     private Integer taskId;
     private String title;
     private Integer days;
-    private Double reward;
-    private Integer createdUserId;
-    private String category;
+    private Double price;
     private String jobDetail;
     private Integer jobMatchId;
     private Integer userId;
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public Job toJob(){
-        Job job=new Job();
-        job.setCategory(category);
-        job.setCode(code);
-        job.setCreatedTime(new Date());
-        job.setCreatedUserId(createdUserId);
-        job.setDays(days);
-        job.setDetail(jobDetail);
-        job.setTaskId(taskId);
-        job.setReward(reward);
-        job.setTitle(title);
-
-        return job;
-    }
+    private Integer jobId;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,28 +52,12 @@ public class JobRequest {
         this.days = days;
     }
 
-    public Double getReward() {
-        return reward;
+    public Double getPrice() {
+        return price;
     }
 
-    public void setReward(Double reward) {
-        this.reward = reward;
-    }
-
-    public Integer getCreatedUserId() {
-        return createdUserId;
-    }
-
-    public void setCreatedUserId(Integer createdUserId) {
-        this.createdUserId = createdUserId;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public String getJobDetail() {
@@ -119,5 +82,13 @@ public class JobRequest {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
     }
 }

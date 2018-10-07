@@ -82,7 +82,7 @@ class JobService implements IJobService {
     public Job loadJobByJobId(Integer jobId) throws Exception {
         Job job = jobDao.findByJobId(jobId);
 
-        UserInfo userInfo = iUserInfoService.loadUserByUserId(job.getCreatedUserId());
+        UserInfo userInfo = iUserInfoService.loadUserByUserId(job.getPartyAId());
         job.setPartyAName(iUserInfoService.getUserName(userInfo.getUserId()));
 
         Task task = iTaskService.loadTaskByTaskId(job.getTaskId());
@@ -121,7 +121,7 @@ class JobService implements IJobService {
         for (int i = 0; i < jobs.getContent().size(); i++) {
             jobs.getContent().get(i).setPartyAName(
                     iUserInfoService.getUserName(
-                            jobs.getContent().get(i).getCreatedUserId())
+                            jobs.getContent().get(i).getPartyAId())
             );
         }
 
@@ -152,7 +152,7 @@ class JobService implements IJobService {
                     jobs.getContent().get(i).getJobId());
             if (jobApplies.size() > 0) {
                 jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
-                        jobs.getContent().get(i).getCreatedUserId()));
+                        jobs.getContent().get(i).getPartyAId()));
                 jobs.getContent().get(i).setJobApplyNum(iJobMatchService.countMatchingUsers(
                         jobs.getContent().get(i).getJobId()));
                 jobs.getContent().get(i).setJobApplyNum(iJobApplyService.countApplyUsers(
@@ -178,7 +178,7 @@ class JobService implements IJobService {
         for (int i = 0; i < myApplyList.size(); i++) {
             Job job = jobDao.findByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
-                job.setPartyAName(iUserInfoService.getUserName(job.getCreatedUserId()));
+                job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
                 Integer matchNum = iJobMatchService.countMatchingUsers(job.getJobId());
                 Map theMap = new HashMap();

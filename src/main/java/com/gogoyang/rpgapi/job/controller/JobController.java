@@ -128,7 +128,7 @@ public class JobController {
                 return response;
             }
             //检查用户是否为甲方
-            if(job.getCreatedUserId()==userInfo.getUserId()){
+            if(job.getPartyAId()==userInfo.getUserId()){
                 response.setErrorCode(10037);
                 return response;
             }
@@ -183,7 +183,7 @@ public class JobController {
                 Job job = iJobService.loadJobByJobIdTiny(newMatchs.get(i).getJobId());
                 if(job!=null) {
                     map.put("match", newMatchs.get(i));
-                    job.setPartyAName(iUserInfoService.getUserName(job.getCreatedUserId()));
+                    job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
                     job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
                     job.setJobMatchNum(iJobMatchService.countMatchingUsers(job.getJobId()));
                     map.put("job", job);
