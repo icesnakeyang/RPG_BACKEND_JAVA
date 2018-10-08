@@ -6,4 +6,6 @@ import java.util.Map;
 
 public interface IAdminBusinessService {
     Map createRootAdmin(Map in) throws Exception;
+    Map createSuperAdmin(Map in) throws Exception;
+    Map createNewAdmin(Map in) throws Exception;
 }

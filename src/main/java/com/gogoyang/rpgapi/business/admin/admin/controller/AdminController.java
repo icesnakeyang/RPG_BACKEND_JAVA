@@ -1,11 +1,13 @@
 package com.gogoyang.rpgapi.business.admin.admin.controller;
 
+import com.gogoyang.rpgapi.business.admin.admin.service.IAdminBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,16 +18,18 @@ import java.util.*;
 @RequestMapping("/admin")
 public class AdminController {
     private final IRPGFunction irpgFunction;
-    private final IAdminService iAdminService;
+    private final IAdminBusinessService iAdminBusinessService;
 
     @Autowired
-    public AdminController(IRPGFunction irpgFunction, IAdminService iAdminService) {
+    public AdminController(IRPGFunction irpgFunction, IAdminService iAdminService, IAdminBusinessService iAdminBusinessService) {
         this.irpgFunction = irpgFunction;
         this.iAdminService = iAdminService;
+        this.iAdminBusinessService = iAdminBusinessService;
     }
 
     /**
      * 创建一个根用户
+     * create root admin user
      *
      * @param httpServletRequest
      * @return
@@ -43,27 +47,29 @@ public class AdminController {
                 response.setErrorMsg("Don't call me Daddy");
                 return response;
             }
-
-
-            response.setData(rootAdmin);
+            Map in = new HashMap();
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+            in.put("roleType", RoleType.ROOT_ADMIN);
+            Map out = iAdminBusinessService.createRootAdmin(in);
+            response.setData(out);
         } catch (Exception ex) {
             response.setErrorMsg(ex.getMessage());
             return response;
         }
-
         return response;
     }
 
     /**
-     * 创建一个Admin用户
+     * 创建一个superAdmin用户
      *
      * @param request
      * @param httpServletRequest
      * @return
      */
     @ResponseBody
-    @PostMapping("/create")
-    Response createAdmin(@RequestBody AdminRequest request,
+    @PostMapping("/create/super")
+    Response createSuperAdmin(@RequestBody AdminRequest request,
                          HttpServletRequest httpServletRequest) {
 
         Response response = new Response();
@@ -88,51 +94,21 @@ public class AdminController {
          * 7. set response.data=admin
          *
          */
-        String loginName = request.getLoginName();
-        String password = request.getPassword();
-        if (loginName == null) {
-            response.setErrorCode(10017);
-            return response;
-        }
-
         try {
-            Admin admin = iAdminService.loadAdminByLoginName(loginName);
-            if (admin != null) {
-                response.setErrorCode(10016);
-                return response;
-            }
-            String token = httpServletRequest.getHeader("token");
-            Admin superAdmin = iAdminService.loadAdminByToken(token);
-            if (superAdmin == null) {
-                response.setErrorCode(10004);
-                return response;
-            }
-            if (!(superAdmin.getRoleType().ordinal() < request.getRoleType().ordinal())) {
-                response.setErrorCode(10008);
-                return response;
-            }
-            //enum less, authority more high
-            Admin newAdmin = new Admin();
-            newAdmin.setCreatedTime(new Date());
-            newAdmin.setLoginName(request.getLoginName());
-            newAdmin.setPassword(request.getPassword());
-            newAdmin.setPassword(irpgFunction.encoderByMd5(newAdmin.getPassword()));
-            newAdmin.setRoleType(request.getRoleType());
-            newAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
-            newAdmin = iAdminService.createAdmin(newAdmin);
-
-            response.setData(newAdmin);
-
+            String loginName = request.getLoginName();
+            String password = request.getPassword();
+            Map in = new HashMap();
+            Map out = iAdminBusinessService.createSuperAdmin(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                response.setErrorCode((Integer.parseInt(ex.getMessage())));
                 return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10026);
+                response.setErrorCode(10017);
                 return response;
             }
         }
-
         return response;
     }
 
@@ -190,27 +166,27 @@ public class AdminController {
             if (admin.getRoleType().ordinal() < RoleType.SECRETARY.ordinal()) {
                 ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SECRETARY);
                 if (list.size() > 0) {
-                    Map map=new HashMap();
-                    map.put("role",RoleType.SECRETARY);
-                    map.put("admin",list);
+                    Map map = new HashMap();
+                    map.put("role", RoleType.SECRETARY);
+                    map.put("admin", list);
                     out.add(map);
                 }
             }
             if (admin.getRoleType().ordinal() < RoleType.ADMINISTRATOR.ordinal()) {
                 ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.ADMINISTRATOR);
                 if (list.size() > 0) {
-                    Map map=new HashMap();
-                    map.put("role",RoleType.ADMINISTRATOR);
-                    map.put("admin",list);
+                    Map map = new HashMap();
+                    map.put("role", RoleType.ADMINISTRATOR);
+                    map.put("admin", list);
                     out.add(map);
                 }
             }
             if (admin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal()) {
                 ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SUPER_ADMIN);
                 if (list.size() > 0) {
-                    Map map=new HashMap();
-                    map.put("role",RoleType.SUPER_ADMIN);
-                    map.put("admin",list);
+                    Map map = new HashMap();
+                    map.put("role", RoleType.SUPER_ADMIN);
+                    map.put("admin", list);
                     out.add(map);
                 }
             }
@@ -228,27 +204,28 @@ public class AdminController {
 
     /**
      * 读取所有用户权限的值
+     *
      * @param httpServletRequest
      * @return
      */
     @ResponseBody
     @GetMapping("/roleType")
-    public Response loadRoleType(HttpServletRequest httpServletRequest){
-        Response response=new Response();
-        try{
-            String token=httpServletRequest.getHeader("token");
-            Admin admin=iAdminService.loadAdminByToken(token);
-            if(admin==null){
+    public Response loadRoleType(HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            Admin admin = iAdminService.loadAdminByToken(token);
+            if (admin == null) {
                 response.setErrorCode(10004);
                 return response;
             }
-            ArrayList roles=iAdminService.loadRoleTypes(admin.getRoleType());
+            ArrayList roles = iAdminService.loadRoleTypes(admin.getRoleType());
             response.setData(roles);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
                 return response;
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10039);
                 return response;
             }
