@@ -17845,3 +17845,103 @@ java.net.UnknownHostException: rm-wz9v8xc42t1go7ptc0o.mysql.rds.aliyuncs.com: un
 2018-10-07 17:36:54.330  INFO 4002 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
 2018-10-07 17:36:54.420  INFO 4002 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 90 ms
 2018-10-07 17:36:54.549  INFO 4002 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-10-07 19:43:21.822  INFO 5012 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Starting RpgapiApplication on USER-20180523WL with PID 5012 (D:\projects\rpg\api\target\classes started by Administrator in D:\projects\rpg\api)
+2018-10-07 19:43:21.822  INFO 5012 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : No active profile set, falling back to default profiles: default
+2018-10-07 19:43:21.869  INFO 5012 --- [main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7d9e8ef7: startup date [Sun Oct 07 19:43:21 CST 2018]; root of context hierarchy
+2018-10-07 19:43:23.728  INFO 5012 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 9527 (http)
+2018-10-07 19:43:23.744  INFO 5012 --- [main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+2018-10-07 19:43:23.744  INFO 5012 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.14
+2018-10-07 19:43:23.838  INFO 5012 --- [localhost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2018-10-07 19:43:23.838  INFO 5012 --- [localhost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1969 ms
+2018-10-07 19:43:37.633  INFO 5012 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+2018-10-07 19:43:37.649  INFO 5012 --- [localhost-startStop-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2018-10-07 19:43:37.711  INFO 5012 --- [localhost-startStop-1] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.12.Final}
+2018-10-07 19:43:37.727  INFO 5012 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+2018-10-07 19:43:37.727  INFO 5012 --- [localhost-startStop-1] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+2018-10-07 19:43:37.758  INFO 5012 --- [localhost-startStop-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2018-10-07 19:43:37.914  INFO 5012 --- [localhost-startStop-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2018-10-07 19:43:38.540  INFO 5012 --- [localhost-startStop-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2018-10-07 19:43:38.889  INFO 5012 --- [localhost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+2018-10-07 19:43:38.889  INFO 5012 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2018-10-07 19:43:38.905  INFO 5012 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2018-10-07 19:43:38.905  INFO 5012 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2018-10-07 19:43:38.905  INFO 5012 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2018-10-07 19:43:38.905  INFO 5012 --- [localhost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'corsFilter' to: [/*]
+2018-10-07 19:43:39.830  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7d9e8ef7: startup date [Sun Oct 07 19:43:21 CST 2018]; root of context hierarchy
+2018-10-07 19:43:39.927  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/create/root],methods=[POST]}" onto com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.createRoot(com.gogoyang.rpgapi.admin.vo.AdminRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.928  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/loadUsersAppliedJobAndWaiting],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.LoadUsersAppliedJobAndWaiting(com.gogoyang.rpgapi.admin.vo.AdminRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.928  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/loadJobToMatch],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.loadJobToMatch(com.gogoyang.rpgapi.admin.vo.AdminRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.928  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/addNewJobMatch],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.addNewJobMatch(com.gogoyang.rpgapi.admin.vo.AdminRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.929  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/admin],methods=[GET]}" onto com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.loadAdmins(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.929  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/login],methods=[POST]}" onto com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.loginAdmin(com.gogoyang.rpgapi.admin.vo.AdminRequest)
+2018-10-07 19:43:39.929  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/roleType],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.loadRoleType(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.929  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/admin/create],methods=[POST]}" onto com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.admin.controller.AdminController.createAdmin(com.gogoyang.rpgapi.admin.vo.AdminRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.930  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/publish/publishNewJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.business.publish.publishController.publishNewJob(com.gogoyang.rpgapi.job.meta.job.vo.JobRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.931  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/applyJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobApply(com.gogoyang.rpgapi.job.meta.jobApply.vo.JobApplyRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.931  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/jobPlaza],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobPlaza()
+2018-10-07 19:43:39.931  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/{jobId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.JobDetail(java.lang.Integer)
+2018-10-07 19:43:39.931  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/loadMyApplyJob],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.loadMyApplyJob(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.931  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/loadMyNewJob],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.JobController.loadMyNewJob(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.932  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/job/acceptNewJob],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.job.controller.myNewJob.myNewJobController.acceptNewJob(com.gogoyang.rpgapi.job.meta.job.vo.JobRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.932  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/mytask],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.loadMyTasks(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.933  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/create],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.createTask(com.gogoyang.rpgapi.task.vo.TaskRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.933  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/task/{taskId}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.task.controller.TaskController.loadTaskById(java.lang.Integer)
+2018-10-07 19:43:39.934  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/userInfo],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loadUserInfo(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.934  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/register],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.registerUser(com.gogoyang.rpgapi.user.vo.UserRequest)
+2018-10-07 19:43:39.934  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/{id}],methods=[GET]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loadUserById(java.lang.Integer,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.934  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/login],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.loginUser(com.gogoyang.rpgapi.user.vo.UserRequest)
+2018-10-07 19:43:39.934  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/user/saveContactInfo],methods=[POST]}" onto public com.gogoyang.rpgapi.vo.Response com.gogoyang.rpgapi.user.controller.UserController.saveContactInfo(com.gogoyang.rpgapi.user.vo.UserRequest,javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.936  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+2018-10-07 19:43:39.936  INFO 5012 --- [main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2018-10-07 19:43:40.010  INFO 5012 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-10-07 19:43:40.010  INFO 5012 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-10-07 19:43:40.065  INFO 5012 --- [main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2018-10-07 19:43:40.540  INFO 5012 --- [main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+2018-10-07 19:43:40.587  INFO 5012 --- [main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 9527 (http)
+2018-10-07 19:43:40.587  INFO 5012 --- [main] com.gogoyang.rpgapi.RpgapiApplication    : Started RpgapiApplication in 19.093 seconds (JVM running for 20.85)
+2018-10-07 19:43:40.750  INFO 5012 --- [http-nio-9527-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring FrameworkServlet 'dispatcherServlet'
+2018-10-07 19:43:40.750  INFO 5012 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization started
+2018-10-07 19:43:40.787  INFO 5012 --- [http-nio-9527-exec-1] o.s.web.servlet.DispatcherServlet        : FrameworkServlet 'dispatcherServlet': initialization completed in 37 ms
+2018-10-07 19:43:40.846  INFO 5012 --- [http-nio-9527-exec-1] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+2018-10-07 21:32:33.585  WARN 5012 --- [http-nio-9527-exec-10] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:32:33.585  WARN 5012 --- [http-nio-9527-exec-4] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:32:33.588 ERROR 5012 --- [http-nio-9527-exec-10] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:32:33.588 ERROR 5012 --- [http-nio-9527-exec-4] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:33:14.078  WARN 5012 --- [http-nio-9527-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:33:14.078 ERROR 5012 --- [http-nio-9527-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:33:52.870  WARN 5012 --- [http-nio-9527-exec-10] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:33:52.871 ERROR 5012 --- [http-nio-9527-exec-10] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:34:16.941  WARN 5012 --- [http-nio-9527-exec-2] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:34:16.941  WARN 5012 --- [http-nio-9527-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:34:16.942 ERROR 5012 --- [http-nio-9527-exec-2] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:34:16.942 ERROR 5012 --- [http-nio-9527-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:34:20.708  WARN 5012 --- [http-nio-9527-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:34:20.708 ERROR 5012 --- [http-nio-9527-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-07 21:34:25.493  WARN 5012 --- [http-nio-9527-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-07 21:34:25.493 ERROR 5012 --- [http-nio-9527-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-08 08:58:27.337  WARN 5012 --- [http-nio-9527-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-08 08:58:27.338 ERROR 5012 --- [http-nio-9527-exec-6] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2018-10-08 08:58:36.040  WARN 5012 --- [http-nio-9527-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 08S01
+2018-10-08 08:58:36.040 ERROR 5012 --- [http-nio-9527-exec-3] o.h.engine.jdbc.spi.SqlExceptionHelper   : Communications link failure
+
+The last packet successfully received from the server was 9,971 milliseconds ago.  The last packet sent successfully to the server was 9,968 milliseconds ago.
