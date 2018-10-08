@@ -9,13 +9,10 @@ import org.springframework.stereotype.Service;
 
 import javax.management.relation.Role;
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
-public class AdminBusinessService implements IAdminBusinessService{
+public class AdminBusinessService implements IAdminBusinessService {
     private final IRPGFunction irpgFunction;
     private final IAdminService iAdminService;
 
@@ -28,6 +25,7 @@ public class AdminBusinessService implements IAdminBusinessService{
     /**
      * 创建rootAdmin用户的核心业务逻辑
      * The core business logic of create a admin user is here
+     *
      * @param in
      * @return
      * @throws Exception
@@ -35,12 +33,12 @@ public class AdminBusinessService implements IAdminBusinessService{
     @Override
     @Transactional(rollbackOn = Exception.class)
     public Map createRootAdmin(Map in) throws Exception {
-        Map out=new HashMap();
+        Map out = new HashMap();
 
         Admin rootAdmin = new Admin();
-        String loginName=in.get("loginName").toString();
-        String password=in.get("password").toString();
-        RoleType roleType=(RoleType)in.get("roleType");
+        String loginName = in.get("loginName").toString();
+        String password = in.get("password").toString();
+        RoleType roleType = (RoleType) in.get("roleType");
         rootAdmin.setLoginName(loginName);
         rootAdmin.setPassword(password);
         rootAdmin.setCreatedTime(new Date());
@@ -55,27 +53,30 @@ public class AdminBusinessService implements IAdminBusinessService{
 
     /**
      * 创建一个superAdmin用户
+     *
      * @param in
      * @return
      * @throws Exception
      */
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public Map createSuperAdmin(Map in) throws Exception {
-        String loginName=in.get("loginName").toString();
-        String token=in.get("token").toString();
-        String password=in.get("password").toString();
+        String loginName = in.get("loginName").toString();
+        String token = in.get("token").toString();
+        String password = in.get("password").toString();
 
         //whether the loginName duplicated
-        Admin admin=iAdminService.loadAdminByLoginName(loginName);
-        if(admin!=null){
+        Admin admin = iAdminService.loadAdminByLoginName(loginName);
+        if (admin != null) {
             throw new Exception("10016");
         }
 
-        Admin rootAdmin=iAdminService.loadAdminByToken(token);
-        if(rootAdmin==null){
+        //check current admin user permission, only rootAdmin can create superAdmin
+        Admin rootAdmin = iAdminService.loadAdminByToken(token);
+        if (rootAdmin == null) {
             throw new Exception("10004");
         }
-        if(rootAdmin.getRoleType().ordinal()!= RoleType.ROOT_ADMIN.ordinal()){
+        if (rootAdmin.getRoleType().ordinal() != RoleType.ROOT_ADMIN.ordinal()) {
             throw new Exception("10008");
         }
 
@@ -88,66 +89,123 @@ public class AdminBusinessService implements IAdminBusinessService{
         newAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
         newAdmin = iAdminService.createAdmin(newAdmin);
 
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("admin", newAdmin);
         return out;
     }
 
     /**
      * 创建Admin用户的业务逻辑
+     *
      * @param in
      * @return
      * @throws Exception
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Map createNewAdmin(Map in) throws Exception {
-        String loginName=in.get("loginName").toString();
-        String token=in.get("token").toString();
-        String password=in.get("password").toString();
+    public Map createAdministrator(Map in) throws Exception {
+        String loginName = in.get("loginName").toString();
+        String token = in.get("token").toString();
+        String password = in.get("password").toString();
 
-        try {
-            //check whether the loginName duplicated
-            Admin admin = iAdminService.loadAdminByLoginName(loginName);
-            if (admin != null) {
-                throw new Exception("10016");
-            }
-
-            //check current operator permission, only superAdmin can create administrator and secretary
-            Admin superAdmin = iAdminService.loadAdminByToken(token);
-            if (superAdmin == null) {
-                throw new Exception("10004");
-            }
-            if (!(superAdmin.getRoleType().ordinal() < request.getRoleType().ordinal())) {
-                response.setErrorCode(10008);
-                return response;
-            }
-            //enum less, authority more high
-            Admin newAdmin = new Admin();
-            newAdmin.setCreatedTime(new Date());
-            newAdmin.setLoginName(request.getLoginName());
-            newAdmin.setPassword(request.getPassword());
-            newAdmin.setPassword(irpgFunction.encoderByMd5(newAdmin.getPassword()));
-            newAdmin.setRoleType(request.getRoleType());
-            newAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
-            newAdmin = iAdminService.createAdmin(newAdmin);
-
-            response.setData(newAdmin);
-
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10026);
-                return response;
-            }
+        //check whether the loginName duplicated
+        Admin admin = iAdminService.loadAdminByLoginName(loginName);
+        if (admin != null) {
+            throw new Exception("10016");
         }
 
-        return response;
+        //check current operator permission, only superAdmin can create administrator and secretary
+        Admin superAdmin = iAdminService.loadAdminByToken(token);
+        if (superAdmin == null) {
+            throw new Exception("10004");
+        }
+        if (!(superAdmin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal())) {
+            throw new Exception("10008");
+        }
+        Admin newAdmin = new Admin();
+        newAdmin.setCreatedTime(new Date());
+        newAdmin.setLoginName(loginName);
+        newAdmin.setPassword(password);
+        newAdmin.setPassword(irpgFunction.encoderByMd5(newAdmin.getPassword()));
+        newAdmin.setRoleType(RoleType.ADMINISTRATOR);
+        newAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
+        newAdmin = iAdminService.createAdmin(newAdmin);
 
+        Map out = new HashMap();
+        out.put("admin", newAdmin);
+        return out;
+    }
 
-        Map out=new HashMap();
+    /**
+     * 管理员账户登录
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map login(Map in) throws Exception {
+        String loginName = in.get("loginName").toString();
+        String password = in.get("password").toString();
+        Admin admin = iAdminService.loadAdminByLoginName(loginName);
+        if (admin == null) {
+            throw new Exception("10024");
+        }
+        if (!irpgFunction.encoderByMd5(password).equals(admin.getPassword())) {
+            throw new Exception("10024");
+        }
+        Map out = new HashMap();
+        out.put("admin", admin);
+        return out;
+    }
+
+    /**
+     * 读取所有比当前用户权限低一级的管理员用户
+     * read all administrators
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map loadAdmin(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Admin admin = iAdminService.loadAdminByToken(token);
+        if (admin == null) {
+            throw new Exception("10004");
+        }
+        ArrayList adminList = new ArrayList();
+
+        if (admin.getRoleType().ordinal() < RoleType.SECRETARY.ordinal()) {
+            ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SECRETARY);
+            if (list.size() > 0) {
+                Map map = new HashMap();
+                map.put("role", RoleType.SECRETARY);
+                map.put("admin", list);
+                adminList.add(map);
+            }
+        }
+        if (admin.getRoleType().ordinal() < RoleType.ADMINISTRATOR.ordinal()) {
+            ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.ADMINISTRATOR);
+            if (list.size() > 0) {
+                Map map = new HashMap();
+                map.put("role", RoleType.ADMINISTRATOR);
+                map.put("admin", list);
+                adminList.add(map);
+            }
+        }
+        if (admin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal()) {
+            ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SUPER_ADMIN);
+            if (list.size() > 0) {
+                Map map = new HashMap();
+                map.put("role", RoleType.SUPER_ADMIN);
+                map.put("admin", list);
+                adminList.add(map);
+            }
+        }
+        Map out = new HashMap();
+        out.put("admins", adminList);
         return out;
     }
 }

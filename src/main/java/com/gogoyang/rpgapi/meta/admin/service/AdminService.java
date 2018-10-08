@@ -94,26 +94,6 @@ public class AdminService implements IAdminService {
     }
 
     /**
-     * 读取所有RoleType里的枚举值
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public ArrayList loadRoleTypes(RoleType roleType) throws Exception {
-        ArrayList roles=new ArrayList();
-
-        for(RoleType s:RoleType.values()) {
-            if(s.ordinal()>roleType.ordinal()) {
-                Map map = new HashMap();
-                map.put("value", s.ordinal());
-                map.put("label", s);
-                roles.add(map);
-            }
-        }
-        return roles;
-    }
-
-    /**
      * 根据jobId，查找所有申请过该任务，且未被处理的用户。
      *
      * @param jobId

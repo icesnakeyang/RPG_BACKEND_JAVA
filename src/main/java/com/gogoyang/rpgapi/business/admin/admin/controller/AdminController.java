@@ -113,6 +113,36 @@ public class AdminController {
     }
 
     /**
+     * 创建一个Administrator用户
+     * create an Administrator
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/create/administrator")
+    Response createAdministrator(@RequestBody AdminRequest request,
+                                 HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try{
+            Map in=new HashMap();
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+            Map out=new HashMap();
+            out=iAdminBusinessService.createAdministrator(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                return response;
+            }catch (Exception ex2){
+                response.setErrorCode(10017);
+            }
+        }
+        return response;
+    }
+
+    /**
      * Admin登录
      *
      * @param request
@@ -128,11 +158,11 @@ public class AdminController {
          * set response.data=admin
          */
         try {
-            Admin admin = iAdminService.loadAdminByLoginName(request.getLoginName());
-            if (!irpgFunction.encoderByMd5(request.getPassword()).equals(admin.getPassword())) {
-                response.setErrorCode(10024);
-            }
-            response.setData(admin);
+            Map in=new HashMap();
+            in.put("loginName", request.getLoginName());
+            in.put("password", request.getPassword());
+            Map out=iAdminBusinessService.login(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
@@ -155,41 +185,9 @@ public class AdminController {
     Response loadAdmins(HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            String token = httpServletRequest.getHeader("token");
-            Admin admin = iAdminService.loadAdminByToken(token);
-            if (admin == null) {
-                response.setErrorCode(10004);
-                return response;
-            }
-            ArrayList out = new ArrayList();
-
-            if (admin.getRoleType().ordinal() < RoleType.SECRETARY.ordinal()) {
-                ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SECRETARY);
-                if (list.size() > 0) {
-                    Map map = new HashMap();
-                    map.put("role", RoleType.SECRETARY);
-                    map.put("admin", list);
-                    out.add(map);
-                }
-            }
-            if (admin.getRoleType().ordinal() < RoleType.ADMINISTRATOR.ordinal()) {
-                ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.ADMINISTRATOR);
-                if (list.size() > 0) {
-                    Map map = new HashMap();
-                    map.put("role", RoleType.ADMINISTRATOR);
-                    map.put("admin", list);
-                    out.add(map);
-                }
-            }
-            if (admin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal()) {
-                ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SUPER_ADMIN);
-                if (list.size() > 0) {
-                    Map map = new HashMap();
-                    map.put("role", RoleType.SUPER_ADMIN);
-                    map.put("admin", list);
-                    out.add(map);
-                }
-            }
+            Map in=new HashMap();
+            in.put("token", httpServletRequest.getHeader("token"));
+            Map out=iAdminBusinessService.loadAdmin(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -210,15 +208,9 @@ public class AdminController {
      */
     @ResponseBody
     @GetMapping("/roleType")
-    public Response loadRoleType(HttpServletRequest httpServletRequest) {
+    public Response loadRoleType() {
         Response response = new Response();
         try {
-            String token = httpServletRequest.getHeader("token");
-            Admin admin = iAdminService.loadAdminByToken(token);
-            if (admin == null) {
-                response.setErrorCode(10004);
-                return response;
-            }
             ArrayList roles = iAdminService.loadRoleTypes(admin.getRoleType());
             response.setData(roles);
         } catch (Exception ex) {
