@@ -9,14 +9,14 @@ import java.util.ArrayList;
 
 public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
     /**
-     * 根据jobId查询所有没有被处理的申请任务的用户
+     * 查找一个任务的所有申请
      * @param jobId
      * @return
      */
     ArrayList<JobApply> findAllByJobIdAndProcessResultIsNull(Integer jobId);
 
     /**
-     * 查找userId用户申请的jobId任务的申请日志
+     * 查找一个用户申请的一个任务的申请记录
      * @param applyUserId
      * @param jobId
      * @return
@@ -24,14 +24,14 @@ public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
     JobApply findByApplyUserIdAndJobIdAndProcessResultIsNull(Integer applyUserId, Integer jobId);
 
     /**
-     * 查找所有未成交的任务申请日志
+     * 查找所有未处理的任务申请
      * @param pageable
      * @return
      */
     Page<JobApply> findAllByProcessResultIsNull(Pageable pageable);
 
     /**
-     * 查找所有userId申请但还没处理的申请日志
+     * 查找一个用户的所有未处理的任务申请
      * @param userId
      * @return
      */

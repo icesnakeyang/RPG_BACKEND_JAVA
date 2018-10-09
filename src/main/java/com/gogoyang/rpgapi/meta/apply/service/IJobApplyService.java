@@ -5,6 +5,8 @@ import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import java.util.ArrayList;
 
 public interface IJobApplyService {
+    JobApply loadJobApplyByUserIdAndJobId(Integer userId, Integer jobId) throws Exception;
+
     ArrayList<JobApply> loadJobApplyByJobId(Integer jobId) throws Exception;
 
     void createJobApply(JobApply jobApply) throws Exception;

@@ -18,7 +18,5 @@ public interface IAdminService {
 
     ArrayList<Admin> loadAdminByRoleType(RoleType roleType) throws Exception;
 
-    ArrayList loadRoleTypes(RoleType roleType) throws Exception;
-
     ArrayList<UserInfo> loadJobAppliedUser(Integer jobId) throws Exception;
 }

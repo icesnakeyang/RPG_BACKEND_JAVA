@@ -20,6 +20,19 @@ public class JobApplyService implements IJobApplyService {
     }
 
     /**
+     * 根据userId和jobId读取未处理的申请
+     * @param userId
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public JobApply loadJobApplyByUserIdAndJobId(Integer userId, Integer jobId) throws Exception {
+        JobApply jobApply=jobApplyDao.findByApplyUserIdAndJobIdAndProcessResultIsNull(userId, jobId);
+        return  jobApply;
+    }
+
+    /**
      * 读取任务的所有申请日志
      *
      * @param jobId

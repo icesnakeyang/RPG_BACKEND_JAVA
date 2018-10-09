@@ -9,26 +9,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class RPGService implements IRPGService{
+public class RPGService implements IRPGService {
 
     /**
      * 读取所有RoleType里的枚举值
+     *
      * @return
      * @throws Exception
      */
     @Override
-    public Map loadRoleTypes(Map in) throws Exception {
-
-        String token=in.get("token").toString();
-        Admin admin=iAD
-
-        for(RoleType s:RoleType.values()) {
-            if(s.ordinal()>roleType.ordinal()) {
-                Map map = new HashMap();
-                map.put("value", s.ordinal());
-                map.put("label", s);
-                roles.add(map);
-            }
+    public ArrayList loadRoleTypes() throws Exception {
+        ArrayList roles = new ArrayList();
+        for (RoleType s : RoleType.values()) {
+            Map map = new HashMap();
+            map.put("value", s.ordinal());
+            map.put("label", s);
+            roles.add(map);
         }
         return roles;
     }

@@ -27,20 +27,11 @@ public class JobMatchService implements IJobMatchService {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public JobMatch createJobMatch(JobMatch jobMatch) throws Exception {
-        /**
-         * 首先，查询JobMatch, jobId, userId，processResult==null,
-         * 如果有记录即说明，已经保存了该用户对该任务的分配
-         * 如果没有记录，增加新的记录。
-         *
-         */
-        JobMatch checkJobMatch = jobMatchDao.findByJobIdAndMatchUserIdAndProcessResultIsNull(
-                jobMatch.getJobId(), jobMatch.getMatchUserId());
-        if (checkJobMatch != null) {
+    public JobMatch insertJobMatch(JobMatch jobMatch) throws Exception {
+        if(jobMatch.getJobMatchId()!=null){
             throw new Exception("10012");
         }
-        jobMatch.setMatchTime(new Date());
-        jobMatch = jobMatchDao.save(jobMatch);
+        jobMatch=jobMatchDao.save(jobMatch);
         return jobMatch;
     }
 

@@ -5,7 +5,7 @@ import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import java.util.ArrayList;
 
 public interface IJobMatchService {
-    JobMatch createJobMatch(JobMatch jobMatch) throws Exception;
+    JobMatch insertJobMatch(JobMatch jobMatch) throws Exception;
 
     ArrayList<JobMatch> loadMyNewJobMatch(Integer userId) throws Exception;
 

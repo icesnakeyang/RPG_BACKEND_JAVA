@@ -2,12 +2,10 @@ package com.gogoyang.rpgapi.business.admin.admin.controller;
 
 import com.gogoyang.rpgapi.business.admin.admin.service.IAdminBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
+import com.gogoyang.rpgapi.business.common.IRPGService;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
-import com.gogoyang.rpgapi.meta.admin.entity.Admin;
-import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
-import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +17,13 @@ import java.util.*;
 public class AdminController {
     private final IRPGFunction irpgFunction;
     private final IAdminBusinessService iAdminBusinessService;
+    private final IRPGService irpgService;
 
     @Autowired
-    public AdminController(IRPGFunction irpgFunction, IAdminService iAdminService, IAdminBusinessService iAdminBusinessService) {
+    public AdminController(IRPGFunction irpgFunction, IAdminBusinessService iAdminBusinessService, IRPGService irpgService) {
         this.irpgFunction = irpgFunction;
-        this.iAdminService = iAdminService;
         this.iAdminBusinessService = iAdminBusinessService;
+        this.irpgService = irpgService;
     }
 
     /**
@@ -203,7 +202,6 @@ public class AdminController {
     /**
      * 读取所有用户权限的值
      *
-     * @param httpServletRequest
      * @return
      */
     @ResponseBody
@@ -211,7 +209,7 @@ public class AdminController {
     public Response loadRoleType() {
         Response response = new Response();
         try {
-            ArrayList roles = iAdminService.loadRoleTypes(admin.getRoleType());
+            ArrayList roles = irpgService.loadRoleTypes();
             response.setData(roles);
         } catch (Exception ex) {
             try {

@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.business.common;
 
-import java.util.Map;
+import java.util.ArrayList;
 
 public interface IRPGService {
-    Map loadRoleTypes(Map in) throws Exception;
+    ArrayList loadRoleTypes() throws Exception;
 }

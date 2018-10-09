@@ -1,10 +1,10 @@
 package com.gogoyang.rpgapi.meta.job.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.dao.JobDao;
 import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
-import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
@@ -19,9 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 class JobService implements IJobService {
@@ -105,7 +102,9 @@ class JobService implements IJobService {
     }
 
     /**
-     * 读取还未被分配的job
+     * 根据jobStatus读取jobs
+     * read jobs by jobStatus
+     * paginate the list
      *
      * @param pageIndex
      * @param pageSize
@@ -113,87 +112,19 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Page<Job> loadJobUnMatch(Integer pageIndex, Integer pageSize) throws Exception {
+    public Page<Job> loadJobByStatus(JobStatus jobStatus,Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByStatusIsNull(pageable);
-
-        for (int i = 0; i < jobs.getContent().size(); i++) {
-            jobs.getContent().get(i).setPartyAName(
-                    iUserInfoService.getUserName(
-                            jobs.getContent().get(i).getPartyAId())
-            );
-        }
+        Page<Job> jobs = jobDao.findAllByStatus(jobStatus,pageable);
 
         return jobs;
     }
 
     /**
-     * 读取用户已经申请，但还没有成交的任务
-     *
-     * @param pageIndex
-     * @param pageSize
-     * @return
+     * 修改job
+     * @param job
      * @throws Exception
      */
-    @Override
-    public ArrayList<Job> loadJobToMatch(Integer pageIndex, Integer pageSize) throws Exception {
-        /**
-         * 1、读取所有job，ismatch=false
-         * 2、逐条查询jobApply，如果有，添加到list
-         */
-        Sort sort = new Sort(Sort.Direction.ASC, "jobId");
-        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByStatusIsNull(pageable);
-
-        ArrayList<Job> jobsOut = new ArrayList<Job>();
-        for (int i = 0; i < jobs.getContent().size(); i++) {
-            ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(
-                    jobs.getContent().get(i).getJobId());
-            if (jobApplies.size() > 0) {
-                jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
-                        jobs.getContent().get(i).getPartyAId()));
-                jobs.getContent().get(i).setJobApplyNum(iJobMatchService.countMatchingUsers(
-                        jobs.getContent().get(i).getJobId()));
-                jobs.getContent().get(i).setJobApplyNum(iJobApplyService.countApplyUsers(
-                        jobs.getContent().get(i).getJobId()));
-                jobsOut.add(jobs.getContent().get(i));
-            }
-        }
-        return jobsOut;
-    }
-
-    /**
-     * 读取所有我申请的，还未处理的任务。
-     *
-     * @param userId
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public ArrayList loadMyApplyJob(Integer userId) throws Exception {
-        ArrayList<JobApply> myApplyList = iJobApplyService.loadMyApplies(userId);
-        ArrayList jobList = new ArrayList();
-        Map mapOut = new HashMap();
-        for (int i = 0; i < myApplyList.size(); i++) {
-            Job job = jobDao.findByJobId(myApplyList.get(i).getJobId());
-            if (job != null) {
-                job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
-                Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
-                Integer matchNum = iJobMatchService.countMatchingUsers(job.getJobId());
-                Map theMap = new HashMap();
-                theMap.put("job", job);
-                theMap.put("apply", myApplyList.get(i));
-                theMap.put("applyNum", applyNum);
-                theMap.put("matchNum", matchNum);
-
-                jobList.add(theMap);
-            }
-        }
-
-        return jobList;
-    }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateJob(Job job) throws Exception {

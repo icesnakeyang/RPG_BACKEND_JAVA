@@ -66,19 +66,7 @@ public class AdminService implements IAdminService {
         return admin;
     }
 
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void matchJob(JobMatch jobMatch) throws Exception {
-        /**
-         * 创建一个jobMatch
-         * 搜索jobApply，把申请任务的用户的申请日志处理为已分配，MATCHED
-         */
-        iJobMatchService.createJobMatch(jobMatch);
-        JobApply jobApply=new JobApply();
-        jobApply.setApplyUserId(jobMatch.getMatchUserId());
-        jobApply.setJobId(jobMatch.getJobId());
-        iJobApplyService.matchJobApply(jobApply);
-    }
+
 
     /**
      * 根据用户类型读取所有管理员用户
@@ -93,37 +81,5 @@ public class AdminService implements IAdminService {
         return admins;
     }
 
-    /**
-     * 根据jobId，查找所有申请过该任务，且未被处理的用户。
-     *
-     * @param jobId
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public ArrayList<UserInfo> loadJobAppliedUser(Integer jobId) throws Exception {
-        /**
-         * 首先，根据JobId查找jobApplyLog，result==null
-         * 然后，查询JobMatch里是否已经分配了
-         * 根据jobApplyLog.applyUserId查找userInfo
-         * 返回所有的UserInfo
-         *
-         */
-        ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(jobId);
-        ArrayList<UserInfo> users = new ArrayList<UserInfo>();
-        for (int i = 0; i < jobApplies.size(); i++) {
-            //检查是否已经分配
-            JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(
-                    jobApplies.get(i).getApplyUserId(),
-                    jobApplies.get(i).getJobId());
-            if(jobMatch==null) {
-                UserInfo userInfo = iUserInfoService.loadUserByUserId(jobApplies.get(i).getApplyUserId());
-                if (userInfo != null) {
-                    users.add(userInfo);
-                }
-            }
-        }
 
-        return users;
-    }
 }
