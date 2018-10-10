@@ -37,7 +37,7 @@ public class TaskController {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.checkToken(token);
+            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
             if (userInfo == null) {
                 response.setErrorCode(10004);
                 return response;
@@ -101,7 +101,7 @@ public class TaskController {
         Response response = new Response();
         try {
             String token = servletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.checkToken(token);
+            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
             ArrayList<Task> tasks = iTaskService.loadTaskByUserId(userInfo.getUserId());
             response.setData(tasks);
         } catch (Exception ex) {

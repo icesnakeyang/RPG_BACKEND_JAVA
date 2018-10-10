@@ -42,7 +42,7 @@ public class UserController {
             userInfo.setUsername(request.getUsername());
             userInfo.setPassword(request.getPassword());
 
-            userInfo = iUserInfoService.createUser(userInfo);
+            userInfo = iUserInfoService.insertUser(userInfo);
             response.setData(userInfo);
         } catch (Exception ex) {
             try {
@@ -67,7 +67,7 @@ public class UserController {
         Response response = new Response();
         try {
             String token=httpServletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.checkToken(token);
+            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
             if(userInfo==null){
                 response.setErrorCode(10004);
                 return response;
@@ -121,41 +121,7 @@ public class UserController {
         return response;
     }
 
-    /**
-     * 保存用户的email，phone，realname
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/saveContactInfo")
-    public Response saveContactInfo(@RequestBody UserRequest request,
-                                    HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            UserInfo userInfo=iUserInfoService.checkToken(token);
-            if(userInfo==null){
-                response.setErrorCode(10004);
-                return response;
-            }
-            userInfo.setPhone(request.getPhone());
-            userInfo.setRealName(request.getRealName());
-            userInfo.setEmail(request.getEmail());
-            iUserInfoService.saveContactInfo(userInfo);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10010);
-                return response;
-            }
-        }
 
-        return response;
-    }
 
     /**
      * 根据用户上传的token，返回UserInfo
@@ -169,7 +135,7 @@ public class UserController {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
-            UserInfo userInfo=iUserInfoService.checkToken(token);
+            UserInfo userInfo=iUserInfoService.loadUserByToken(token);
             if(userInfo==null){
                 response.setErrorCode(10004);
                 return response;

@@ -13,4 +13,6 @@ public interface IPhoneService {
 
     Phone loadPhoneByPhone(String phone) throws Exception;
 
+    void updatePhone(Phone phone) throws Exception;
+
 }

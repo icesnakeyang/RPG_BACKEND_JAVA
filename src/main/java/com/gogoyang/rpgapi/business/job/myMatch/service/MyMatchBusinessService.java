@@ -44,7 +44,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
          * 3、逐条根据jobMatch读取所有job
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.checkToken(token);
+        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }

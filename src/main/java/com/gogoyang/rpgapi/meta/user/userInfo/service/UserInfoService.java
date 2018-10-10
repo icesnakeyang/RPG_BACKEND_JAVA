@@ -2,11 +2,8 @@ package com.gogoyang.rpgapi.meta.user.userInfo.service;
 
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
-import com.gogoyang.rpgapi.meta.user.email.entity.Email;
 import com.gogoyang.rpgapi.meta.user.email.service.IEmailService;
-import com.gogoyang.rpgapi.meta.user.phone.entity.Phone;
 import com.gogoyang.rpgapi.meta.user.phone.service.IPhoneService;
-import com.gogoyang.rpgapi.meta.user.realName.entity.RealName;
 import com.gogoyang.rpgapi.meta.user.realName.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.user.userInfo.dao.UserInfoDao;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
@@ -27,7 +24,9 @@ public class UserInfoService implements IUserInfoService {
     private final IRealNameService iRealNameService;
 
     @Autowired
-    public UserInfoService(IRPGFunction iRPGFunction, UserInfoDao userInfoDao, IJobApplyService iJobApplyService, IEmailService iEmailService, IPhoneService iPhoneService, IRealNameService iRealNameService) {
+    public UserInfoService(IRPGFunction iRPGFunction, UserInfoDao userInfoDao,
+                           IJobApplyService iJobApplyService, IEmailService iEmailService,
+                           IPhoneService iPhoneService, IRealNameService iRealNameService) {
         this.iRPGFunction = iRPGFunction;
         this.userInfoDao = userInfoDao;
         this.iJobApplyService = iJobApplyService;
@@ -45,7 +44,7 @@ public class UserInfoService implements IUserInfoService {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public UserInfo createUser(UserInfo userInfo) throws Exception {
+    public UserInfo insertUser(UserInfo userInfo) throws Exception {
         if (userInfo.getUsername().equals("")) {
             throw new Exception("10010");
         }
@@ -128,65 +127,6 @@ public class UserInfoService implements IUserInfoService {
     }
 
     /**
-     * 一次性保存email，phone，realname
-     * @param userInfo
-     */
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void saveContactInfo(UserInfo userInfo) throws Exception{
-        UserInfo newUserInfo=userInfoDao.findByUserId(userInfo.getUserId());
-
-        //保存phone
-        if(userInfo.getEmail()!=null){
-            //创建一个email记录
-            Email email=new Email();
-            email.setUserId(userInfo.getUserId());
-            email.setEmail(userInfo.getEmail());
-            email.setDefault(true);
-            iEmailService.createEmail(email);
-            newUserInfo.setEmail(email.getEmail());
-        }
-
-        //保存email
-        if(userInfo.getPhone()!=null){
-            Phone phone=new Phone();
-            phone.setUserId(userInfo.getUserId());
-            phone.setPhone(userInfo.getPhone());
-            phone.setDefault(true);
-            iPhoneService.createPhone(phone);
-            newUserInfo.setPhone(phone.getPhone());
-        }
-
-        //保存real name
-        if(userInfo.getRealName()!=null){
-            RealName realName=new RealName();
-            realName.setUserId(userInfo.getUserId());
-            realName.setRealName(userInfo.getRealName());
-            realName.setCreatedTime(new Date());
-            iRealNameService.createName(realName);
-            newUserInfo.setRealName(realName.getRealName());
-        }
-
-        //保存UserInfo
-        userInfoDao.save(newUserInfo);
-    }
-
-    /**
-     * 检查token是否有效
-     * 根据token去查询user用户，如果查到了user，返回user
-     * @param token
-     * @return
-     */
-    @Override
-    public UserInfo checkToken(String token) throws Exception{
-        if (token == null) {
-            return null;
-        }
-        UserInfo userInfo = loadUserByToken(token);
-        return userInfo;
-    }
-
-    /**
      * createdUserName从userInfo表里读取，
      * 如果用户有realName，则为realName
      * 如果没有realName则为email，
@@ -211,19 +151,5 @@ public class UserInfoService implements IUserInfoService {
             return userInfo.getPhone();
         }
         return userInfo.getUsername();
-    }
-
-    /**
-     * 设置userinfo.phone为default
-     * @param userInfo
-     * @throws Exception
-     */
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void setDefaultPhone(UserInfo userInfo) throws Exception{
-        iPhoneService.setPhoneDefault(userInfo.getPhone());
-        UserInfo fixUserInfo=loadUserByUserId(userInfo.getUserId());
-        fixUserInfo.setPhone(userInfo.getPhone());
-        userInfoDao.save(fixUserInfo);
     }
 }

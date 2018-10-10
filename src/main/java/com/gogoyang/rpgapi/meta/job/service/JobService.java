@@ -116,7 +116,6 @@ class JobService implements IJobService {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByStatus(jobStatus,pageable);
-
         return jobs;
     }
 

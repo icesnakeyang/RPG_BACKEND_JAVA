@@ -48,4 +48,13 @@ public class PhoneService implements IPhoneService {
         Phone thePhone=phoneDao.findByPhone(phone);
         return thePhone;
     }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void updatePhone(Phone phone) throws Exception {
+        if(phone.getPhoneId()==null){
+            throw new Exception("10045");
+        }
+        phoneDao.save(phone);
+    }
 }

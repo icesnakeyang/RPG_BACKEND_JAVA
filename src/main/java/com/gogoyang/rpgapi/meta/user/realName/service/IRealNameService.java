@@ -8,4 +8,9 @@ public interface IRealNameService{
     RealName insertRealName(RealName name) throws Exception;
 
     ArrayList<RealName> loadRealNameByUserId(Integer userId) throws Exception;
+
+    RealName loadCurrentRealName(Integer userId) throws Exception;
+
+    void updateRealName(RealName realName) throws Exception;
+
 }

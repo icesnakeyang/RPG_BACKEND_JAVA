@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.meta.user.realName.service;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.gogoyang.rpgapi.meta.user.realName.dao.RealNameDao;
 import com.gogoyang.rpgapi.meta.user.realName.entity.RealName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,4 +30,27 @@ public class RealNameService implements IRealNameService{
         ArrayList<RealName> realNames=realNameDao.findAllByUserId(userId);
         return realNames;
     }
+
+    /**
+     * 读取当前有效的实名
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public RealName loadCurrentRealName(Integer userId) throws Exception {
+        RealName realName=realNameDao.findByUserIdAndDisableTimeIsNull(userId);
+        return realName;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void updateRealName(RealName realName) throws Exception {
+        if(realName.getRealNameId()==null){
+            throw new Exception("10047");
+        }
+        realNameDao.save(realName);
+    }
+
+
 }

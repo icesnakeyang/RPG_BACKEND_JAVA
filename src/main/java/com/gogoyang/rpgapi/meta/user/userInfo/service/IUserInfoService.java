@@ -8,7 +8,7 @@ import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
  */
 public interface IUserInfoService {
 
-    UserInfo createUser(UserInfo userInfo) throws Exception;
+    UserInfo insertUser(UserInfo userInfo) throws Exception;
 
     UserInfo loadUserByUsername(String username) throws Exception;
 
@@ -18,12 +18,6 @@ public interface IUserInfoService {
 
     void updateUser(UserInfo userInfo) throws Exception;
 
-    void saveContactInfo(UserInfo userInfo) throws Exception;
-
-    UserInfo checkToken(String token) throws Exception;
-
     String getUserName(Integer userId) throws Exception;
-
-    void setDefaultPhone(UserInfo userInfo) throws Exception;
 
 }

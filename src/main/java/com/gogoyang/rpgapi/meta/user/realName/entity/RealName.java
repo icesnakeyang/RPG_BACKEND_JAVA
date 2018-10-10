@@ -23,7 +23,7 @@ public class RealName {
     private Date createdTime;
 
     @Column(name = "disable_time")
-    private Boolean disableTime;
+    private Date disableTime;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,11 +60,11 @@ public class RealName {
         this.createdTime = createdTime;
     }
 
-    public Boolean getDisableTime() {
+    public Date getDisableTime() {
         return disableTime;
     }
 
-    public void setDisableTime(Boolean disableTime) {
+    public void setDisableTime(Date disableTime) {
         this.disableTime = disableTime;
     }
 }
