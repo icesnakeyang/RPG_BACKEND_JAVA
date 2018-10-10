@@ -10,8 +10,8 @@ import java.util.Date;
 public class RealName {
     @Id
     @GeneratedValue
-    @Column(name = "ids")
-    private Integer ids;
+    @Column(name = "real_name_id")
+    private Integer realNameId;
 
     @Column(name = "user_id")
     private Integer userId;
@@ -27,12 +27,13 @@ public class RealName {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Integer getIds() {
-        return ids;
+
+    public Integer getRealNameId() {
+        return realNameId;
     }
 
-    public void setIds(Integer ids) {
-        this.ids = ids;
+    public void setRealNameId(Integer realNameId) {
+        this.realNameId = realNameId;
     }
 
     public Integer getUserId() {

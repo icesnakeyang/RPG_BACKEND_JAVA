@@ -4,4 +4,5 @@ import java.util.Map;
 
 public interface IUserInfoBusinessService {
     void saveUserContactInfo(Map in) throws Exception;
+    void saveEmail(Map in) throws Exception;
 }

@@ -20,7 +20,7 @@ public class PhoneService implements IPhoneService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Phone createPhone(Phone phone) throws Exception {
+    public Phone insertPhone(Phone phone) throws Exception {
         phone = phoneDao.save(phone);
         return phone;
     }
@@ -41,5 +41,11 @@ public class PhoneService implements IPhoneService {
         ArrayList<Phone> phones = phoneDao.findAllByUserId(userId);
 
         return phones;
+    }
+
+    @Override
+    public Phone loadPhoneByPhone(String phone) throws Exception {
+        Phone thePhone=phoneDao.findByPhone(phone);
+        return thePhone;
     }
 }

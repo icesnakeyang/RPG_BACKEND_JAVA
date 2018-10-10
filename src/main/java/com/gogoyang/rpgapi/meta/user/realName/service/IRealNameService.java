@@ -5,7 +5,7 @@ import com.gogoyang.rpgapi.meta.user.realName.entity.RealName;
 import java.util.ArrayList;
 
 public interface IRealNameService{
-    RealName createName(RealName name);
+    RealName insertRealName(RealName name) throws Exception;
 
-    ArrayList<RealName> loadByUserId(Integer userId);
+    ArrayList<RealName> loadRealNameByUserId(Integer userId) throws Exception;
 }

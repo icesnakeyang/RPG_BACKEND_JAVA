@@ -19,13 +19,13 @@ public class RealNameService implements IRealNameService{
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public RealName createName(RealName name) {
+    public RealName insertRealName(RealName name) throws Exception{
         RealName realName=realNameDao.save(name);
         return realName;
     }
 
     @Override
-    public ArrayList<RealName> loadByUserId(Integer userId) {
+    public ArrayList<RealName> loadRealNameByUserId(Integer userId) throws Exception{
         ArrayList<RealName> realNames=realNameDao.findAllByUserId(userId);
         return realNames;
     }

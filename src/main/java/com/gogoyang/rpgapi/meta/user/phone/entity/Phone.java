@@ -10,8 +10,8 @@ import java.util.Date;
 public class Phone {
     @Id
     @GeneratedValue
-    @Column(name = "ids")
-    private Integer ids;
+    @Column(name = "phone_id")
+    private Integer phoneId;
 
     @Column(name = "user_id")
     private Integer userId;
@@ -43,12 +43,13 @@ public class Phone {
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Integer getIds() {
-        return ids;
+
+    public Integer getPhoneId() {
+        return phoneId;
     }
 
-    public void setIds(Integer ids) {
-        this.ids = ids;
+    public void setPhoneId(Integer phoneId) {
+        this.phoneId = phoneId;
     }
 
     public Integer getUserId() {

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.ArrayList;
 
 public interface EmailDao extends JpaRepository<Email, Integer> {
-    ArrayList<Email> findByUserId(Integer userId);
+    ArrayList<Email> findAllByUserId(Integer userId);
     Email findByEmail(String email);
 }
