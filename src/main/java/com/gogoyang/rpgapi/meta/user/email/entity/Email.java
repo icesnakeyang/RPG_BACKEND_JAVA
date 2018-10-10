@@ -11,8 +11,8 @@ import java.util.Date;
 public class Email {
     @Id
     @GeneratedValue
-    @Column(name = "ids")
-    private Integer ids;
+    @Column(name = "email_id")
+    private Integer emailId;
 
     @Column(name = "user_id")
     private Integer userId;
@@ -43,12 +43,14 @@ public class Email {
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    public Integer getIds() {
-        return ids;
+
+
+    public Integer getEmailId() {
+        return emailId;
     }
 
-    public void setIds(Integer ids) {
-        this.ids = ids;
+    public void setEmailId(Integer emailId) {
+        this.emailId = emailId;
     }
 
     public Integer getUserId() {

@@ -1,10 +1,10 @@
-package com.gogoyang.rpgapi.business.task.publish;
+package com.gogoyang.rpgapi.business.task.publish.controller;
 
 
+import com.gogoyang.rpgapi.business.task.publish.service.IPublishBusinessService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import com.gogoyang.rpgapi.business.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +16,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("/job/publish")
 public class publishController {
-    private final IUserInfoService iUserInfoService;
-    private final IPublishJobService iPublishJobService;
+    private final IPublishBusinessService iPublishBusinessService;
 
     @Autowired
-    public publishController(IUserInfoService iUserInfoService, IPublishJobService iPublishJobService) {
-        this.iUserInfoService = iUserInfoService;
-        this.iPublishJobService = iPublishJobService;
+    public publishController(IPublishBusinessService iPublishBusinessService) {
+        this.iPublishBusinessService = iPublishBusinessService;
     }
 
     @ResponseBody
@@ -31,16 +29,9 @@ public class publishController {
                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            String token = httpServletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.checkToken(token);
-            if (userInfo == null) {
-                response.setErrorCode(10004);
-                return response;
-            }
-
             Map in = new HashMap();
-
-            in.put("userId", userInfo.getUserId());
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
             in.put("code", request.getCode());
             in.put("days", request.getDays());
             in.put("detail", request.getJobDetail());
@@ -48,8 +39,8 @@ public class publishController {
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
 
-            Job job = iPublishJobService.publishJob(in);
-            response.setData(job);
+            Map out = iPublishBusinessService.publishJob(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

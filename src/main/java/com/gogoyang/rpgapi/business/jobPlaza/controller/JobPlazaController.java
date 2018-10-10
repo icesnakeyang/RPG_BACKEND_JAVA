@@ -26,7 +26,7 @@ public class JobPlazaController {
      * @return
      */
     @ResponseBody
-    @GetMapping("/publicJob")
+    @PostMapping("/publicJob")
     public Response publicJob(@RequestBody JobRequest request) {
         Response response = new Response();
         try {

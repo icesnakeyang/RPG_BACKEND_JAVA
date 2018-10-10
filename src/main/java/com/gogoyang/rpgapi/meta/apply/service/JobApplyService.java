@@ -20,6 +20,21 @@ public class JobApplyService implements IJobApplyService {
     }
 
     /**
+     * 创建一个任务申请
+     *
+     * @param jobApply
+     * @throws Exception
+     */
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void insertJobApply(JobApply jobApply) throws Exception {
+        if(jobApply.getJobApplyId()!=null){
+            throw new Exception("10026");
+        }
+        jobApplyDao.save(jobApply);
+    }
+
+    /**
      * 根据userId和jobId读取未处理的申请
      * @param userId
      * @param jobId
@@ -46,17 +61,7 @@ public class JobApplyService implements IJobApplyService {
         return jobApplies;
     }
 
-    /**
-     * 创建一个任务申请
-     *
-     * @param jobApply
-     * @throws Exception
-     */
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void createJobApply(JobApply jobApply) throws Exception {
-        jobApplyDao.save(jobApply);
-    }
+
 
 
     /**

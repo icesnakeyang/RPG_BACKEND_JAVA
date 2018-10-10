@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myApply.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
@@ -10,7 +11,9 @@ import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,5 +73,53 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         Map out=new HashMap();
         out.put("jobList", jobList);
         return out;
+    }
+
+    /**
+     * 用户申请一个任务
+     * @param in
+     * @throws Exception
+     */
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void applyJob(Map in) throws Exception {
+        //check token
+        String token = in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+
+        //check job
+        Job job = iJobService.loadJobByJobId(jobId);
+        if (job == null) {
+            throw new Exception("10005");
+        }
+
+        //是否已成交
+        if (job.getStatus().ordinal()!=JobStatus.MATCHING.ordinal()) {
+            throw new Exception("10006");
+        }
+
+        //检查用户是否为甲方
+        if(job.getPartyAId()==userInfo.getUserId()){
+            throw new Exception("10037");
+        }
+
+        //检查用户是否已经申请过该任务了
+        JobApply jobApply=iJobApplyService.loadJobApplyByUserIdAndJobId(userInfo.getUserId(), jobId);
+        if(jobApply!=null){
+            //the job has applied by current user already
+            throw new Exception("10007");
+        }
+
+        //保存任务申请日志
+        jobApply = new JobApply();
+        jobApply.setApplyTime(new Date());
+        jobApply.setApplyUserId(userInfo.getUserId());
+        jobApply.setJobId(jobId);
+        iJobApplyService.insertJobApply(jobApply);
     }
 }

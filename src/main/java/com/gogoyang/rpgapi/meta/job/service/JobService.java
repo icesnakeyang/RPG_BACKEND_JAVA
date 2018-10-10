@@ -82,8 +82,8 @@ class JobService implements IJobService {
         UserInfo userInfo = iUserInfoService.loadUserByUserId(job.getPartyAId());
         job.setPartyAName(iUserInfoService.getUserName(userInfo.getUserId()));
 
-        Task task = iTaskService.loadTaskByTaskId(job.getTaskId());
-        job.setDetail(task.getDetail());
+        JobDetail jobDetail = jobDetailDao.findByJobId(job.getJobId());
+        job.setDetail(jobDetail.getDetail());
 
         return job;
     }

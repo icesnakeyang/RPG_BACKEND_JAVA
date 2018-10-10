@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -46,6 +48,16 @@ public class AccountService implements IAccountService{
          * calculate the total income, total outgoing, and balance
          * return map
          */
-        return null;
+        ArrayList<Account> accounts=accountDao.findAllByUserId(userId);
+        Double balance=0.0;
+        for(int i=0;i<accounts.size();i++){
+            if(accounts.get(i).getAmount()!=null){
+                Double amount=(Double)accounts.get(i).getAmount();
+                balance+=amount;
+            }
+        }
+        Map out=new HashMap();
+        out.put("balance", balance);
+        return out;
     }
 }

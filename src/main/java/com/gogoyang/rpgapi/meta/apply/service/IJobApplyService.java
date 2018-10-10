@@ -7,6 +7,8 @@ import java.util.ArrayList;
 public interface IJobApplyService {
     JobApply loadJobApplyByUserIdAndJobId(Integer userId, Integer jobId) throws Exception;
 
+    void insertJobApply(JobApply jobApply) throws Exception;
+
     /**
      * 读取指定任务的所有未处理的申请记录
      * @param jobId
@@ -15,7 +17,7 @@ public interface IJobApplyService {
      */
     ArrayList<JobApply> loadJobApplyByJobId(Integer jobId) throws Exception;
 
-    void createJobApply(JobApply jobApply) throws Exception;
+
 
     boolean isApplied(Integer userId, Integer jobId) throws Exception;
 
