@@ -14,9 +14,5 @@ public interface IAdminService {
 
     Admin loadAdminByToken(String token) throws Exception;
 
-    void matchJob(JobMatch jobMatch) throws Exception;
-
     ArrayList<Admin> loadAdminByRoleType(RoleType roleType) throws Exception;
-
-    ArrayList<UserInfo> loadJobAppliedUser(Integer jobId) throws Exception;
 }

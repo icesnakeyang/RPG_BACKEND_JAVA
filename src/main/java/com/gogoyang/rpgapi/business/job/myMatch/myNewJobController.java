@@ -1,6 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myMatch;
 
-import com.gogoyang.rpgapi.business.job.JobRequest;
+import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import com.gogoyang.rpgapi.business.vo.Response;

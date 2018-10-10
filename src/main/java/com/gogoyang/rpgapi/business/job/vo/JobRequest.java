@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.job;
+package com.gogoyang.rpgapi.business.job.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +17,8 @@ public class JobRequest {
     private Integer jobMatchId;
     private Integer userId;
     private Integer jobId;
+    private Integer pageIndex;
+    private Integer pageSize;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -90,5 +92,21 @@ public class JobRequest {
 
     public void setJobId(Integer jobId) {
         this.jobId = jobId;
+    }
+
+    public Integer getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }

@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.task.publish;
 
 
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.business.job.JobRequest;
+import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import com.gogoyang.rpgapi.business.vo.Response;

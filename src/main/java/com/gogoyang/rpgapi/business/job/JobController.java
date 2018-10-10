@@ -37,30 +37,7 @@ public class JobController {
         this.iJobMatchService = iJobMatchService;
     }
 
-    /**
-     * 在任务广场显示一批目前正在等待交易的任务
-     * read unassigned jobs to display in job plaza
-     *
-     * @return
-     */
-    @ResponseBody
-    @GetMapping("/jobPlaza")
-    public Response JobPlaza() {
-        Response response = new Response();
-        try {
-            Page<Job> jobs = iJobService.loadJobUnMatch(0, 100);
-            response.setData(jobs);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10026);
-                return response;
-            }
-        }
-        return response;
-    }
+
 
     /**
      * 读取一条任务，包含详情

@@ -41,7 +41,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     }
 
     /**
-     * 读取用户已经申请，但还没有成交的任务
+     * 读取所有有用户申请的任务，以便秘书处理。
      *
      * @param in
      * @return
@@ -86,13 +86,19 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         return out;
     }
 
+    /**
+     * 分配一个任务给一个用户
+     *
+     * @param in
+     * @throws Exception
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void matchJobToUser(Map in) throws Exception {
 
         Integer jobId = (Integer) in.get("jobId");
         Integer userId = (Integer) in.get("userId");
-        String token=in.get("token").toString();
+        String token = in.get("token").toString();
 
         /**
          * only secretary can match job
@@ -140,8 +146,54 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         iJobApplyService.updateJobApply(jobApply);
     }
 
+    /**
+     * 读取所有申请了当前任务的用户
+     * read all users who have applied the job
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
     @Override
-    public ArrayList<UserInfo> loadApplyUserByJobId(Integer jobId) throws Exception {
-        return null;
+    public Map loadUserApplyJob(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+
+        /**
+         * 当前操作用户必须是RPG秘书权限
+         */
+        Admin admin = iAdminService.loadAdminByToken(token);
+        if (admin == null) {
+            throw new Exception("10004");
+        }
+        if (admin.getRoleType() != RoleType.SECRETARY) {
+            throw new Exception("10040");
+        }
+
+        /**
+         * read jobApply by jobId where processResult==null
+         */
+        ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(jobId);
+
+        /**
+         * 逐条查询JobMatch里是否已经分配了该用户
+         * 若没分配则读取userInfo
+         */
+        ArrayList<UserInfo> users = new ArrayList<UserInfo>();
+        for (int i = 0; i < jobApplies.size(); i++) {
+            //检查是否已经分配
+            JobMatch jobMatch = iJobMatchService.loadJobMatchByUserIdAndJobId(
+                    jobApplies.get(i).getApplyUserId(),
+                    jobApplies.get(i).getJobId());
+            if (jobMatch == null) {
+                UserInfo userInfo = iUserInfoService.loadUserByUserId(jobApplies.get(i).getApplyUserId());
+                if (userInfo != null) {
+                    users.add(userInfo);
+                }
+            }
+        }
+        Map out = new HashMap();
+        out.put("users", users);
+        return out;
     }
 }

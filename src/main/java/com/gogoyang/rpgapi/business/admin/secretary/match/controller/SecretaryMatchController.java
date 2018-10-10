@@ -106,60 +106,18 @@ public class SecretaryMatchController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/loadUsersAppliedJobAndWaiting")
-    public Response LoadUsersAppliedJobAndWaiting(@RequestBody AdminRequest request,
+    @PostMapping("/loadUserApplyJob")
+    public Response loadUserApplyJob(@RequestBody AdminRequest request,
                                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
-            Admin admin = iAdminService.loadAdminByToken(token);
-            if (admin == null) {
-                response.setErrorCode(10004);
-                return response;
-            }
-            if(admin.getRoleType()!=RoleType.SECRETARY){
-                response.setErrorCode(10040);
-                return response;
-            }
-            ArrayList<UserInfo> userInfos = iAdminService.loadJobAppliedUser(request.getJobId());
-
-
-            /**
-             * 根据jobId，查找所有申请过该任务，且未被处理的用户。
-             *
-             * @param jobId
-             * @return
-             * @throws Exception
-             */
-            @Override
-            public ArrayList<UserInfo> loadJobAppliedUser(Integer jobId) throws Exception {
-                /**
-                 * 首先，根据JobId查找jobApplyLog，result==null
-                 * 然后，查询JobMatch里是否已经分配了
-                 * 根据jobApplyLog.applyUserId查找userInfo
-                 * 返回所有的UserInfo
-                 *
-                 */
-                ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(jobId);
-                ArrayList<UserInfo> users = new ArrayList<UserInfo>();
-                for (int i = 0; i < jobApplies.size(); i++) {
-                    //检查是否已经分配
-                    JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(
-                            jobApplies.get(i).getApplyUserId(),
-                            jobApplies.get(i).getJobId());
-                    if(jobMatch==null) {
-                        UserInfo userInfo = iUserInfoService.loadUserByUserId(jobApplies.get(i).getApplyUserId());
-                        if (userInfo != null) {
-                            users.add(userInfo);
-                        }
-                    }
-                }
-
-                return users;
-            }
-
-
-            response.setData(userInfos);
+            Integer jobId=(Integer)request.getJobId();
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", jobId);
+            Map out= iSecretaryMatchBusinessService.loadUserApplyJob(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

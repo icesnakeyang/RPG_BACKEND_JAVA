@@ -10,6 +10,6 @@ public interface ISecretaryMatchBusinessService {
 
     void matchJobToUser(Map in) throws Exception;
 
-    ArrayList<UserInfo> loadApplyUserByJobId(Integer jobId) throws Exception;
+    Map loadUserApplyJob(Map in) throws Exception;
 
 }
