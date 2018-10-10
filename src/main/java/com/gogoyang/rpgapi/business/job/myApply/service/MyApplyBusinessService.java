@@ -1,0 +1,74 @@
+package com.gogoyang.rpgapi.business.job.myApply.service;
+
+import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
+import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
+import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
+import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class MyApplyBusinessService implements IMyApplyBusinessService{
+    private final IUserInfoService iUserInfoService;
+    private final IJobApplyService iJobApplyService;
+    private final IJobService iJobService;
+    private final IJobMatchService iJobMatchService;
+
+    @Autowired
+    public MyApplyBusinessService(IUserInfoService iUserInfoService, IJobApplyService iJobApplyService,
+                                  IJobService iJobService, IJobMatchService iJobMatchService) {
+        this.iUserInfoService = iUserInfoService;
+        this.iJobApplyService = iJobApplyService;
+        this.iJobService = iJobService;
+        this.iJobMatchService = iJobMatchService;
+    }
+
+    /**
+     * 读取所有我申请的，还未处理的任务。
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map loadJobByMyApply(Map in) throws Exception {
+        /**
+         * 参数：token
+         * 1. 根据token读取userInfo，获得用户的userId
+         * 2. 根据userId读取jobApply，获取用户的申请记录
+         * 3. 根据jobId读取job信息
+         */
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+        ArrayList<JobApply> myApplyList = iJobApplyService.loadMyApplies(userInfo.getUserId());
+        ArrayList jobList = new ArrayList();
+        for (int i = 0; i < myApplyList.size(); i++) {
+            Job job = iJobService.loadJobByJobId(myApplyList.get(i).getJobId());
+            if (job != null) {
+                job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
+                Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
+                Integer matchNum = iJobMatchService.countMatchingUsers(job.getJobId());
+                Map theMap = new HashMap();
+                theMap.put("job", job);
+                theMap.put("apply", myApplyList.get(i));
+                theMap.put("applyNum", applyNum);
+                theMap.put("matchNum", matchNum);
+
+                jobList.add(theMap);
+            }
+        }
+        Map out=new HashMap();
+        out.put("jobList", jobList);
+        return out;
+    }
+}

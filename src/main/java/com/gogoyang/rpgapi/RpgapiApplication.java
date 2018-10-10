@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi;
 
 
-import com.gogoyang.rpgapi.security.AuthCheckInterceptor;
+import com.gogoyang.rpgapi.framework.security.AuthCheckInterceptor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

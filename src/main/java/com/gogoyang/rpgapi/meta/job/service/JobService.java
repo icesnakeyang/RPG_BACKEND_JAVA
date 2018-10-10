@@ -1,0 +1,136 @@
+package com.gogoyang.rpgapi.meta.job.service;
+
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.meta.job.dao.JobDao;
+import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
+import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
+import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
+import com.gogoyang.rpgapi.meta.task.entity.Task;
+import com.gogoyang.rpgapi.meta.task.service.ITaskService;
+import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
+import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+
+@Service
+class JobService implements IJobService {
+
+    private final JobDao jobDao;
+    private final IUserInfoService iUserInfoService;
+    private final ITaskService iTaskService;
+    private final IJobApplyService iJobApplyService;
+    private final IJobMatchService iJobMatchService;
+    private final JobDetailDao jobDetailDao;
+
+    @Autowired
+    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService, IJobApplyService iJobApplyService, IJobMatchService iJobMatchService, JobDetailDao jobDetailDao) {
+        this.jobDao = jobDao;
+        this.iUserInfoService = iUserInfoService;
+        this.iTaskService = iTaskService;
+        this.iJobApplyService = iJobApplyService;
+        this.iJobMatchService = iJobMatchService;
+        this.jobDetailDao = jobDetailDao;
+    }
+
+    /**
+     * 创建一个Job
+     *
+     * @param job
+     * @return
+     * @throws Exception
+     */
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public Job insertJob(Job job) throws Exception {
+        //确保jobId为null，否则为修改
+        if(job.getJobId()!=null){
+            throw new Exception("10032");
+        }
+        if(job.getTitle()==null){
+            throw new Exception("10032");
+        }
+        job = jobDao.save(job);
+
+        //保存jobDetail表
+        JobDetail jobDetail=new JobDetail();
+        jobDetail.setJobId(job.getJobId());
+        jobDetail.setDetail(job.getDetail());
+        jobDetailDao.save(jobDetail);
+
+        return job;
+    }
+
+    /**
+     * 读取Job的详细信息，包括jobDetail
+     *
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Job loadJobByJobId(Integer jobId) throws Exception {
+        Job job = jobDao.findByJobId(jobId);
+
+        UserInfo userInfo = iUserInfoService.loadUserByUserId(job.getPartyAId());
+        job.setPartyAName(iUserInfoService.getUserName(userInfo.getUserId()));
+
+        Task task = iTaskService.loadTaskByTaskId(job.getTaskId());
+        job.setDetail(task.getDetail());
+
+        return job;
+    }
+
+    /**
+     * 读取job，不带detail
+     *
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Job loadJobByJobIdTiny(Integer jobId) throws Exception {
+        Job job = jobDao.findByJobId(jobId);
+        return job;
+    }
+
+    /**
+     * 根据jobStatus读取jobs
+     * read jobs by jobStatus
+     * paginate the list
+     *
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Page<Job> loadJobByStatus(JobStatus jobStatus,Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByStatus(jobStatus,pageable);
+
+        return jobs;
+    }
+
+    /**
+     * 修改job
+     * @param job
+     * @throws Exception
+     */
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void updateJob(Job job) throws Exception {
+        if(job.getJobId()==null){
+            throw new Exception("10010");
+        }
+        jobDao.save(job);
+    }
+}
