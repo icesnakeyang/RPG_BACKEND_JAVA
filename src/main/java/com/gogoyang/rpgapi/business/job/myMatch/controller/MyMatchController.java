@@ -1,12 +1,10 @@
 package com.gogoyang.rpgapi.business.job.myMatch.controller;
 
 import com.gogoyang.rpgapi.business.job.myMatch.service.IMyMatchBusinessService;
+import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -46,6 +44,29 @@ public class MyMatchController {
                 response.setErrorCode(10013);
             }
             return response;
+        }
+        return response;
+    }
+
+
+    @ResponseBody
+    @PostMapping("/acceptNewJob")
+    public Response acceptNewJob(@RequestBody JobRequest request,
+                                 HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try{
+            Map in=new HashMap();
+            in.put("jobId", request.getJobId());
+            in.put("token", httpServletRequest.getHeader("token"));
+            iMyMatchBusinessService.acceptNewJob(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                return response;
+            }catch (Exception ex2){
+                response.setErrorCode(10041);
+                return response;
+            }
         }
         return response;
     }
