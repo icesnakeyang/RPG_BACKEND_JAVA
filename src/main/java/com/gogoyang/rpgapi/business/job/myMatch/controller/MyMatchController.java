@@ -70,4 +70,35 @@ public class MyMatchController {
         }
         return response;
     }
+
+    @ResponseBody
+    @PostMapping("/rejectNewJob")
+    public Response rejectNewJob(@RequestBody JobRequest request,
+                                 HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try{
+            String token=httpServletRequest.getHeader("token");
+            if(token==null){
+                response.setErrorCode(10004);
+                return response;
+            }
+            if(request.getJobId()==null){
+                response.setErrorCode(10004);
+                return response;
+            }
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            iMyMatchBusinessService.rejectNewJob(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                return response;
+            }catch (Exception ex2){
+                response.setErrorCode(10050);
+                return response;
+            }
+        }
+        return response;
+    }
 }
