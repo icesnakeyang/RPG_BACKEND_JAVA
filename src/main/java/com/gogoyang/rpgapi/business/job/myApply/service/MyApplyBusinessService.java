@@ -5,6 +5,7 @@ import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
@@ -113,6 +114,13 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         if(jobApply!=null){
             //the job has applied by current user already
             throw new Exception("10007");
+        }
+
+        //检查用户是否已经分配了该任务
+        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(userInfo.getUserId(),jobId);
+        if(jobMatch!=null){
+            // the job has been assigned to this user already.
+            throw new Exception("10049");
         }
 
         //保存任务申请日志
