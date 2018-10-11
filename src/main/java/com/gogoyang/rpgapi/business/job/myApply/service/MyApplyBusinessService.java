@@ -121,5 +121,12 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         jobApply.setApplyUserId(userInfo.getUserId());
         jobApply.setJobId(jobId);
         iJobApplyService.insertJobApply(jobApply);
+
+        //刷新job的applyNum次数
+        Integer applyNum=iJobApplyService.countApplyUsers(jobId);
+        if(job.getJobApplyNum()!=applyNum){
+            job.setJobApplyNum(applyNum);
+            iJobService.updateJob(job);
+        }
     }
 }

@@ -26,12 +26,13 @@ public class MyApplyController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/loadMyApplyJob")
+    @GetMapping("/loadMyApplyJob")
     public Response loadMyApplyJob(HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
             Map in=new HashMap();
-            in.put("token", httpServletRequest.getHeader("token"));
+            String token=httpServletRequest.getHeader("token");
+            in.put("token", token);
 
             Map out=new HashMap();
             out=iMyApplyBusinessService.loadJobByMyApply(in);

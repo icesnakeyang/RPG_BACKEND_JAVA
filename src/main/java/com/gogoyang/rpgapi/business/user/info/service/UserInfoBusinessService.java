@@ -38,6 +38,7 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
 
     /**
      * 同时保存用户的realname， email， phone等信息，并设置为默认。
+     *
      * @param in
      * @throws Exception
      */
@@ -48,9 +49,18 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
          * 用户在申请任务时会提交一个联系信息，包括email, phone, realname
          * 分别保存并记录日志
          */
-        String strEmail = in.get("email").toString();
-        String strPhone = in.get("phone").toString();
-        String strRealName = in.get("realName").toString();
+        String strEmail = null;
+        if (in.get("email") != null) {
+            strEmail = in.get("email").toString();
+        }
+        String strPhone = null;
+        if (in.get("phone") != null) {
+            strPhone = in.get("phone").toString();
+        }
+        String strRealName = null;
+        if (in.get("realName") != null) {
+            strRealName = in.get("realName").toString();
+        }
         String token = in.get("token").toString();
 
         UserInfo userInfo = iUserInfoService.loadUserByToken(token);
@@ -58,15 +68,15 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
             throw new Exception("10004");
         }
 
-        if(strEmail!=null && !strEmail.equals("")) {
+        if (strEmail != null && !strEmail.equals("")) {
             saveEmail(strEmail, userInfo);
             userInfo.setEmail(strEmail);
         }
-        if(strPhone!=null && !strPhone.equals("")) {
+        if (strPhone != null && !strPhone.equals("")) {
             savePhone(strPhone, userInfo);
             userInfo.setPhone(strPhone);
         }
-        if(strRealName!=null && !strRealName.equals("")) {
+        if (strRealName != null && !strRealName.equals("")) {
             saveRealName(strRealName, userInfo);
             userInfo.setRealName(strRealName);
         }
@@ -77,6 +87,7 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
      * save email
      * will handle set this email to default
      * this function will not update the job
+     *
      * @param strEmail
      * @param userInfo
      * @throws Exception
@@ -190,24 +201,24 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void saveRealName(String strRealName, UserInfo userInfo) throws Exception {
-        RealName realName=iRealNameService.loadCurrentRealName(userInfo.getUserId());
-        if(realName==null){
+        RealName realName = iRealNameService.loadCurrentRealName(userInfo.getUserId());
+        if (realName == null) {
             //如果为null，则说明用户当前没有实名，直接添加一个就行了
-            realName= new RealName();
+            realName = new RealName();
             realName.setCreatedTime(new Date());
             realName.setRealName(strRealName);
             realName.setUserId(userInfo.getUserId());
             iRealNameService.insertRealName(realName);
             return;
-        }else {
+        } else {
             //如果不为空，则将现有实名设置失效，然后再添加一个。
             //如意实名如果相同，就不处理了。
-            if(realName.getRealName().equals(strRealName)){
+            if (realName.getRealName().equals(strRealName)) {
                 return;
             }
             realName.setDisableTime(new Date());
             iRealNameService.updateRealName(realName);
-            realName=new RealName();
+            realName = new RealName();
             realName.setCreatedTime(new Date());
             realName.setRealName(strRealName);
             realName.setUserId(userInfo.getUserId());
