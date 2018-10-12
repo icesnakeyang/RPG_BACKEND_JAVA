@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.job.log;
+package com.gogoyang.rpgapi.business.job.jobLog;
 
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 

@@ -10,4 +10,4 @@ server:
   port: 9527
 logging:
   level: debug
-  file: rpgapi.log
+  file: rpgapi.jobLog
