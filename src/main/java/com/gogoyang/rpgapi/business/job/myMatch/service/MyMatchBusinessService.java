@@ -168,12 +168,16 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
     @Transactional(rollbackOn = Exception.class)
     public void rejectNewJob(Map in) throws Exception {
         /**
+         * 参数：jobId, token, remark
          * 修改jobMatch
          *
          */
-        Integer jobMatchId = (Integer) in.get("jobMatchId");
-        String remark = in.get("remark").toString();
-        JobMatch jobMatch = iJobMatchService.loadJobMatchByJobMatchId(jobMatchId);
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+        String remark=in.get("remark").toString();
+
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(userInfo.getUserId(), jobId);
         jobMatch.setProcessResult(LogStatus.REJECT);
         jobMatch.setProcessTime(new Date());
         jobMatch.setProcessRemark(remark);

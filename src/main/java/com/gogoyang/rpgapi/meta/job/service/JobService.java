@@ -51,16 +51,16 @@ class JobService implements IJobService {
     @Transactional(rollbackOn = Exception.class)
     public Job insertJob(Job job) throws Exception {
         //确保jobId为null，否则为修改
-        if(job.getJobId()!=null){
+        if (job.getJobId() != null) {
             throw new Exception("10032");
         }
-        if(job.getTitle()==null){
+        if (job.getTitle() == null) {
             throw new Exception("10032");
         }
         job = jobDao.save(job);
 
         //保存jobDetail表
-        JobDetail jobDetail=new JobDetail();
+        JobDetail jobDetail = new JobDetail();
         jobDetail.setJobId(job.getJobId());
         jobDetail.setDetail(job.getDetail());
         jobDetailDao.save(jobDetail);
@@ -112,24 +112,42 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Page<Job> loadJobByStatus(JobStatus jobStatus,Integer pageIndex, Integer pageSize) throws Exception {
+    public Page<Job> loadJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByStatus(jobStatus,pageable);
+        Page<Job> jobs = jobDao.findAllByStatus(jobStatus, pageable);
         return jobs;
     }
 
     /**
      * 修改job
+     *
      * @param job
      * @throws Exception
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateJob(Job job) throws Exception {
-        if(job.getJobId()==null){
+        if (job.getJobId() == null) {
             throw new Exception("10010");
         }
         jobDao.save(job);
+    }
+
+    /**
+     * 读取所有我是甲方的任务
+     * @param userId
+     * @param jobStatus
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Page<Job> loadPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(userId, jobStatus, pageable);
+        return jobs;
     }
 }

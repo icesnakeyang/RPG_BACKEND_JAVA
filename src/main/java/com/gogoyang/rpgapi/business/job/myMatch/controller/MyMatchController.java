@@ -89,6 +89,7 @@ public class MyMatchController {
             Map in=new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
+            in.put("remark", request.getRemark());
             iMyMatchBusinessService.rejectNewJob(in);
         }catch (Exception ex){
             try {

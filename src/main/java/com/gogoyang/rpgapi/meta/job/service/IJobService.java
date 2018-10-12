@@ -29,4 +29,15 @@ public interface IJobService {
      * @throws Exception
      */
     void updateJob(Job job) throws Exception;
+
+    /**
+     * 获取我是甲方的任务
+     * @param userId
+     * @param jobStatus
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    Page<Job> loadPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 }
