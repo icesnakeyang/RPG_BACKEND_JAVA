@@ -1,7 +1,11 @@
 package com.gogoyang.rpgapi.meta.log.dao;
 
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.ArrayList;
 
 public interface JobLogDao extends JpaRepository<JobLog, Integer>{
     /**
@@ -9,5 +13,7 @@ public interface JobLogDao extends JpaRepository<JobLog, Integer>{
      * @param userId
      * @return
      */
-    JobLog findAllByReadTimeIsNullAndCreatedUserIdIsNot(Integer userId);
+    ArrayList<JobLog> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndJobId(Integer userId, Integer jobId);
+
+    Page<JobLog> findAllByJobId(Integer jobId, Pageable pageable);
 }

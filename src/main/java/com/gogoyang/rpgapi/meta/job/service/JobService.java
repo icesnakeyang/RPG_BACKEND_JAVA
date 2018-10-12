@@ -148,6 +148,14 @@ class JobService implements IJobService {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(userId, jobStatus, pageable);
+        for(int i=0;i<jobs.getContent().size();i++){
+            jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
+                    jobs.getContent().get(i).getPartyAId()));
+            if(jobs.getContent().get(i).getPartyBId()!=null){
+                jobs.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
+                        jobs.getContent().get(i).getPartyBId()));
+            }
+        }
         return jobs;
     }
 }
