@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.meta.log.service;
 
 import com.gogoyang.rpgapi.meta.log.dao.JobLogDao;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
+import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,10 +16,12 @@ import java.util.ArrayList;
 @Service
 public class JobLogService implements IJobLogService{
     private final JobLogDao jobLogDao;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public JobLogService(JobLogDao jobLogDao) {
+    public JobLogService(JobLogDao jobLogDao, IUserInfoService iUserInfoService) {
         this.jobLogDao = jobLogDao;
+        this.iUserInfoService = iUserInfoService;
     }
 
     /**
@@ -46,6 +49,10 @@ public class JobLogService implements IJobLogService{
         Sort sort = new Sort(Sort.Direction.DESC, "jobLogId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<JobLog> jobLogs = jobLogDao.findAllByJobId(jobId, pageable);
+        for(int i=0;i<jobLogs.getContent().size();i++){
+            jobLogs.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
+                    jobLogs.getContent().get(i).getCreatedUserId()));
+        }
         return jobLogs;
     }
 

@@ -16,4 +16,6 @@ public interface JobDao extends JpaRepository<Job, Integer>{
 
     //find all party a jobs
     Page<Job> findAllByPartyAIdAndStatus(Integer userId, JobStatus jobStatus, Pageable pageable);
+
+    Page<Job> findAllByPartyBIdAndStatus(Integer userId, JobStatus jobStatus, Pageable pageable);
 }

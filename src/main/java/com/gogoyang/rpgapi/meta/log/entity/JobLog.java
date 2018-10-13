@@ -1,9 +1,6 @@
 package com.gogoyang.rpgapi.meta.log.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -27,6 +24,9 @@ public class JobLog {
 
     @Column(name = "read_time")
     private Date readTime;
+
+    @Transient
+    private String createdUserName;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Integer getJobLogId() {
@@ -75,5 +75,13 @@ public class JobLog {
 
     public void setReadTime(Date readTime) {
         this.readTime = readTime;
+    }
+
+    public String getCreatedUserName() {
+        return createdUserName;
+    }
+
+    public void setCreatedUserName(String createdUserName) {
+        this.createdUserName = createdUserName;
     }
 }

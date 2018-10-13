@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 @Service
 class JobService implements IJobService {
@@ -158,4 +159,28 @@ class JobService implements IJobService {
         }
         return jobs;
     }
+
+    /**
+     * 读取我是乙方的所有任务
+     * @param userId
+     * @param jobStatus
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception{
+        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs=jobDao.findAllByPartyBIdAndStatus(userId, jobStatus, pageable);
+        for(int i=0;i<jobs.getContent().size();i++){
+            jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
+                    jobs.getContent().get(i).getPartyAId()));
+            jobs.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
+                    jobs.getContent().get(i).getPartyBId()));
+        }
+        return jobs;
+    }
+
 }

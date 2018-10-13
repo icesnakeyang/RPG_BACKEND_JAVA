@@ -40,4 +40,15 @@ public interface IJobService {
      * @throws Exception
      */
     Page<Job> loadPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+
+    /**
+     * 获取我是乙方的任务
+     * @param userId
+     * @param jobStatus
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 }
