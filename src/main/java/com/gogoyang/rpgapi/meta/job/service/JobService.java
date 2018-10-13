@@ -80,8 +80,8 @@ class JobService implements IJobService {
     public Job loadJobByJobId(Integer jobId) throws Exception {
         Job job = jobDao.findByJobId(jobId);
 
-        UserInfo userInfo = iUserInfoService.loadUserByUserId(job.getPartyAId());
-        job.setPartyAName(iUserInfoService.getUserName(userInfo.getUserId()));
+        job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
+        job.setPartyBName(iUserInfoService.getUserName(job.getPartyBId()));
 
         JobDetail jobDetail = jobDetailDao.findByJobId(job.getJobId());
         job.setDetail(jobDetail.getDetail());
