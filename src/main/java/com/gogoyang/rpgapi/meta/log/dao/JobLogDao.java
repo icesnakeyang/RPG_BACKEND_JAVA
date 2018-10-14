@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
 
-public interface JobLogDao extends JpaRepository<JobLog, Integer>{
+public interface JobLogDao extends JpaRepository<JobLog, Integer> {
     /**
      * 查找所有userId未读的JobLog
+     *
      * @param userId
      * @return
      */

@@ -87,6 +87,12 @@ public class Job {
     @Column(name = "account_balance")
     private Double accountBalance;
 
+    /**
+     * 我未阅读的日志总数
+     */
+    @Transient
+    private Integer unRead;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getJobId() {
@@ -239,5 +245,13 @@ public class Job {
 
     public void setMatchId(Integer matchId) {
         this.matchId = matchId;
+    }
+
+    public Integer getUnRead() {
+        return unRead;
+    }
+
+    public void setUnRead(Integer unRead) {
+        this.unRead = unRead;
     }
 }

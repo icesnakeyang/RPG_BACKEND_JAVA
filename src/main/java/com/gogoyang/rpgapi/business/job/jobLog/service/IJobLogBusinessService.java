@@ -22,4 +22,12 @@ public interface IJobLogBusinessService {
     Page<JobLog> loadJobLog(Map in) throws Exception;
 
     void setJobLogReadTime(Map in)throws Exception;
+
+    /**
+     * 统计未阅读的日志数量
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Integer countUnreadJobLog(Map in) throws Exception;
 }

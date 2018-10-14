@@ -91,4 +91,22 @@ public class JobLogBusinessService implements IJobLogBusinessService{
             iJobLogService.updateJobLog(jobLogs.get(i));
         }
     }
+
+    /**
+     * 统计userId未读的JobId的日志
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Integer countUnreadJobLog(Map in) throws Exception {
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        Integer userId=userInfo.getUserId();
+        Integer jobId=(Integer)in.get("jobId");
+
+
+        ArrayList<JobLog> jobLogs=iJobLogService.loadMyUnreadJobLog(jobId, userId);
+        return jobLogs.size();
+    }
 }
