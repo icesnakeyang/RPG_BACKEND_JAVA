@@ -56,8 +56,8 @@ public class JobDetailController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/jobDeailPage")
-    public Response loadJobDetailLogin(@RequestBody JobRequest request,
+    @PostMapping("/loadUnreadByJobId")
+    public Response loadUnreadByJobId(@RequestBody JobRequest request,
                                        HttpServletRequest httpServletRequest){
         Response response=new Response();
         try
@@ -66,7 +66,7 @@ public class JobDetailController {
             Map in=new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
-            Map out=iJobDetailBusinessService.loadJobDetailLogin(in);
+            Map out=iJobDetailBusinessService.loadUnreadByJobId(in);
             response.setData(out);
         }catch (Exception ex){
             try {

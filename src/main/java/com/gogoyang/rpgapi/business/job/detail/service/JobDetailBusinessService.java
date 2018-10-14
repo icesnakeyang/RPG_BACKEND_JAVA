@@ -24,6 +24,12 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
         this.iUserInfoService = iUserInfoService;
     }
 
+    /**
+     * 读取任务详情
+     * @param in
+     * @return
+     * @throws Exception
+     */
     @Override
     public Map loadJobDetail(Map in) throws Exception {
         Integer jobId=(Integer)in.get("jobId");
@@ -34,23 +40,17 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
     }
 
     /**
-     * 读取任务详情，包括登录用户的各种信息
+     * 读取任务的各种状态，未读事件
      * @param in
      * @return
      * @throws Exception
      */
     @Override
-    public Map loadJobDetailLogin(Map in) throws Exception {
+    public Map loadUnreadByJobId(Map in) throws Exception {
         String token=in.get("token").toString();
         Integer jobId=(Integer)in.get("jobId");
-
-        Job job=iJobService.loadJobByJobId(jobId);
-        Integer unreadJobLog=iJobLogBusinessService.countUnreadJobLog(in);
-
         Map out=new HashMap();
-        out.put("unreadJobLog", unreadJobLog);
-        out.put("job", job);
-
+        out.put("unReadJobLog",iJobLogBusinessService.countUnreadJobLog(in));
         return out;
     }
 }
