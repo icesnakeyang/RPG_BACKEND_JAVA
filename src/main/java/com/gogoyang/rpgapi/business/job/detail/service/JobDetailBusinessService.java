@@ -3,7 +3,6 @@ package com.gogoyang.rpgapi.business.job.detail.service;
 import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

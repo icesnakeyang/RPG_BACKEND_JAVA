@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.meta.job.service;
 
+import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.dao.JobDao;
 import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
@@ -7,9 +8,7 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
-import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 class JobService implements IJobService {
@@ -30,15 +30,17 @@ class JobService implements IJobService {
     private final IJobApplyService iJobApplyService;
     private final IJobMatchService iJobMatchService;
     private final JobDetailDao jobDetailDao;
+    private final IJobLogBusinessService iJobLogBusinessService;
 
     @Autowired
-    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService, IJobApplyService iJobApplyService, IJobMatchService iJobMatchService, JobDetailDao jobDetailDao) {
+    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService, IJobApplyService iJobApplyService, IJobMatchService iJobMatchService, JobDetailDao jobDetailDao, IJobLogBusinessService iJobLogBusinessService) {
         this.jobDao = jobDao;
         this.iUserInfoService = iUserInfoService;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
         this.iJobMatchService = iJobMatchService;
         this.jobDetailDao = jobDetailDao;
+        this.iJobLogBusinessService = iJobLogBusinessService;
     }
 
     /**
@@ -155,6 +157,12 @@ class JobService implements IJobService {
             if(jobs.getContent().get(i).getPartyBId()!=null){
                 jobs.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
                         jobs.getContent().get(i).getPartyBId()));
+                Integer unread=0;
+                Map in=new HashMap();
+                in.put("userId", userId);
+                in.put("jobId", jobs.getContent().get(i).getJobId());
+                unread=iJobLogBusinessService.countUnreadJobLog(in);
+                jobs.getContent().get(i).setUnRead(unread);
             }
         }
         return jobs;
@@ -170,7 +178,8 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception{
+    public Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus,
+                                   Integer pageIndex, Integer pageSize) throws Exception{
         Sort sort=new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs=jobDao.findAllByPartyBIdAndStatus(userId, jobStatus, pageable);
@@ -179,8 +188,13 @@ class JobService implements IJobService {
                     jobs.getContent().get(i).getPartyAId()));
             jobs.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
                     jobs.getContent().get(i).getPartyBId()));
+            Integer unread=0;
+            Map in=new HashMap();
+            in.put("userId", userId);
+            in.put("jobId", jobs.getContent().get(i).getJobId());
+            unread=iJobLogBusinessService.countUnreadJobLog(in);
+            jobs.getContent().get(i).setUnRead(unread);
         }
         return jobs;
     }
-
 }

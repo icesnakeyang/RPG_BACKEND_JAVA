@@ -100,12 +100,15 @@ public class JobLogBusinessService implements IJobLogBusinessService{
      */
     @Override
     public Integer countUnreadJobLog(Map in) throws Exception {
-        String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
-        Integer userId=userInfo.getUserId();
+        Integer userId;
+        if(in.get("userId")==null){
+            String token=in.get("token").toString();
+            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            userId=userInfo.getUserId();
+        }else {
+            userId=(Integer)in.get("userId");
+        }
         Integer jobId=(Integer)in.get("jobId");
-
-
         ArrayList<JobLog> jobLogs=iJobLogService.loadMyUnreadJobLog(jobId, userId);
         return jobLogs.size();
     }
