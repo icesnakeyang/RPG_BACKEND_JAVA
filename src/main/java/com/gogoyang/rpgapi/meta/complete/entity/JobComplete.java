@@ -40,7 +40,7 @@ public class JobComplete {
     private Integer processUserId;
 
     @Transient
-    private String CreatedUserName;
+    private String createdUserName;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Integer getCompleteId() {
@@ -124,10 +124,10 @@ public class JobComplete {
     }
 
     public String getCreatedUserName() {
-        return CreatedUserName;
+        return createdUserName;
     }
 
     public void setCreatedUserName(String createdUserName) {
-        CreatedUserName = createdUserName;
+        this.createdUserName = createdUserName;
     }
 }

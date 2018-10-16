@@ -1,7 +1,10 @@
 package com.gogoyang.rpgapi.business.job.complete.service;
 
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.complete.service.IJobCompleteService;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
@@ -18,11 +21,13 @@ import java.util.Map;
 public class CompleteBusinessService implements ICompleteBusinessService {
     private final IJobCompleteService iJobCompleteService;
     private final IUserInfoService iUserInfoService;
+    private final IJobService iJobService;
 
     @Autowired
-    public CompleteBusinessService(IJobCompleteService iJobCompleteService, IUserInfoService iUserInfoService) {
+    public CompleteBusinessService(IJobCompleteService iJobCompleteService, IUserInfoService iUserInfoService, IJobService iJobService) {
         this.iJobCompleteService = iJobCompleteService;
         this.iUserInfoService = iUserInfoService;
+        this.iJobService = iJobService;
     }
 
     /**
@@ -48,7 +53,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         jobComplete.setCreatedTime(new Date());
         jobComplete.setCreatedUserId(userInfo.getUserId());
         jobComplete.setJobId(jobId);
-        iJobCompleteService.createJobComplete(jobComplete);
+        iJobCompleteService.insertJobComplete(jobComplete);
     }
 
     /**
@@ -88,5 +93,91 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             jobCompletes.get(i).setReadTime(new Date());
             iJobCompleteService.updateJobComplete(jobCompletes.get(i));
         }
+    }
+
+    /**
+     * 拒绝验收
+     * 读取所有未处理验收申请
+     * 设置成reject
+     * @param in
+     * @throws Exception
+     */
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void rejectComplete(Map in) throws Exception {
+        Integer jobId=(Integer)in.get("jobId");
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        String processRemark=null;
+        if(in.get("processRemark")!=null){
+            processRemark=in.get("processRemark").toString();
+        }
+        ArrayList<JobComplete> jobCompletes=iJobCompleteService.loadUnprocessComplete(jobId);
+        for(int i=0;i<jobCompletes.size();i++){
+            jobCompletes.get(i).setResult(LogStatus.REJECT);
+            jobCompletes.get(i).setProcessRemark(processRemark);
+            jobCompletes.get(i).setProcessTime(new Date());
+            jobCompletes.get(i).setProcessUserId(userInfo.getUserId());
+            iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+        }
+    }
+
+    /**
+     * 通过任务验收
+     * @param in
+     * @throws Exception
+     */
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void acceptComplete(Map in) throws Exception {
+        /**
+         * 1、查询所有未处理的Complete，修改结果为Accept
+         * 2、把job的Status修改为Accept
+         * 3、给甲方增加honor
+         * 4、给乙方增加honor
+         * 5、刷新甲方和乙方的userinfo的honor值
+         */
+        Integer jobId=(Integer)in.get("jobId");
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        String processRemark="";
+        if(in.get("processRemark")!=null){
+            processRemark=in.get("processRemark").toString();
+        }
+        ArrayList<JobComplete> jobCompletes=iJobCompleteService.loadUnprocessComplete(jobId);
+        if(jobCompletes.size()==0){
+            JobComplete jobComplete=new JobComplete();
+            jobComplete.setProcessUserId(userInfo.getUserId());
+            jobComplete.setProcessTime(new Date());
+            jobComplete.setProcessRemark(processRemark);
+            jobComplete.setResult(LogStatus.ACCEPT);
+            jobComplete.setCreatedTime(new Date());
+            jobComplete.setCreatedUserId(userInfo.getUserId());
+            jobComplete.setJobId(jobId);
+            jobComplete.setReadTime(new Date());
+            iJobCompleteService.insertJobComplete(jobComplete);
+        }else {
+            for(int i=0;i<jobCompletes.size();i++){
+                jobCompletes.get(i).setResult(LogStatus.ACCEPT);
+                jobCompletes.get(i).setProcessRemark(processRemark);
+                jobCompletes.get(i).setProcessTime(new Date());
+                jobCompletes.get(i).setProcessUserId(userInfo.getUserId());
+                iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+            }
+        }
+
+        Job job=iJobService.loadJobByJobId(jobId);
+        //给甲方增加honor
+        UserInfo userA=iUserInfoService.loadUserByUserId(job.getPartyAId());
+        userA.setHonor(userA.getHonor()+job.getPrice());
+        userA.setHonorIn(userA.getHonorIn()+job.getPrice());
+        iUserInfoService.updateUser(userA);
+
+        //给乙方增加honor
+        UserInfo userB=iUserInfoService.loadUserByUserId(job.getPartyBId());
+        userB.setHonor(userB.getHonor()+job.getPrice());
+        userB.setHonorIn(userB.getHonorIn()+job.getPrice());
+        iUserInfoService.updateUser(userB);
+
     }
 }

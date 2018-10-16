@@ -23,35 +23,20 @@ public class HonorService implements IHonorService {
     }
 
     /**
-     * 扣除用户的荣誉值
-     * 1、创建HonorLog日志
-     * 2、重新计算修改User的honorPoint
-     *
+     * 新增一个Honor记录
      * @param honor
-     * @return
+     * @throws Exception
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void deductHonor(Honor honor) throws Exception {
-
-        //传入的荣誉值应该为负数，如果>0，则修改为负数
-        Double point = (Double) honor.getPoint();
-        if (point > 0) {
-            point = -point;
+    public void insertHonor(Honor honor) throws Exception {
+        if(honor.getHonorLogId()!=null){
+            throw new Exception("10062");
         }
-        honor.setPoint(point);
         honorDao.save(honor);
-
-        //更新User的honorPoint
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUserId(honor.getUserId());
-        Map map = RefreshUserHonorPoint(honor.getUserId());
-        userInfo.setHonor(Double.parseDouble(map.get("honor").toString()));
-        userInfo.setHonorIn(Double.parseDouble(map.get("honorIn").toString()));
-        userInfo.setHonorOut(Double.parseDouble(map.get("honorOut").toString()));
-        iUserInfoService.updateUser(userInfo);
-
     }
+
+
 
     /**
      * 重新计算修改User的honorPoint

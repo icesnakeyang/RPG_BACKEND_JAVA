@@ -32,7 +32,7 @@ public class JobCompleteService implements IJobCompleteService {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void createJobComplete(JobComplete jobComplete) throws Exception {
+    public void insertJobComplete(JobComplete jobComplete) throws Exception {
         if (jobComplete.getCompleteId() != null) {
             throw new Exception("10057");
         }
@@ -86,5 +86,17 @@ public class JobCompleteService implements IJobCompleteService {
             throw new Exception("10059");
         }
         jobCompleteDao.save(jobComplete);
+    }
+
+    /**
+     *
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public ArrayList<JobComplete> loadUnprocessComplete(Integer jobId) throws Exception {
+        ArrayList<JobComplete> completes=jobCompleteDao.findAllByJobIdAndResultIsNull(jobId);
+        return completes;
     }
 }
