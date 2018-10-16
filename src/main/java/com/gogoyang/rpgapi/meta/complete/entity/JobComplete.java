@@ -2,10 +2,7 @@ package com.gogoyang.rpgapi.meta.complete.entity;
 
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -41,6 +38,9 @@ public class JobComplete {
 
     @Column(name = "process_user_id")
     private Integer processUserId;
+
+    @Transient
+    private String CreatedUserName;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Integer getCompleteId() {
@@ -121,5 +121,13 @@ public class JobComplete {
 
     public void setProcessUserId(Integer processUserId) {
         this.processUserId = processUserId;
+    }
+
+    public String getCreatedUserName() {
+        return CreatedUserName;
+    }
+
+    public void setCreatedUserName(String createdUserName) {
+        CreatedUserName = createdUserName;
     }
 }
