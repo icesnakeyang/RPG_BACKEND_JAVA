@@ -204,4 +204,19 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iUserInfoService.updateUser(userB);
 
     }
+
+    @Override
+    public Integer countUnreadComplete(Map in) throws Exception {
+        Integer userId;
+        if(in.get("userId")==null){
+            String token=in.get("token").toString();
+            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            userId=userInfo.getUserId();
+        }else {
+            userId=(Integer)in.get("userId");
+        }
+        Integer jobId=(Integer)in.get("jobId");
+        ArrayList<JobComplete> jobCompletes=iJobCompleteService.loadMyUnReadComplete(jobId, userId);
+        return jobCompletes.size();
+    }
 }

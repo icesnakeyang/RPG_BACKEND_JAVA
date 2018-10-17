@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.detail.service;
 
+import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
@@ -15,12 +16,14 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
     private final IJobService iJobService;
     private final IJobLogBusinessService iJobLogBusinessService;
     private final IUserInfoService iUserInfoService;
+    private final ICompleteBusinessService iCompleteBusinessService;
 
     @Autowired
-    public JobDetailBusinessService(IJobService iJobService, IJobLogBusinessService iJobLogBusinessService, IUserInfoService iUserInfoService) {
+    public JobDetailBusinessService(IJobService iJobService, IJobLogBusinessService iJobLogBusinessService, IUserInfoService iUserInfoService, ICompleteBusinessService iCompleteBusinessService) {
         this.iJobService = iJobService;
         this.iJobLogBusinessService = iJobLogBusinessService;
         this.iUserInfoService = iUserInfoService;
+        this.iCompleteBusinessService = iCompleteBusinessService;
     }
 
     /**
@@ -65,6 +68,7 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
         Integer jobId=(Integer)in.get("jobId");
         Map out=new HashMap();
         out.put("unReadJobLog",iJobLogBusinessService.countUnreadJobLog(in));
+        out.put("unReadComplete", iCompleteBusinessService.countUnreadComplete(in));
         return out;
     }
 }

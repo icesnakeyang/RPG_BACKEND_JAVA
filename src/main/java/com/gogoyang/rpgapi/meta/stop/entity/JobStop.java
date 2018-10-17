@@ -2,10 +2,7 @@ package com.gogoyang.rpgapi.meta.stop.entity;
 
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -44,4 +41,106 @@ public class JobStop {
 
     @Column(name = "process_user_id")
     private Integer processUserId;
+
+    @Transient
+    private String createdUserName;
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public Integer getStopId() {
+        return stopId;
+    }
+
+    public void setStopId(Integer stopId) {
+        this.stopId = stopId;
+    }
+
+    public Integer getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
+    }
+
+    public Integer getCreatedUserId() {
+        return createdUserId;
+    }
+
+    public void setCreatedUserId(Integer createdUserId) {
+        this.createdUserId = createdUserId;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Double getRefund() {
+        return refund;
+    }
+
+    public void setRefund(Double refund) {
+        this.refund = refund;
+    }
+
+    public Date getReadTime() {
+        return readTime;
+    }
+
+    public void setReadTime(Date readTime) {
+        this.readTime = readTime;
+    }
+
+    public LogStatus getResult() {
+        return result;
+    }
+
+    public void setResult(LogStatus result) {
+        this.result = result;
+    }
+
+    public Date getProcessTime() {
+        return processTime;
+    }
+
+    public void setProcessTime(Date processTime) {
+        this.processTime = processTime;
+    }
+
+    public String getProcessRemark() {
+        return processRemark;
+    }
+
+    public void setProcessRemark(String processRemark) {
+        this.processRemark = processRemark;
+    }
+
+    public Integer getProcessUserId() {
+        return processUserId;
+    }
+
+    public void setProcessUserId(Integer processUserId) {
+        this.processUserId = processUserId;
+    }
+
+    public String getCreatedUserName() {
+        return createdUserName;
+    }
+
+    public void setCreatedUserName(String createdUserName) {
+        this.createdUserName = createdUserName;
+    }
 }

@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.business.job.myJob.partyA.service;
 
+import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
+import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
@@ -9,17 +11,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class PartyABusinessService implements IPartyABusinessService{
     private final IUserInfoService iUserInfoService;
     private final IJobService iJobService;
+    private final IJobLogBusinessService iJobLogBusinessService;
+    private final ICompleteBusinessService iCompleteBusinessService;
 
     @Autowired
-    public PartyABusinessService(IUserInfoService iUserInfoService, IJobService iJobService) {
+    public PartyABusinessService(IUserInfoService iUserInfoService, IJobService iJobService,
+                                 IJobLogBusinessService iJobLogBusinessService,
+                                 ICompleteBusinessService iCompleteBusinessService) {
         this.iUserInfoService = iUserInfoService;
         this.iJobService = iJobService;
+        this.iJobLogBusinessService = iJobLogBusinessService;
+        this.iCompleteBusinessService = iCompleteBusinessService;
     }
 
     @Override
@@ -32,6 +41,22 @@ public class PartyABusinessService implements IPartyABusinessService{
         }
 
         Page<Job> jobPage=iJobService.loadPartyAJob(userInfo.getUserId(),JobStatus.PROGRESS, 0, 100);
+
+        for(int i=0;i<jobPage.getContent().size();i++){
+            jobPage.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
+                    jobPage.getContent().get(i).getPartyAId()));
+            if(jobPage.getContent().get(i).getPartyBId()!=null){
+                jobPage.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
+                        jobPage.getContent().get(i).getPartyBId()));
+                Integer unread=0;
+                Map in2=new HashMap();
+                in2.put("userId", userInfo.getUserId());
+                in2.put("jobId", jobPage.getContent().get(i).getJobId());
+                unread=iJobLogBusinessService.countUnreadJobLog(in2);
+                unread+=iCompleteBusinessService.countUnreadComplete(in2);
+                jobPage.getContent().get(i).setUnRead(unread);
+            }
+        }
 
         return jobPage;
     }

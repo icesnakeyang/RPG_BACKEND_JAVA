@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.meta.job.service;
 
+import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.dao.JobDao;
@@ -30,17 +31,17 @@ class JobService implements IJobService {
     private final IJobApplyService iJobApplyService;
     private final IJobMatchService iJobMatchService;
     private final JobDetailDao jobDetailDao;
-    private final IJobLogBusinessService iJobLogBusinessService;
 
     @Autowired
-    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService, IJobApplyService iJobApplyService, IJobMatchService iJobMatchService, JobDetailDao jobDetailDao, IJobLogBusinessService iJobLogBusinessService) {
+    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService,
+                      IJobApplyService iJobApplyService, IJobMatchService iJobMatchService,
+                      JobDetailDao jobDetailDao) {
         this.jobDao = jobDao;
         this.iUserInfoService = iUserInfoService;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
         this.iJobMatchService = iJobMatchService;
         this.jobDetailDao = jobDetailDao;
-        this.iJobLogBusinessService = iJobLogBusinessService;
     }
 
     /**
@@ -151,20 +152,6 @@ class JobService implements IJobService {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(userId, jobStatus, pageable);
-        for(int i=0;i<jobs.getContent().size();i++){
-            jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
-                    jobs.getContent().get(i).getPartyAId()));
-            if(jobs.getContent().get(i).getPartyBId()!=null){
-                jobs.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
-                        jobs.getContent().get(i).getPartyBId()));
-                Integer unread=0;
-                Map in=new HashMap();
-                in.put("userId", userId);
-                in.put("jobId", jobs.getContent().get(i).getJobId());
-                unread=iJobLogBusinessService.countUnreadJobLog(in);
-                jobs.getContent().get(i).setUnRead(unread);
-            }
-        }
         return jobs;
     }
 
@@ -183,18 +170,6 @@ class JobService implements IJobService {
         Sort sort=new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs=jobDao.findAllByPartyBIdAndStatus(userId, jobStatus, pageable);
-        for(int i=0;i<jobs.getContent().size();i++){
-            jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
-                    jobs.getContent().get(i).getPartyAId()));
-            jobs.getContent().get(i).setPartyBName(iUserInfoService.getUserName(
-                    jobs.getContent().get(i).getPartyBId()));
-            Integer unread=0;
-            Map in=new HashMap();
-            in.put("userId", userId);
-            in.put("jobId", jobs.getContent().get(i).getJobId());
-            unread=iJobLogBusinessService.countUnreadJobLog(in);
-            jobs.getContent().get(i).setUnRead(unread);
-        }
         return jobs;
     }
 }
