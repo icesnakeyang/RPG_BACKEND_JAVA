@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.complete.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.complete.service.IJobCompleteService;
@@ -137,7 +138,13 @@ public class CompleteBusinessService implements ICompleteBusinessService {
          * 4、给乙方增加honor
          * 5、刷新甲方和乙方的userinfo的honor值
          */
+        //首先判断任务是否已经验收
         Integer jobId=(Integer)in.get("jobId");
+        Job job=iJobService.loadJobByJobId(jobId);
+        if(job.getStatus()!= JobStatus.PROGRESS){
+            throw new Exception("10063");
+        }
+
         String token=in.get("token").toString();
         UserInfo userInfo=iUserInfoService.loadUserByToken(token);
         String processRemark="";
@@ -166,17 +173,30 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             }
         }
 
-        Job job=iJobService.loadJobByJobId(jobId);
+        //把job设置为accept
+        job.setStatus(JobStatus.ACCEPTANCE);
+        iJobService.updateJob(job);
+
         //给甲方增加honor
         UserInfo userA=iUserInfoService.loadUserByUserId(job.getPartyAId());
-        userA.setHonor(userA.getHonor()+job.getPrice());
-        userA.setHonorIn(userA.getHonorIn()+job.getPrice());
+        Double ha=0.0;
+        if(userA.getHonor()!=null){
+            ha=userA.getHonor();
+        }
+        ha+=job.getPrice();
+        userA.setHonor(ha);
+        userA.setHonorIn(ha);
         iUserInfoService.updateUser(userA);
 
         //给乙方增加honor
         UserInfo userB=iUserInfoService.loadUserByUserId(job.getPartyBId());
-        userB.setHonor(userB.getHonor()+job.getPrice());
-        userB.setHonorIn(userB.getHonorIn()+job.getPrice());
+        Double hb=0.0;
+        if(userB.getHonor()!=null){
+            hb=userB.getHonor();
+        }
+        hb+=job.getPrice();
+        userB.setHonor(hb);
+        userB.setHonorIn(hb);
         iUserInfoService.updateUser(userB);
 
     }
