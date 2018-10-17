@@ -39,6 +39,21 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
     }
 
     /**
+     * 读取一条任务的简要信息
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map loadJobTiny(Map in) throws Exception {
+        Integer jobId=(Integer)in.get("jobId");
+        Job job=iJobService.loadJobByJobIdTiny(jobId);
+        Map out=new HashMap();
+        out.put("job", job);
+        return out;
+    }
+
+    /**
      * 读取任务的各种状态，未读事件
      * @param in
      * @return

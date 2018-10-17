@@ -50,6 +50,35 @@ public class JobDetailController {
     }
 
     /**
+     * 读取一条任务的简要信息，不包括detail
+     * read a job without jobDetail
+     *
+     * @param jobId
+     * @return
+     */
+    @ResponseBody
+    @GetMapping("/tiny/{jobId}")
+    public Response loadJobTiny(@PathVariable Integer jobId) {
+        Response response = new Response();
+        try {
+            Map in=new HashMap();
+            in.put("jobId", jobId);
+            Map out=iJobDetailBusinessService.loadJobTiny(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                return response;
+            } catch (Exception ex2) {
+                response.setErrorCode(10026);
+                return response;
+            }
+        }
+
+        return response;
+    }
+
+    /**
      * 读取完整的任务信息，包括未读日志等
      * @param request
      * @param httpServletRequest
