@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.business.job.detail.service;
 
 import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
+import com.gogoyang.rpgapi.business.job.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
@@ -17,13 +18,15 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
     private final IJobLogBusinessService iJobLogBusinessService;
     private final IUserInfoService iUserInfoService;
     private final ICompleteBusinessService iCompleteBusinessService;
+    private final IStopBusinessService iStopBusinessService;
 
     @Autowired
-    public JobDetailBusinessService(IJobService iJobService, IJobLogBusinessService iJobLogBusinessService, IUserInfoService iUserInfoService, ICompleteBusinessService iCompleteBusinessService) {
+    public JobDetailBusinessService(IJobService iJobService, IJobLogBusinessService iJobLogBusinessService, IUserInfoService iUserInfoService, ICompleteBusinessService iCompleteBusinessService, IStopBusinessService iStopBusinessService) {
         this.iJobService = iJobService;
         this.iJobLogBusinessService = iJobLogBusinessService;
         this.iUserInfoService = iUserInfoService;
         this.iCompleteBusinessService = iCompleteBusinessService;
+        this.iStopBusinessService = iStopBusinessService;
     }
 
     /**
@@ -69,6 +72,7 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
         Map out=new HashMap();
         out.put("unReadJobLog",iJobLogBusinessService.countUnreadJobLog(in));
         out.put("unReadComplete", iCompleteBusinessService.countUnreadComplete(in));
+        out.put("unReadStop", iStopBusinessService.countUnreadStop(in));
         return out;
     }
 }

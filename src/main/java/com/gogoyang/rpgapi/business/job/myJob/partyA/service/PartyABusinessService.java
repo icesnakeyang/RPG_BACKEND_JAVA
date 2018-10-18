@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.business.job.myJob.partyA.service;
 
 import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
+import com.gogoyang.rpgapi.business.job.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
@@ -20,15 +21,17 @@ public class PartyABusinessService implements IPartyABusinessService{
     private final IJobService iJobService;
     private final IJobLogBusinessService iJobLogBusinessService;
     private final ICompleteBusinessService iCompleteBusinessService;
+    private final IStopBusinessService iStopBusinessService;
 
     @Autowired
     public PartyABusinessService(IUserInfoService iUserInfoService, IJobService iJobService,
                                  IJobLogBusinessService iJobLogBusinessService,
-                                 ICompleteBusinessService iCompleteBusinessService) {
+                                 ICompleteBusinessService iCompleteBusinessService, IStopBusinessService iStopBusinessService) {
         this.iUserInfoService = iUserInfoService;
         this.iJobService = iJobService;
         this.iJobLogBusinessService = iJobLogBusinessService;
         this.iCompleteBusinessService = iCompleteBusinessService;
+        this.iStopBusinessService = iStopBusinessService;
     }
 
     @Override
@@ -54,6 +57,7 @@ public class PartyABusinessService implements IPartyABusinessService{
                 in2.put("jobId", jobPage.getContent().get(i).getJobId());
                 unread=iJobLogBusinessService.countUnreadJobLog(in2);
                 unread+=iCompleteBusinessService.countUnreadComplete(in2);
+                unread+=iStopBusinessService.countUnreadStop(in2);
                 jobPage.getContent().get(i).setUnRead(unread);
             }
         }

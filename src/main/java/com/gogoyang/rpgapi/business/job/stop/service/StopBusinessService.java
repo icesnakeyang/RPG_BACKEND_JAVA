@@ -184,18 +184,51 @@ public class StopBusinessService implements IStopBusinessService {
         //处理refund
         UserInfo userA=iUserInfoService.loadUserByUserId(job.getPartyAId());
         Double refund=jobStop.getRefund();
-        userA.setAccount(userA.getAccount()+refund);
-        userA.setAccountIn(userA.getAccountIn()+refund);
+        if(userA.getAccount()==null){
+            userA.setAccount(refund);
+        }else {
+            userA.setAccount(userA.getAccount() + refund);
+        }
+        if(userA.getAccountIn()==null){
+            userA.setAccountIn(refund);
+        }else {
+            userA.setAccountIn(userA.getAccountIn()+refund);
+        }
 
         UserInfo userB=iUserInfoService.loadUserByUserId(job.getPartyBId());
-        userB.setAccount(userB.getAccount()-refund);
-        userB.setAccountOut(userB.getAccountOut()+refund);
+        if(userB.getAccount()==null){
+            userB.setAccount(-refund);
+        }else {
+            userB.setAccount(userB.getAccount() - refund);
+        }
+        if(userB.getAccountOut()==null){
+            userB.setAccountOut(refund);
+        }else {
+            userB.setAccountOut(userB.getAccountOut() + refund);
+        }
 
         //处理honor
-        userA.setHonor(userA.getHonor()-refund);
-        userA.setHonorOut(userA.getHonorOut()+refund);
-        userB.setHonor(userB.getHonor()-refund);
-        userB.setHonorOut(userB.getHonorOut()+refund);
+        if(userA.getHonor()==null){
+            userA.setHonor(refund);
+        }else {
+            userA.setHonor(userA.getHonor() - refund);
+        }
+        if(userA.getHonorOut()==null){
+            userA.setHonorOut(refund);
+        }else {
+            userA.setHonorOut(userA.getHonorOut() + refund);
+        }
+
+        if(userB.getHonor()==null){
+            userB.setHonor(-refund);
+        }else {
+            userB.setHonor(userB.getHonor() - refund);
+        }
+        if(userB.getHonorOut()==null){
+            userB.setHonorOut(refund);
+        }else {
+            userB.setHonorOut(userB.getHonorOut() + refund);
+        }
 
         iUserInfoService.updateUser(userA);
         iUserInfoService.updateUser(userB);

@@ -95,7 +95,7 @@ public class StopController {
      */
     @ResponseBody
     @PostMapping("/setStopReadTime")
-    public Response setCompleteReadTime(@RequestBody StopRequest request,
+    public Response setStopReadTime(@RequestBody StopRequest request,
                                         HttpServletRequest httpServletRequest) {
 
         Response response = new Response();
