@@ -38,10 +38,6 @@ public class StopService implements IJobStopService {
         Sort sort = new Sort(Sort.Direction.DESC, "stopId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<JobStop> jobStops = jobStopDao.findAllByJobId(jobId, pageable);
-        for (int i = 0; i < jobStops.getContent().size(); i++) {
-            jobStops.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
-                    jobStops.getContent().get(i).getCreatedUserId()));
-        }
         return jobStops;
     }
 

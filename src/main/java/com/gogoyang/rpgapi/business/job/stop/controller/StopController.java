@@ -29,8 +29,8 @@ public class StopController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/stopJob")
-    public Response createComplete(@RequestBody StopRequest request,
+    @PostMapping("/createStop")
+    public Response createStop(@RequestBody StopRequest request,
                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
@@ -167,6 +167,7 @@ public class StopController {
             Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
+            in.put("processRemark", request.getProcessRemark());
             iStopBusinessService.acceptStop(in);
         } catch (Exception ex) {
             try {

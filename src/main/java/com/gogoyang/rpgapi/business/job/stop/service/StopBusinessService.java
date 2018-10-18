@@ -47,13 +47,15 @@ public class StopBusinessService implements IStopBusinessService {
         if (userInfo == null) {
             throw new Exception("10004");
         }
+        String content=in.get("content").toString();
+        Double refund=(Double)in.get("refund");
 
-        String content = in.get("content").toString();
         jobStop = new JobStop();
         jobStop.setContent(content);
         jobStop.setCreatedTime(new Date());
         jobStop.setCreatedUserId(userInfo.getUserId());
         jobStop.setJobId(jobId);
+        jobStop.setRefund(refund);
         iJobStopService.insertJobStop(jobStop);
     }
 
@@ -63,6 +65,14 @@ public class StopBusinessService implements IStopBusinessService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         Page<JobStop> stops = iJobStopService.loadJobStopByJobId(jobId, pageIndex, pageSize);
+        for (int i = 0; i < stops.getContent().size(); i++) {
+            stops.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
+                    stops.getContent().get(i).getCreatedUserId()));
+            if(stops.getContent().get(i).getProcessUserId()!=null){
+                stops.getContent().get(i).setProcessUserName(iUserInfoService.getUserName(
+                        stops.getContent().get(i).getProcessUserId()));
+            }
+        }
         return stops;
     }
 
@@ -123,12 +133,13 @@ public class StopBusinessService implements IStopBusinessService {
         /**
          * 1、根据token读取当前用户
          * 2、检查jobId是否progress
-         * 3、把stop处理为accept
-         * 4、把job改为stopped
-         * 5、甲方account增加refund
-         * 6、乙方account减少refund
-         * 7、甲方honor扣除refund
-         * 8、乙方honor扣除refund
+         * 3、检查是否自己创建的stop
+         * 4、把stop处理为accept
+         * 5、把job改为stopped
+         * 6、甲方account增加refund
+         * 7、乙方account减少refund
+         * 8、甲方honor扣除refund
+         * 9、乙方honor扣除refund
          */
         Integer userId;
         //获取当前用户id
@@ -147,6 +158,12 @@ public class StopBusinessService implements IStopBusinessService {
             throw new Exception("10071");
         }
 
+        //是否自己创建的stop
+        JobStop jobStop=iJobStopService.loadJobStopUnProcess(jobId);
+        if(jobStop.getCreatedUserId()==userId){
+            throw new Exception("10074");
+        }
+
         //任务状态终止
         job.setStatus(JobStatus.STOPPED);
         iJobService.updateJob(job);
@@ -158,7 +175,6 @@ public class StopBusinessService implements IStopBusinessService {
         }
 
         //保存终止日志
-        JobStop jobStop=iJobStopService.loadJobStopUnProcess(jobId);
         jobStop.setResult(LogStatus.ACCEPT);
         jobStop.setProcessUserId(userId);
         jobStop.setProcessTime(new Date());

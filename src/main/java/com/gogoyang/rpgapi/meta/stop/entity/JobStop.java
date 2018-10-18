@@ -45,6 +45,9 @@ public class JobStop {
     @Transient
     private String createdUserName;
 
+    @Transient
+    private String processUserName;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -142,5 +145,13 @@ public class JobStop {
 
     public void setCreatedUserName(String createdUserName) {
         this.createdUserName = createdUserName;
+    }
+
+    public String getProcessUserName() {
+        return processUserName;
+    }
+
+    public void setProcessUserName(String processUserName) {
+        this.processUserName = processUserName;
     }
 }
