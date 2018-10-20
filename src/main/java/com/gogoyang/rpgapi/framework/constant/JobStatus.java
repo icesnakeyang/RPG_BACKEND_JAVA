@@ -4,5 +4,6 @@ public enum JobStatus {
     MATCHING,
     PROGRESS,
     STOPPED,
-    ACCEPTANCE
+    ACCEPTANCE,
+    SPOTLIGHTING
 }
