@@ -39,7 +39,7 @@ public interface IRepealService {
      * @return
      * @throws Exception
      */
-    ArrayList<Repeal> loadMyUnReadRepeal(Integer jobId, Integer userId) throws Exception;
+    Repeal loadMyUnReadRepeal(Integer jobId, Integer userId) throws Exception;
 
     /**
      * 修改
