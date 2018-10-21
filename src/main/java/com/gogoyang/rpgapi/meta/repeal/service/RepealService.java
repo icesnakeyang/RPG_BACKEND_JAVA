@@ -4,6 +4,9 @@ import com.gogoyang.rpgapi.meta.repeal.dao.RepealDao;
 import com.gogoyang.rpgapi.meta.repeal.entity.Repeal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,7 +32,10 @@ public class RepealService implements IRepealService{
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void insertRepeal(Repeal repeal) throws Exception {
-
+        if(repeal.getRepealId()!=null){
+            throw new Exception("10079");
+        }
+        repealDao.save(repeal);
     }
 
     @Override
@@ -39,6 +45,9 @@ public class RepealService implements IRepealService{
          * 分页
          * 把所有的userId都加上userName
          */
+        Sort sort=new Sort(Sort.Direction.DESC, "repealId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<Repeal> repeals=repealDao.findallby
         return null;
     }
 
