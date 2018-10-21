@@ -2,9 +2,6 @@ package com.gogoyang.rpgapi.meta.repeal.service;
 
 import com.gogoyang.rpgapi.meta.repeal.entity.Repeal;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.RepositoryQuery;
-
-import java.util.ArrayList;
 
 public interface IRepealService {
     /**
@@ -23,14 +20,6 @@ public interface IRepealService {
      * @throws Exception
      */
     Page<Repeal> listRepealByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception;
-
-    /**
-     * 获取任务的未处理的撤销申诉
-     * @param jobId
-     * @return
-     * @throws Exception
-     */
-    Page<Repeal> listRepealUnProcess(Integer jobId) throws Exception;
 
     /**
      * 读取未读

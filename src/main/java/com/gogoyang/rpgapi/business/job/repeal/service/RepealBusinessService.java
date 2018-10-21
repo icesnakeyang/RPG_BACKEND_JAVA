@@ -1,11 +1,13 @@
 package com.gogoyang.rpgapi.business.job.repeal.service;
 
 import com.gogoyang.rpgapi.meta.repeal.entity.Repeal;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Map;
 
+@Service
 public class RepealBusinessService implements IRepealBusinessService {
     @Override
     @Transactional(rollbackOn = Exception.class)
