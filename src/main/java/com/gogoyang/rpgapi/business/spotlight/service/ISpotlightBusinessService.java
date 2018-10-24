@@ -6,13 +6,6 @@ import org.springframework.data.domain.Page;
 import java.util.Map;
 
 public interface ISpotlightBusinessService {
-    /**
-     * 创建一个申诉
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Map createSpotlight(Map in) throws Exception;
 
     /**
      * 申诉广场读取所有当前申诉

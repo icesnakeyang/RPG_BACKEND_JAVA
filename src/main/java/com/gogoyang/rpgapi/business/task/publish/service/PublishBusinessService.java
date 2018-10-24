@@ -40,16 +40,30 @@ public class PublishBusinessService implements IPublishBusinessService{
     @Transactional(rollbackOn = Exception.class)
     public Map publishJob(Map in) throws Exception {
         /**
+         * 检查任务是否已经发布了
          * create a job
          * minus price account
          * throw 10043 if user has not enough balance
          * refresh account of job
          */
+        Integer taskId=(Integer)in.get("taskId");
+
         UserInfo userInfo=iUserInfoService.loadUserByToken(in.get("token").toString());
         if(userInfo==null){
             throw new Exception("10004");
         }
-        Job job=new Job();
+
+        Job job=iJobService.getJobByTaskId(taskId);
+        if(job!=null){
+            if(job.getStatus()==JobStatus.PROGRESS) {
+                throw new Exception("10092");
+            }
+            if(job.getStatus()==JobStatus.MATCHING){
+                throw new Exception("10092");
+            }
+        }
+
+        job=new Job();
         job.setPartyAId(userInfo.getUserId());
         job.setCreatedTime(new Date());
         job.setCode(in.get("code").toString());

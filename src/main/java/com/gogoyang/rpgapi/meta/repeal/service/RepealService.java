@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 
 /**
  * 撤诉申请说明
@@ -31,11 +30,12 @@ public class RepealService implements IRepealService{
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void insertRepeal(Repeal repeal) throws Exception {
+    public Repeal insertRepeal(Repeal repeal) throws Exception {
         if(repeal.getRepealId()!=null){
             throw new Exception("10079");
         }
-        repealDao.save(repeal);
+        repeal=repealDao.save(repeal);
+        return repeal;
     }
 
     @Override
@@ -47,16 +47,23 @@ public class RepealService implements IRepealService{
          */
         Sort sort=new Sort(Sort.Direction.DESC, "repealId");
         Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
-        Page<Repeal> repeals=repealDao.findallby
-        return null;
+        Page<Repeal> repeals=repealDao.findAllByJobId(jobId, pageable);
+        return repeals;
     }
 
     @Override
-    public Repeal loadMyUnReadRepeal(Integer jobId, Integer userId) throws Exception {
+    public Repeal getMyUnReadRepeal(Integer jobId, Integer userId) throws Exception {
         /**
          * 读取当前任务我未读的撤诉申请
          */
-        return null;
+        Repeal repeal=repealDao.findByJobIdAndReadTimeIsNullAndCreatedUserIdIsNot(jobId, userId);
+        return repeal;
+    }
+
+    @Override
+    public Repeal getUnProcessRepeal(Integer jobId) throws Exception {
+        Repeal repeal=repealDao.findByJobIdAndProcessResultIsNull(jobId);
+        return repeal;
     }
 
     @Override

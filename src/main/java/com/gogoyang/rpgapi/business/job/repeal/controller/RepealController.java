@@ -5,10 +5,10 @@ import com.gogoyang.rpgapi.business.job.repeal.vo.RepealRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.meta.repeal.entity.Repeal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,7 +73,7 @@ public class RepealController {
             Map in=new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
-            ArrayList<Repeal> repeals=iRepealBusinessService.listRepeal(in);
+            Page<Repeal> repeals=iRepealBusinessService.listRepeal(in);
             response.setData(repeals);
         } catch (Exception ex) {
             try {

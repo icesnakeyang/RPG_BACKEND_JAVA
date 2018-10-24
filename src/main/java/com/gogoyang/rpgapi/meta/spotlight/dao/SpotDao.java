@@ -12,4 +12,6 @@ public interface SpotDao extends JpaRepository<Spot, Integer> {
     Page<Spot> findAllByJobStatus(JobStatus jobStatus, Pageable pageable);
 
     ArrayList<Spot> findAllByJobId(Integer jobId);
+
+    Spot findByJobIdAndJobStatus(Integer jobId, JobStatus jobStatus);
 }

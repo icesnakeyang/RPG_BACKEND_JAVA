@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TaskDetailDao extends JpaRepository<TaskDetail, Integer>{
     TaskDetail findByTaskId(Integer id);
+
+    void deleteByTaskId(Integer taskId);
 }

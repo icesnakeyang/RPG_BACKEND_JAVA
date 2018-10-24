@@ -9,7 +9,7 @@ public interface IRepealService {
      * @param repeal
      * @throws Exception
      */
-    void insertRepeal(Repeal repeal) throws Exception;
+    Repeal insertRepeal(Repeal repeal) throws Exception;
 
     /**
      * 读取所有
@@ -28,7 +28,15 @@ public interface IRepealService {
      * @return
      * @throws Exception
      */
-    Repeal loadMyUnReadRepeal(Integer jobId, Integer userId) throws Exception;
+    Repeal getMyUnReadRepeal(Integer jobId, Integer userId) throws Exception;
+
+    /**
+     * 读取一个任务的我未处理的撤销申诉
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    Repeal getUnProcessRepeal(Integer jobId) throws Exception;
 
     /**
      * 修改

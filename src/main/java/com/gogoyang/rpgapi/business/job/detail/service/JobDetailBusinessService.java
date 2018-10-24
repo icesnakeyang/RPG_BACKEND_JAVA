@@ -75,4 +75,19 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
         out.put("unReadStop", iStopBusinessService.countUnreadStop(in));
         return out;
     }
+
+    /**
+     * 根据taskId获取job
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map getJobTinyByTaskId(Map in) throws Exception {
+        Integer taskId=(Integer)in.get("taskId");
+        Job job=iJobService.getJobByTaskId(taskId);
+        Map out=new HashMap();
+        out.put("job", job);
+        return out;
+    }
 }

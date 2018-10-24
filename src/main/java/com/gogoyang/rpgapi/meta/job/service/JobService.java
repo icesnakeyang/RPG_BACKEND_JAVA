@@ -106,6 +106,19 @@ class JobService implements IJobService {
     }
 
     /**
+     * 根据taskId读取job
+     *
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Job getJobByTaskId(Integer taskId) throws Exception {
+        Job job = jobDao.findByTaskId(taskId);
+        return job;
+    }
+
+    /**
      * 根据jobStatus读取jobs
      * read jobs by jobStatus
      * paginate the list
@@ -140,6 +153,7 @@ class JobService implements IJobService {
 
     /**
      * 读取所有我是甲方的任务
+     *
      * @param userId
      * @param jobStatus
      * @param pageIndex
@@ -157,6 +171,7 @@ class JobService implements IJobService {
 
     /**
      * 读取我是乙方的所有任务
+     *
      * @param userId
      * @param jobStatus
      * @param pageIndex
@@ -166,10 +181,10 @@ class JobService implements IJobService {
      */
     @Override
     public Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus,
-                                   Integer pageIndex, Integer pageSize) throws Exception{
-        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
-        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs=jobDao.findAllByPartyBIdAndStatus(userId, jobStatus, pageable);
+                                   Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByPartyBIdAndStatus(userId, jobStatus, pageable);
         return jobs;
     }
 }

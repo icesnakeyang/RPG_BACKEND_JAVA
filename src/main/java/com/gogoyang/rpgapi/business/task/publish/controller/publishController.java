@@ -2,9 +2,7 @@ package com.gogoyang.rpgapi.business.task.publish.controller;
 
 
 import com.gogoyang.rpgapi.business.task.publish.service.IPublishBusinessService;
-import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.business.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

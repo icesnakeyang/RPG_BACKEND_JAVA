@@ -11,7 +11,7 @@ public interface ISpotService {
      * @param spot
      * @throws Exception
      */
-    void insertSpotlight(Spot spot) throws Exception;
+    Spot insertSpotlight(Spot spot) throws Exception;
 
     /**
      * 读取所有申诉事件
@@ -28,7 +28,15 @@ public interface ISpotService {
      * @return
      * @throws Exception
      */
-    ArrayList<Spot> loadSpotlightByJobId(Integer jobId) throws Exception;
+    ArrayList<Spot> listSpotlightByJobId(Integer jobId) throws Exception;
+
+    /**
+     * 获取一个任务当前正在申诉的事件
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    Spot getSpotlightByJobId(Integer jobId) throws Exception;
 
     /**
      * 修改验收日志/处理验收日志申请

@@ -8,4 +8,6 @@ public interface IJobDetailBusinessService {
     Map loadJobTiny(Map in) throws Exception;
 
     Map loadUnreadByJobId(Map in) throws Exception;
+
+    Map getJobTinyByTaskId(Map in) throws Exception;
 }

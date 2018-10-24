@@ -8,4 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RepealDao extends JpaRepository<Repeal, Integer> {
     Page<Repeal> findAllByJobId(Integer jobId, Pageable pageable);
 
+    Repeal findByJobIdAndReadTimeIsNullAndCreatedUserIdIsNot(Integer jobId, Integer userId);
+
+    Repeal findByJobIdAndProcessResultIsNull(Integer jobId);
+
 }

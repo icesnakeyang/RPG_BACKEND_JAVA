@@ -11,6 +11,8 @@ public interface IJobService {
 
     Job loadJobByJobIdTiny(Integer jobId) throws Exception;
 
+    Job getJobByTaskId(Integer taskId) throws Exception;
+
     /**
      * 根据jobStatus读取所有job
      * load all jobs by jobStatus
