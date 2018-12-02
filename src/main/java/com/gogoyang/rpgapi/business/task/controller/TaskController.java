@@ -53,15 +53,47 @@ public class TaskController {
     }
 
     /**
+     * 创建子任务
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/createSubTask")
+    public Response createSubTask(@RequestBody TaskRequest request,
+                                   HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in =new HashMap();
+            in.put("token", token);
+            in.put("pid", request.getPid());
+            in.put("code", request.getCode());
+            in.put("title", request.getTitle());
+            iTaskBusinessService.createSubTask(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10096);
+            }
+        }
+        return response;
+    }
+
+    /**
      * 根据taskId读取任务，包括任务详情
      */
     @ResponseBody
-    @GetMapping("/{taskId}")
-    public Response getTaskById(@PathVariable Integer taskId) {
+    @PostMapping("/getTaskByTaskId")
+    public Response getTaskById(@RequestBody TaskRequest request,
+                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
+            String token=httpServletRequest.getHeader("token");
             Map in = new HashMap();
-            in.put("taskId", taskId);
+            in.put("token", token);
+            in.put("taskId", request.getTaskId());
             Map out = iTaskBusinessService.getTaskDetailByTaskId(in);
             response.setData(out);
         } catch (Exception ex) {
@@ -79,13 +111,16 @@ public class TaskController {
      * 根据taskId读取任务，不包括任务详情
      */
     @ResponseBody
-    @PostMapping("/getTaskTinyById")
-    public Response getTaskTinyById(@PathVariable Integer taskId) {
+    @PostMapping("/getTaskTinyByTaskId")
+    public Response getTaskTinyById(@RequestBody TaskRequest request,
+                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
+            String token=httpServletRequest.getHeader("token");
             Map in = new HashMap();
-            in.put("taskId", taskId);
-            Map out = iTaskBusinessService.getTaskDetailByTaskId(in);
+            in.put("token", token);
+            in.put("taskId", request.getTaskId());
+            Map out = iTaskBusinessService.getTaskTinyByTaskId(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -164,7 +199,7 @@ public class TaskController {
      * 真的删除
      */
     @ResponseBody
-    @PostMapping("/delete")
+    @PostMapping("/deleteTask")
     public Response deleteTask(@RequestBody TaskRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
@@ -203,6 +238,34 @@ public class TaskController {
             in.put("token", token);
             in.put("pid", request.getPid());
             Map out=iTaskBusinessService.totalSubTask(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10095);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 读取子任务列表
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listSubTask")
+    public Response listSubTask(@RequestBody TaskRequest request,
+                                HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pid", request.getPid());
+            Map out=iTaskBusinessService.listTaskByPid(in);
             response.setData(out);
         }catch (Exception ex){
             try {

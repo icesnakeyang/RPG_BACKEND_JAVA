@@ -12,7 +12,7 @@ public interface TaskDao extends JpaRepository<Task, Integer> {
 
 //    @Query(value = "select ii.image_id from issues_images ii where issue_id = ?1", nativeQuery = true) // nativeQuery = true表示使用sql自己的方言查询，想查什么查什么， 按照字段数据类型返回就行了
 //    List<BigInteger> findByIssueId(String issueId);
-    Page<Task> findAllByCreatedUserId(Integer userId, Pageable pageable);
+    Page<Task> findAllByCreatedUserIdAndPidIsNull(Integer userId, Pageable pageable);
 
     void deleteByTaskId(Integer taskId);
 

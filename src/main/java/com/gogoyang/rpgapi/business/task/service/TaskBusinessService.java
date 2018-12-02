@@ -35,7 +35,6 @@ public class TaskBusinessService implements ITaskBusinessService {
         String detail = in.get("detail").toString();
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
-        Integer pid = (Integer) in.get("pid");
         String title = in.get("title").toString();
 
         UserInfo userInfo = iUserInfoService.loadUserByToken(token);
@@ -48,6 +47,27 @@ public class TaskBusinessService implements ITaskBusinessService {
         task.setCreatedTime(new Date());
         task.setCode(code);
         task.setDays(days);
+        task.setTitle(title);
+        task = iTaskService.insertTask(task);
+        return task;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public Task createSubTask(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String code = in.get("code").toString();
+        Integer pid = (Integer) in.get("pid");
+        String title = in.get("title").toString();
+
+        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        if (userInfo == null) {
+            throw new Exception("10004");
+        }
+        Task task = new Task();
+        task.setCreatedUserId(userInfo.getUserId());
+        task.setCreatedTime(new Date());
+        task.setCode(code);
         task.setPid(pid);
         task.setTitle(title);
         task = iTaskService.insertTask(task);
@@ -74,7 +94,22 @@ public class TaskBusinessService implements ITaskBusinessService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void deleteTask(Map in) throws Exception {
+        /**
+         * check user
+         * check sub task
+         * the task only can be deleted when there is no sub task
+         */
+        String token=in.get("token").toString();
         Integer taskId=(Integer)in.get("taskId");
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+
+        ArrayList<Task> tasks=iTaskService.listTaskByPid(taskId);
+        if(tasks.size()>0){
+            throw new Exception("10097");
+        }
         iTaskService.deleteTask(taskId);
     }
 
@@ -108,6 +143,23 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
+    public Map getTaskTinyByTaskId(Map in) throws Exception {
+        /**
+         * 检查token，检查userInfo
+         */
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+        Integer taskId=(Integer)in.get("taskId");
+        Task task=iTaskService.getTaskTinyByTaskId(taskId);
+        Map out=new HashMap();
+        out.put("task", task);
+        return out;
+    }
+
+    @Override
     public Page<Task> listTaskByUserId(Map in) throws Exception {
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
@@ -131,6 +183,18 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer totalSub=tasks.size();
         Map out=new HashMap();
         out.put("totalSub", totalSub);
+        return out;
+    }
+
+    @Override
+    public Map listTaskByPid(Map in) throws Exception {
+        Integer pid=(Integer)in.get("pid");
+        if(pid==null){
+            throw new Exception("10095");
+        }
+        ArrayList<Task> tasks=iTaskService.listTaskByPid(pid);
+        Map out=new HashMap();
+        out.put("task", tasks);
         return out;
     }
 }

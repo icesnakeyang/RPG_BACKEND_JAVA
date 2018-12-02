@@ -114,7 +114,7 @@ public class TaskService implements ITaskService {
     public Page<Task> listTaskByUserId(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "taskId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Task> tasks = taskDao.findAllByCreatedUserId(userId, pageable);
+        Page<Task> tasks = taskDao.findAllByCreatedUserIdAndPidIsNull(userId, pageable);
         return tasks;
     }
 
