@@ -53,16 +53,39 @@ public class TaskController {
     }
 
     /**
-     * 根据taskId读取任务
+     * 根据taskId读取任务，包括任务详情
      */
     @ResponseBody
     @GetMapping("/{taskId}")
-    public Response loadTaskById(@PathVariable Integer taskId) {
+    public Response getTaskById(@PathVariable Integer taskId) {
         Response response = new Response();
         try {
             Map in = new HashMap();
             in.put("taskId", taskId);
-            Map out = iTaskBusinessService.getTaskByTaskId(in);
+            Map out = iTaskBusinessService.getTaskDetailByTaskId(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                return response;
+            } catch (Exception ex2) {
+                response.setErrorCode(10031);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 根据taskId读取任务，不包括任务详情
+     */
+    @ResponseBody
+    @PostMapping("/getTaskTinyById")
+    public Response getTaskTinyById(@PathVariable Integer taskId) {
+        Response response = new Response();
+        try {
+            Map in = new HashMap();
+            in.put("taskId", taskId);
+            Map out = iTaskBusinessService.getTaskDetailByTaskId(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -158,6 +181,34 @@ public class TaskController {
             } catch (Exception ex2) {
                 response.setErrorCode(10094);
                 return response;
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 统计子任务的数量
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/countSubTask")
+    public Response countSubTask(@RequestBody TaskRequest request,
+                                 HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try{
+            Map in=new HashMap();
+            String token=httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("pid", request.getPid());
+            Map out=iTaskBusinessService.totalSubTask(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10095);
             }
         }
         return response;

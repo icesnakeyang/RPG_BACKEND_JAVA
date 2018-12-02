@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
 
-        Task task=iTaskService.getTaskByTaskId(taskId);
+        Task task=iTaskService.getTaskDetailByTaskId(taskId);
         task.setCode(code);
         task.setTitle(title);
         task.setDetail(detail);
@@ -78,12 +79,20 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
-    public Map getTaskByTaskId(Map in) throws Exception {
+    public Map getTaskDetailByTaskId(Map in) throws Exception {
+        /**
+         * 检查token，检查userInfo
+         */
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
         Integer taskId=(Integer)in.get("taskId");
-        Task task=iTaskService.getTaskByTaskId(taskId);
+        Task task=iTaskService.getTaskDetailByTaskId(taskId);
 
-        UserInfo userInfo=iUserInfoService.loadUserByUserId(task.getCreatedUserId());
-        task.setCreatedUserName(userInfo.getUsername());
+        UserInfo createUser=iUserInfoService.loadUserByUserId(task.getCreatedUserId());
+        task.setCreatedUserName(createUser.getUsername());
 
         /**
          * 增加一个jobId, 如果task已经发布，就返回这个发布的jobId
@@ -110,5 +119,18 @@ public class TaskBusinessService implements ITaskBusinessService {
                     tasks.getContent().get(i).getCreatedUserId()));
         }
         return tasks;
+    }
+
+    @Override
+    public Map totalSubTask(Map in) throws Exception {
+        Integer pid=(Integer)in.get("pid");
+        if(pid==null){
+            throw new Exception("10095");
+        }
+        ArrayList<Task> tasks=iTaskService.listTaskByPid(pid);
+        Integer totalSub=tasks.size();
+        Map out=new HashMap();
+        out.put("totalSub", totalSub);
+        return out;
     }
 }

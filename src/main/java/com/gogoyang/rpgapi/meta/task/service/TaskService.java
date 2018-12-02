@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Map;
 
 @Service
 public class TaskService implements ITaskService {
@@ -75,8 +77,26 @@ public class TaskService implements ITaskService {
         taskDetailDao.save(taskDetail);
     }
 
+    /**
+     * read task from db, not contain task detail
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
     @Override
-    public Task getTaskByTaskId(Integer taskId) throws Exception {
+    public Task getTaskTinyByTaskId(Integer taskId) throws Exception {
+        Task task=taskDao.findByTaskId(taskId);
+        return task;
+    }
+
+    /**
+     * read task from db, contain task detail
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Task getTaskDetailByTaskId(Integer taskId) throws Exception {
         Task task = taskDao.findByTaskId(taskId);
         TaskDetail taskDetail = taskDetailDao.findByTaskId(taskId);
         task.setDetail(taskDetail.getDetail());
@@ -110,6 +130,12 @@ public class TaskService implements ITaskService {
     public void deleteTask(Integer taskId) throws Exception {
         taskDao.delete(taskId);
         taskDetailDao.deleteByTaskId(taskId);
+    }
+
+    @Override
+    public ArrayList<Task> listTaskByPid(Integer pid) throws Exception {
+        ArrayList<Task> tasks=taskDao.findAllByPid(pid);
+        return tasks;
     }
 
 

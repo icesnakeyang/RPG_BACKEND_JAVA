@@ -16,4 +16,6 @@ public interface TaskDao extends JpaRepository<Task, Integer> {
 
     void deleteByTaskId(Integer taskId);
 
+    ArrayList findAllByPid(Integer pid);
+
 }

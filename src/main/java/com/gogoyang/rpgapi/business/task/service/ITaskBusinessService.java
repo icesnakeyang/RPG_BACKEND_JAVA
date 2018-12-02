@@ -9,6 +9,8 @@ public interface ITaskBusinessService {
     Task createTask(Map in) throws Exception;
     void updateTask(Map in) throws Exception;
     void deleteTask(Map in) throws Exception;
-    Map getTaskByTaskId(Map in) throws Exception;
+    Map getTaskDetailByTaskId(Map in) throws Exception;
     Page<Task> listTaskByUserId(Map in) throws Exception;
+
+    Map totalSubTask(Map in) throws Exception;
 }
