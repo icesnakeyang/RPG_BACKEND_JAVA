@@ -177,6 +177,7 @@ public class TaskController {
             String token = httpServletRequest.getHeader("token");
             Map in = new HashMap();
             in.put("token", token);
+            in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
             in.put("code", request.getCode());
             in.put("detail", request.getDetail());
@@ -266,6 +267,33 @@ public class TaskController {
             in.put("token", token);
             in.put("pid", request.getPid());
             Map out=iTaskBusinessService.listTaskByPid(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10095);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 查询一个私有任务的所有父任务的标题，返回一个面包屑导航组
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listTaskBreadcrumb")
+    public Response listTaskBreadcrumb(@RequestBody TaskRequest request,
+                                       HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("taskId", request.getTaskId());
+            Map out=iTaskBusinessService.listTaskBreadcrumb(in);
             response.setData(out);
         }catch (Exception ex){
             try {

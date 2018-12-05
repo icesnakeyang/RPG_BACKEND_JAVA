@@ -15,4 +15,5 @@ public interface ITaskBusinessService {
     Page<Task> listTaskByUserId(Map in) throws Exception;
     Map totalSubTask(Map in) throws Exception;
     Map listTaskByPid(Map in) throws Exception;
+    Map listTaskBreadcrumb(Map in) throws Exception;
 }
