@@ -127,7 +127,11 @@ public class TaskBusinessService implements ITaskBusinessService {
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
 
         UserInfo createUser = iUserInfoService.loadUserByUserId(task.getCreatedUserId());
-        task.setCreatedUserName(createUser.getUsername());
+        if(createUser.getRealName()!=null){
+            task.setCreatedUserName(createUser.getRealName());
+        }else {
+            task.setCreatedUserName(createUser.getUsername());
+        }
 
         /**
          * 增加一个jobId, 如果task已经发布，就返回这个发布的jobId
