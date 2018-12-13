@@ -85,8 +85,8 @@ public class TaskController {
      * 根据taskId读取任务，包括任务详情
      */
     @ResponseBody
-    @PostMapping("/getTaskByTaskId")
-    public Response getTaskById(@RequestBody TaskRequest request,
+    @PostMapping("/getTaskDetailByTaskId")
+    public Response getTaskDetailByTaskId(@RequestBody TaskRequest request,
                                 HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
