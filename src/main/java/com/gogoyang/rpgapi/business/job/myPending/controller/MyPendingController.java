@@ -49,4 +49,37 @@ public class MyPendingController {
         }
         return response;
     }
+
+    /**
+     * Update the published but not matched job
+     * 修改已经发布但未成交的任务
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/updatePendingJob")
+    public Response updatePendingJob(@RequestBody JobRequest request,
+                                     HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            in.put("title", request.getTitle());
+            in.put("code", request.getCode());
+            in.put("days", request.getDays());
+            in.put("price", request.getPrice());
+            in.put("jobDetail",request.getJobDetail());
+            iMyPendingBusinessService.updateJob(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10099);
+            }
+        }
+        return response;
+    }
 }

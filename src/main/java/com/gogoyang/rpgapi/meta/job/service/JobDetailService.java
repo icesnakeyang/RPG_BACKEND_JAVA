@@ -1,8 +1,11 @@
 package com.gogoyang.rpgapi.meta.job.service;
 
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
+import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
+import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -15,6 +18,13 @@ public class JobDetailService implements IJobDetail {
     private IUserInfoService iUserInfoService;
     private ITaskService iTaskService;
     private IJobApplyService iJobApplyService;
+    private final JobDetailDao jobDetailDao;
+
+    @Autowired
+    public JobDetailService(JobDetailDao jobDetailDao) {
+        this.jobDetailDao = jobDetailDao;
+    }
+
     @Override
     public Map loadJobDetail(Map in) throws Exception {
         //todo
@@ -60,12 +70,29 @@ public class JobDetailService implements IJobDetail {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void agreeMatch(Map in) throws Exception {
 
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void rejectMatch(Map in) throws Exception {
 
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void updateJobDetail(JobDetail jobDetail) throws Exception {
+        if(jobDetail.getJobId()==null){
+            throw new Exception("10099");
+        }
+        jobDetailDao.save(jobDetail);
+    }
+
+    @Override
+    public JobDetail getJobDetailByJobId(Integer jobId) throws Exception {
+        JobDetail detail=jobDetailDao.findByJobId(jobId);
+        return detail;
     }
 }

@@ -1,5 +1,8 @@
 package com.gogoyang.rpgapi.meta.job.service;
 
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
+
 import java.util.Map;
 
 /**
@@ -26,4 +29,8 @@ public interface IJobDetail {
     void agreeMatch(Map in) throws Exception;
 
     void rejectMatch(Map in) throws Exception;
+
+    void updateJobDetail(JobDetail updateJobDetail) throws Exception;
+
+    JobDetail getJobDetailByJobId(Integer jobId) throws Exception;
 }
