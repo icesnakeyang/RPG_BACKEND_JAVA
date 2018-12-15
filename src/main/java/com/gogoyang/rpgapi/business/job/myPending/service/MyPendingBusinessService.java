@@ -48,6 +48,13 @@ public class MyPendingBusinessService implements IMyPendingBusinessService{
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateJob(Map in) throws Exception {
+        /**
+         * 首先检查用户
+         * 读取job
+         * 检查job状态是否为pending
+         * 检查用户是否为partyA
+         * 修改job和jobDetail
+         */
         String token=in.get("token").toString();
         Integer jobId=(Integer)in.get("jobId");
         String title=in.get("title").toString();
@@ -70,6 +77,10 @@ public class MyPendingBusinessService implements IMyPendingBusinessService{
 
         if(job.getStatus()!=JobStatus.PENDING){
             throw new Exception("10101");
+        }
+
+        if(userInfo.getUserId().intValue()!=job.getPartyAId().intValue()){
+            throw new Exception("10102");
         }
 
         job.setTitle(title);
