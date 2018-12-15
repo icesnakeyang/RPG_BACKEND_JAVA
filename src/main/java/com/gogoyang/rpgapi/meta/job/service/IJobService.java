@@ -4,6 +4,8 @@ import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
+
 public interface IJobService {
     Job insertJob(Job job) throws Exception;
 
@@ -53,4 +55,6 @@ public interface IJobService {
      * @throws Exception
      */
     Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+
+    Page<Job> listMyPendingJob(Integer partyAId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 }

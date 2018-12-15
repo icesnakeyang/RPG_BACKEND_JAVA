@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -185,6 +186,15 @@ class JobService implements IJobService {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByPartyBIdAndStatus(userId, jobStatus, pageable);
+        return jobs;
+    }
+
+    @Override
+    public Page<Job> listMyPendingJob(Integer partyAId, JobStatus jobStatus,
+                                           Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(partyAId, jobStatus, pageable);
         return jobs;
     }
 }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/publish")
+@RequestMapping("/task/publish")
 public class publishController {
     private final IPublishBusinessService iPublishBusinessService;
 

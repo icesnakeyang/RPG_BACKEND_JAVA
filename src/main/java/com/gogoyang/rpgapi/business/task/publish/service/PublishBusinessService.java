@@ -69,7 +69,7 @@ public class PublishBusinessService implements IPublishBusinessService{
         job.setCode(in.get("code").toString());
         job.setDays((Integer)in.get("days"));
         job.setPrice((Double)in.get("price"));
-        job.setStatus(JobStatus.MATCHING);
+        job.setStatus(JobStatus.PENDING);
         job.setTaskId((Integer)in.get("taskId"));
         job.setTitle(in.get("title").toString());
         job.setDetail(in.get("detail").toString());
