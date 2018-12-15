@@ -1,7 +1,5 @@
 package com.gogoyang.rpgapi.meta.job.service;
 
-import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
-import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.dao.JobDao;
 import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
@@ -19,9 +17,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
+
 
 @Service
 class JobService implements IJobService {
@@ -195,6 +192,22 @@ class JobService implements IJobService {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(partyAId, jobStatus, pageable);
+        return jobs;
+    }
+
+    @Override
+    public Page<Job> loadJobByStausMap(Map qIn) throws Exception {
+        Integer pageIndex=(Integer)qIn.get("pageIndex");
+        Integer pageSize=(Integer)qIn.get("pageSize");
+        String type=qIn.get("type").toString();
+
+        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+
+        Page<Job> jobs=null;
+        if(type.equals("plaza")){
+            jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
+        }
         return jobs;
     }
 }

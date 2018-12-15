@@ -28,7 +28,11 @@ public class JobPlazaBusinessService implements IJobPlazaBusinessService{
     public Map loadPublicJob(Map in) throws Exception {
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
-        Page<Job> jobPage= iJobService.loadJobByStatus(JobStatus.MATCHING,pageIndex, pageSize);
+        Map qIn=new HashMap();
+        qIn.put("type", "plaza");
+        qIn.put("pageIndex", pageIndex);
+        qIn.put("pageSize", pageSize);
+        Page<Job> jobPage= iJobService.loadJobByStausMap(qIn);
         for(int i=0;i<jobPage.getContent().size();i++){
             jobPage.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
                     jobPage.getContent().get(i).getPartyAId()));
