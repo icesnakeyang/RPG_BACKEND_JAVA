@@ -57,7 +57,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         ArrayList<JobApply> myApplyList = iJobApplyService.loadMyApplies(userInfo.getUserId());
         ArrayList jobList = new ArrayList();
         for (int i = 0; i < myApplyList.size(); i++) {
-            Job job = iJobService.loadJobByJobId(myApplyList.get(i).getJobId());
+            Job job = iJobService.getJobByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
                 job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
@@ -94,7 +94,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         }
 
         //check job
-        Job job = iJobService.loadJobByJobId(jobId);
+        Job job = iJobService.getJobByJobId(jobId);
         if (job == null) {
             throw new Exception("10005");
         }

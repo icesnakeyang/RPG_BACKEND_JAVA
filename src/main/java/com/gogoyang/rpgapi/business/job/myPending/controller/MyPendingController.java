@@ -82,4 +82,31 @@ public class MyPendingController {
         }
         return response;
     }
+
+    /**
+     * 删除我发布的未匹配任务
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/deletePendingJob")
+    public Response deletePendingJob(@RequestBody JobRequest request,
+                                     HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            iMyPendingBusinessService.deletePendingJob(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10103);
+            }
+        }
+        return response;
+    }
 }

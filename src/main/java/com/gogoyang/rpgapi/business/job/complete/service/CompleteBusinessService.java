@@ -107,7 +107,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackOn = Exception.class)
     public void rejectComplete(Map in) throws Exception {
         Integer jobId=(Integer)in.get("jobId");
-        Job job=iJobService.loadJobByJobIdTiny(jobId);
+        Job job=iJobService.getJobByJobIdTiny(jobId);
         if(job.getStatus()!=JobStatus.PROGRESS){
             throw new Exception("10063");
         }
@@ -144,7 +144,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
          */
         //首先判断任务是否已经验收
         Integer jobId=(Integer)in.get("jobId");
-        Job job=iJobService.loadJobByJobIdTiny(jobId);
+        Job job=iJobService.getJobByJobIdTiny(jobId);
         if(job.getStatus()!= JobStatus.PROGRESS){
             throw new Exception("10063");
         }

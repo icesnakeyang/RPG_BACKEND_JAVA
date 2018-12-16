@@ -43,7 +43,7 @@ public class PartyABusinessService implements IPartyABusinessService{
             throw new Exception("10004");
         }
 
-        Page<Job> jobPage=iJobService.loadPartyAJob(userInfo.getUserId(),JobStatus.PROGRESS, 0, 100);
+        Page<Job> jobPage=iJobService.listPartyAJob(userInfo.getUserId(),JobStatus.PROGRESS, 0, 100);
 
         for(int i=0;i<jobPage.getContent().size();i++){
             jobPage.getContent().get(i).setPartyAName(iUserInfoService.getUserName(

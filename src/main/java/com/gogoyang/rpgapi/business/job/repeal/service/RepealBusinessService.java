@@ -52,7 +52,7 @@ public class RepealBusinessService implements IRepealBusinessService {
         }
 
         Integer jobId = (Integer) in.get("jobId");
-        Job job = iJobService.loadJobByJobIdTiny(jobId);
+        Job job = iJobService.getJobByJobIdTiny(jobId);
         if (job == null) {
             throw new Exception("10084");
         }
@@ -199,7 +199,7 @@ public class RepealBusinessService implements IRepealBusinessService {
     }
 
     private RepealBox loadRepealBox(Integer jobId) throws Exception{
-        Job job=iJobService.loadJobByJobIdTiny(jobId);
+        Job job=iJobService.getJobByJobIdTiny(jobId);
         UserInfo partyA=iUserInfoService.loadUserByUserId(job.getPartyAId());
         UserInfo partyB=iUserInfoService.loadUserByUserId(job.getPartyBId());
         Spot spot=iSpotService.getSpotlightByJobId(jobId);

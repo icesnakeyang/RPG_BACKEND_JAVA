@@ -102,7 +102,7 @@ public class StopBusinessService implements IStopBusinessService {
          * 甲乙双方只能同时处理一件终止申请，不能没完没了，也就是说，只要双方还有一条终止申请没有被处理，就不能再次提出终止。
          */
         Integer jobId = (Integer) in.get("jobId");
-        Job job = iJobService.loadJobByJobIdTiny(jobId);
+        Job job = iJobService.getJobByJobIdTiny(jobId);
         if (job.getStatus() != JobStatus.PROGRESS) {
             throw new Exception("10070");
         }
@@ -153,7 +153,7 @@ public class StopBusinessService implements IStopBusinessService {
 
         //检查任务是否正在进行
         Integer jobId=(Integer)in.get("jobId");
-        Job job=iJobService.loadJobByJobIdTiny(jobId);
+        Job job=iJobService.getJobByJobIdTiny(jobId);
         if(job.getStatus()!=JobStatus.PROGRESS){
             throw new Exception("10071");
         }

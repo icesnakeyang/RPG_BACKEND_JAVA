@@ -12,12 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class MyPendingBusinessService implements IMyPendingBusinessService{
+public class MyPendingBusinessService implements IMyPendingBusinessService {
     private final IUserInfoService iUserInfoService;
     private final IJobService iJobService;
     private final IJobDetail iJobDetail;
@@ -33,14 +32,14 @@ public class MyPendingBusinessService implements IMyPendingBusinessService{
 
     @Override
     public Map listMyPendingJob(Map in) throws Exception {
-        String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
-        Integer partyAId=userInfo.getUserId();
-        Integer pageIndex=(Integer)in.get("pageIndex");
-        Integer pageSize=(Integer)in.get("pageSize");
-        Page<Job> jobs=iJobService.listMyPendingJob(partyAId, JobStatus.PENDING, pageIndex, pageSize);
+        String token = in.get("token").toString();
+        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        Integer partyAId = userInfo.getUserId();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
+        Page<Job> jobs = iJobService.listMyPendingJob(partyAId, JobStatus.PENDING, pageIndex, pageSize);
 //        ArrayList<Job> jobs=iJobService.listMyPendingJob(partyAId, JobStatus.PENDING, pageIndex, pageSize);
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("jobs", jobs);
         return out;
     }
@@ -55,31 +54,31 @@ public class MyPendingBusinessService implements IMyPendingBusinessService{
          * 检查用户是否为partyA
          * 修改job和jobDetail
          */
-        String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
-        String title=in.get("title").toString();
-        String code=in.get("code").toString();
-        Integer days=(Integer)in.get("days");
-        Double price=(Double)in.get("price");
-        String jobDetail=in.get("jobDetail").toString();
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+        String title = in.get("title").toString();
+        String code = in.get("code").toString();
+        Integer days = (Integer) in.get("days");
+        Double price = (Double) in.get("price");
+        String jobDetail = in.get("jobDetail").toString();
 
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
 
-        if(userInfo==null){
+        if (userInfo == null) {
             throw new Exception("10004");
         }
 
-        Job job=iJobService.loadJobByJobId(jobId);
+        Job job = iJobService.getJobByJobId(jobId);
 
-        if(job==null){
+        if (job == null) {
             throw new Exception("10100");
         }
 
-        if(job.getStatus()!=JobStatus.PENDING){
+        if (job.getStatus() != JobStatus.PENDING) {
             throw new Exception("10101");
         }
 
-        if(userInfo.getUserId().intValue()!=job.getPartyAId().intValue()){
+        if (userInfo.getUserId().intValue() != job.getPartyAId().intValue()) {
             throw new Exception("10102");
         }
 
@@ -89,8 +88,38 @@ public class MyPendingBusinessService implements IMyPendingBusinessService{
         job.setPrice(price);
         job.setDetail(jobDetail);
         iJobService.updateJob(job);
-        JobDetail detail=iJobDetail.getJobDetailByJobId(jobId);
+        JobDetail detail = iJobDetail.getJobDetailByJobId(jobId);
         detail.setDetail(jobDetail);
         iJobDetail.updateJobDetail(detail);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void deletePendingJob(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+
+        //read current user
+        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        if (userInfo == null) {
+            //no user
+            throw new Exception("10004");
+        }
+        //read job
+        Job job = iJobService.getJobByJobIdTiny(jobId);
+        if (job == null) {
+            //no job
+            throw new Exception("10100");
+        }
+        //check the job status must be PENDING
+        if (job.getStatus() != JobStatus.PENDING) {
+            throw new Exception("10104");
+        }
+        //check the party a of this job must be current user
+        if (job.getPartyAId().intValue() != userInfo.getUserId().intValue()) {
+            throw new Exception("10105");
+        }
+        //delete
+        iJobService.deleteJob(jobId);
     }
 }

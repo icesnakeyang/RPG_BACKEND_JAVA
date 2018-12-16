@@ -43,7 +43,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         String title = in.get("title").toString();
         String content = in.get("content").toString();
 
-        Job job = iJobService.loadJobByJobIdTiny(jobId);
+        Job job = iJobService.getJobByJobIdTiny(jobId);
 
         UserInfo userInfo = iUserInfoService.loadUserByToken(token);
         if (userInfo.getUserId() != job.getPartyAId()) {
@@ -108,7 +108,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         Integer jobId = (Integer) in.get("jobId");
         String token = in.get("token").toString();
         UserInfo userInfo = iUserInfoService.loadUserByToken(token);
-        Job job = iJobService.loadJobByJobIdTiny(jobId);
+        Job job = iJobService.getJobByJobIdTiny(jobId);
         if (userInfo.getUserId() != job.getPartyAId()) {
             if (userInfo.getUserId() != job.getPartyBId()) {
                 throw new Exception("10089");

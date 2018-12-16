@@ -10,9 +10,9 @@ import java.util.Map;
 public interface IJobService {
     Job insertJob(Job job) throws Exception;
 
-    Job loadJobByJobId(Integer jobId) throws Exception;
+    Job getJobByJobId(Integer jobId) throws Exception;
 
-    Job loadJobByJobIdTiny(Integer jobId) throws Exception;
+    Job getJobByJobIdTiny(Integer jobId) throws Exception;
 
     Job getJobByTaskId(Integer taskId) throws Exception;
 
@@ -26,7 +26,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    Page<Job> loadJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    Page<Job> listJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 修改任务
@@ -44,7 +44,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    Page<Job> loadPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    Page<Job> listPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 获取我是乙方的任务
@@ -55,9 +55,11 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    Page<Job> listPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     Page<Job> listMyPendingJob(Integer partyAId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
-    Page<Job> loadJobByStausMap(Map qIn) throws Exception;
+    Page<Job> listJobByStausMap(Map qIn) throws Exception;
+
+    void deleteJob(Integer jobId) throws Exception;
 }

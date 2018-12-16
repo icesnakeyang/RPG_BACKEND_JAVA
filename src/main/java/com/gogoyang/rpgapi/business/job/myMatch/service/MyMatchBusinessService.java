@@ -66,7 +66,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         ArrayList newJobs = new ArrayList();
         for (int i = 0; i < newMatchs.size(); i++) {
             Map map = new HashMap();
-            Job job = iJobService.loadJobByJobIdTiny(newMatchs.get(i).getJobId());
+            Job job = iJobService.getJobByJobIdTiny(newMatchs.get(i).getJobId());
             if (job != null) {
                 map.put("match", newMatchs.get(i));
                 job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
@@ -114,7 +114,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         iJobMatchService.updateJobMatch(jobMatch);
 
         //把job的状态修改为progress
-        Job job = iJobService.loadJobByJobIdTiny(jobId);
+        Job job = iJobService.getJobByJobIdTiny(jobId);
         job.setStatus(JobStatus.PROGRESS);
         job.setContractTime(new Date());
         job.setPartyBId(userId);

@@ -38,7 +38,7 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
     @Override
     public Map loadJobDetail(Map in) throws Exception {
         Integer jobId=(Integer)in.get("jobId");
-        Job job = iJobService.loadJobByJobId(jobId);
+        Job job = iJobService.getJobByJobId(jobId);
         Map out=new HashMap();
         out.put("job", job);
         return out;
@@ -53,7 +53,7 @@ public class JobDetailBusinessService implements IJobDetailBusinessService{
     @Override
     public Map loadJobTiny(Map in) throws Exception {
         Integer jobId=(Integer)in.get("jobId");
-        Job job=iJobService.loadJobByJobIdTiny(jobId);
+        Job job=iJobService.getJobByJobIdTiny(jobId);
         Map out=new HashMap();
         out.put("job", job);
         return out;

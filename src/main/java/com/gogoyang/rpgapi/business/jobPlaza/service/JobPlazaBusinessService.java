@@ -32,7 +32,7 @@ public class JobPlazaBusinessService implements IJobPlazaBusinessService{
         qIn.put("type", "plaza");
         qIn.put("pageIndex", pageIndex);
         qIn.put("pageSize", pageSize);
-        Page<Job> jobPage= iJobService.loadJobByStausMap(qIn);
+        Page<Job> jobPage= iJobService.listJobByStausMap(qIn);
         for(int i=0;i<jobPage.getContent().size();i++){
             jobPage.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
                     jobPage.getContent().get(i).getPartyAId()));

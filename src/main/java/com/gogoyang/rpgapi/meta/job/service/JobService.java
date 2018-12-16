@@ -78,7 +78,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Job loadJobByJobId(Integer jobId) throws Exception {
+    public Job getJobByJobId(Integer jobId) throws Exception {
         Job job = jobDao.findByJobId(jobId);
 
         job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
@@ -98,7 +98,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Job loadJobByJobIdTiny(Integer jobId) throws Exception {
+    public Job getJobByJobIdTiny(Integer jobId) throws Exception {
         Job job = jobDao.findByJobId(jobId);
         return job;
     }
@@ -127,7 +127,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Page<Job> loadJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
+    public Page<Job> listJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByStatus(jobStatus, pageable);
@@ -160,7 +160,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Page<Job> loadPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
+    public Page<Job> listPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(userId, jobStatus, pageable);
@@ -178,7 +178,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public Page<Job> loadPartyBJob(Integer userId, JobStatus jobStatus,
+    public Page<Job> listPartyBJob(Integer userId, JobStatus jobStatus,
                                    Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
@@ -196,7 +196,7 @@ class JobService implements IJobService {
     }
 
     @Override
-    public Page<Job> loadJobByStausMap(Map qIn) throws Exception {
+    public Page<Job> listJobByStausMap(Map qIn) throws Exception {
         Integer pageIndex=(Integer)qIn.get("pageIndex");
         Integer pageSize=(Integer)qIn.get("pageSize");
         String type=qIn.get("type").toString();
@@ -209,5 +209,11 @@ class JobService implements IJobService {
             jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
         }
         return jobs;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void deleteJob(Integer jobId) throws Exception {
+        jobDao.delete(jobId);
     }
 }

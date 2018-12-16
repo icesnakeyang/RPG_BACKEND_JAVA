@@ -67,7 +67,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
          * 1、读取所有job，JobStatus.MATCHING
          * 2、逐条查询jobApply，如果有，添加到list
          */
-        Page<Job> jobs = iJobService.loadJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
+        Page<Job> jobs = iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
 
         ArrayList<Job> jobsOut = new ArrayList<Job>();
 
