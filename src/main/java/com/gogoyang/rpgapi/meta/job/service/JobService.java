@@ -208,6 +208,9 @@ class JobService implements IJobService {
         if(type.equals("plaza")){
             jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
         }
+        if(type.equals("jobtomatch")){
+            jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
+        }
         return jobs;
     }
 

@@ -154,8 +154,6 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         Map money = iAccountService.refreshAccountBalance(userId);
         userInfo.setAccount((Double) money.get("balance"));
         iUserInfoService.updateUser(userInfo);
-
-
     }
 
     /**
