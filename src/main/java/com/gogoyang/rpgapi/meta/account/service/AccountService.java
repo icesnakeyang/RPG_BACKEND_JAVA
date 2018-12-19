@@ -3,6 +3,10 @@ package com.gogoyang.rpgapi.meta.account.service;
 import com.gogoyang.rpgapi.meta.account.dao.AccountDao;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -59,5 +63,16 @@ public class AccountService implements IAccountService{
         Map out=new HashMap();
         out.put("balance", balance);
         return out;
+    }
+
+    @Override
+    public Page<Account> listMyAccount(Map qIn) throws Exception {
+        Integer userId=(Integer)qIn.get("userId");
+        Integer pageIndex=(Integer)qIn.get("pageIndex");
+        Integer pageSize=(Integer)qIn.get("pageSize");
+        Sort sort=new Sort(Sort.Direction.DESC, "accountId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<Account> accounts=accountDao.findAllByUserId(userId, pageable);
+        return accounts;
     }
 }

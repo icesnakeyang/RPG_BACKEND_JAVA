@@ -2,10 +2,7 @@ package com.gogoyang.rpgapi.meta.account.entity;
 
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -29,6 +26,9 @@ public class Account {
 
     @Column(name = "remark")
     private String remark;
+
+    @Transient
+    private String cratedTimeStr;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,5 +78,13 @@ public class Account {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getCratedTimeStr() {
+        return cratedTimeStr;
+    }
+
+    public void setCratedTimeStr(String cratedTimeStr) {
+        this.cratedTimeStr = cratedTimeStr;
     }
 }

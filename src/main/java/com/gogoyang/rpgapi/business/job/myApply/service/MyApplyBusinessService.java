@@ -99,8 +99,9 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
             throw new Exception("10005");
         }
 
-        //是否已成交
-        if (job.getStatus().ordinal()!=JobStatus.MATCHING.ordinal()) {
+        //是否已成交，即不是Matching，也不是Pending
+        if (job.getStatus().ordinal()!=JobStatus.MATCHING.ordinal() &&
+                job.getStatus().ordinal()!=JobStatus.PENDING.ordinal()) {
             throw new Exception("10006");
         }
 
