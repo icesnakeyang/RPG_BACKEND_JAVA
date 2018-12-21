@@ -15,7 +15,7 @@ public interface IJobApplyService {
      * @return
      * @throws Exception
      */
-    ArrayList<JobApply> loadJobApplyByJobId(Integer jobId) throws Exception;
+    ArrayList<JobApply> listJobApplyByJobId(Integer jobId) throws Exception;
 
 
 

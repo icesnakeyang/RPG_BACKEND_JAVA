@@ -29,13 +29,8 @@ public class SecretaryMatchController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/loadJobToMatch")
-    public Response loadJobToMatch(HttpServletRequest httpServletRequest) {
-        /**
-         * 检查admin是否存在
-         * 检查admin是否有Secretary权限
-         * 读取所有用户申请了任务
-         */
+    @PostMapping("/listJobToMatch")
+    public Response listJobToMatch(HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
@@ -44,7 +39,7 @@ public class SecretaryMatchController {
             in.put("pageIndex", 0);
             in.put("pageSize", 100);
 
-            Map out=iSecretaryMatchBusinessService.loadJobToMatch(in);
+            Map out=iSecretaryMatchBusinessService.listJobToMatch(in);
 
             response.setData(out);
         } catch (Exception ex) {
@@ -106,8 +101,8 @@ public class SecretaryMatchController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/loadUserApplyJob")
-    public Response loadUserApplyJob(@RequestBody AdminRequest request,
+    @PostMapping("/listUserApplyJob")
+    public Response listUserApplyJob(@RequestBody AdminRequest request,
                                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {

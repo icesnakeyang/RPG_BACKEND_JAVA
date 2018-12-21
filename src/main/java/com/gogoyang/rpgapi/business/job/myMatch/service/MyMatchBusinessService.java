@@ -122,7 +122,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         iJobService.updateJob(job);
 
         //查找所有其他申请了该任务的用户，把申请结果处理为accept_by_others
-        ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(jobId);
+        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(jobId);
         for (int i = 0; i < jobApplies.size(); i++) {
             if (jobApplies.get(i).getApplyUserId() != userId) {
                 jobApplies.get(i).setProcessTime(new Date());

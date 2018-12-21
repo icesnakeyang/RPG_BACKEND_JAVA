@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.business.admin.secretary.match.service;
 
-import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
@@ -48,7 +47,12 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
      * @throws Exception
      */
     @Override
-    public Map loadJobToMatch(Map in) throws Exception {
+    public Map listJobToMatch(Map in) throws Exception {
+        /**
+         * 检查当前用户是否RPG秘书
+         * 读取job, status==pending, matching， order by created_time desc
+         * 循环，查询每个job的jobApply记录
+         */
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
@@ -76,7 +80,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         ArrayList<Job> jobsOut = new ArrayList<Job>();
 
         for (int i = 0; i < jobs.getContent().size(); i++) {
-            ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(
+            ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(
                     jobs.getContent().get(i).getJobId());
             if (jobApplies.size() > 0) {
                 //加上用户名
@@ -201,7 +205,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         /**
          * read jobApply by jobId where processResult==null
          */
-        ArrayList<JobApply> jobApplies = iJobApplyService.loadJobApplyByJobId(jobId);
+        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(jobId);
 
         /**
          * 逐条查询JobMatch里是否已经分配了该用户

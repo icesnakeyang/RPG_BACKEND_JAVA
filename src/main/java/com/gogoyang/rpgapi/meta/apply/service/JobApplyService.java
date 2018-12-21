@@ -55,7 +55,7 @@ public class JobApplyService implements IJobApplyService {
      * @throws Exception
      */
     @Override
-    public ArrayList<JobApply> loadJobApplyByJobId(Integer jobId) throws Exception {
+    public ArrayList<JobApply> listJobApplyByJobId(Integer jobId) throws Exception {
         ArrayList<JobApply> jobApplies = jobApplyDao.findAllByJobIdAndProcessResultIsNull(jobId);
 
         return jobApplies;
