@@ -36,9 +36,7 @@ public class publishController {
             in.put("price", request.getPrice());
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
-
-            Map out = iPublishBusinessService.publishJob(in);
-            response.setData(out);
+            iPublishBusinessService.publishJob(in);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

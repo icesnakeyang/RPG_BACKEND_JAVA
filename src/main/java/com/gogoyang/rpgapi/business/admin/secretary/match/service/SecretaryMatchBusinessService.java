@@ -164,7 +164,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         jobMatch.setMatchUserId(userId);
         iJobMatchService.insertJobMatch(jobMatch);
 
-        JobApply jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
+        jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
         if (jobApply == null) {
             throw new Exception("10012");
         }
