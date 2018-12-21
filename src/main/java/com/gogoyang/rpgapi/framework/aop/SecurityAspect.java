@@ -22,7 +22,7 @@ public class SecurityAspect {
     @Before("signedUser()")
     public void checkToken() throws Exception{
         String token=AspectVariable.getToken();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }

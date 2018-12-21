@@ -22,8 +22,8 @@ public class SecretaryMatchController {
     }
 
     /**
-     * 查询所有用户提交了申请的任务
-     * rpg秘书查看用户提交的任务申请，选择用户分配。
+     * 查询等待匹配的任务，PENDING/MATCHING
+     * 按createdTime排倒序
      *
      * @param httpServletRequest
      * @return
@@ -38,9 +38,7 @@ public class SecretaryMatchController {
             in.put("token", token);
             in.put("pageIndex", 0);
             in.put("pageSize", 100);
-
             Map out=iSecretaryMatchBusinessService.listJobToMatch(in);
-
             response.setData(out);
         } catch (Exception ex) {
             try {

@@ -57,7 +57,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
          * 3、逐条根据jobMatch读取所有job
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -100,7 +100,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
          */
         Integer jobId = (Integer) in.get("jobId");
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -174,7 +174,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         Integer jobId=(Integer)in.get("jobId");
         String remark=in.get("remark").toString();
 
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(userInfo.getUserId(), jobId);
         jobMatch.setProcessResult(LogStatus.REJECT);
         jobMatch.setProcessTime(new Date());

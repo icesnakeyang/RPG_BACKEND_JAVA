@@ -10,11 +10,11 @@ public interface IUserInfoService {
 
     UserInfo insertUser(UserInfo userInfo) throws Exception;
 
-    UserInfo loadUserByUsername(String username) throws Exception;
+    UserInfo getUserByUsername(String username) throws Exception;
 
-    UserInfo loadUserByToken(String token) throws Exception;
+    UserInfo getUserByToken(String token) throws Exception;
 
-    UserInfo loadUserByUserId(Integer userId) throws Exception;
+    UserInfo getUserByUserId(Integer userId) throws Exception;
 
     void updateUser(UserInfo userInfo) throws Exception;
 

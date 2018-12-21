@@ -66,7 +66,7 @@ public class UserInfoService implements IUserInfoService {
      * @throws Exception
      */
     @Override
-    public UserInfo loadUserByUsername(String username) throws Exception {
+    public UserInfo getUserByUsername(String username) throws Exception {
         UserInfo userInfo = userInfoDao.findByUsername(username);
         return userInfo;
     }
@@ -79,7 +79,7 @@ public class UserInfoService implements IUserInfoService {
      * @throws Exception
      */
     @Override
-    public UserInfo loadUserByToken(String token) throws Exception {
+    public UserInfo getUserByToken(String token) throws Exception {
         UserInfo userInfo= userInfoDao.findByToken(token);
         return userInfo;
     }
@@ -92,7 +92,7 @@ public class UserInfoService implements IUserInfoService {
      * @throws Exception
      */
     @Override
-    public UserInfo loadUserByUserId(Integer userId) throws Exception {
+    public UserInfo getUserByUserId(Integer userId) throws Exception {
         UserInfo userInfo = userInfoDao.findByUserId(userId);
         return userInfo;
     }
@@ -137,7 +137,7 @@ public class UserInfoService implements IUserInfoService {
      * @throws Exception
      */
     public String getUserName(Integer userId) throws Exception{
-        UserInfo userInfo=loadUserByUserId(userId);
+        UserInfo userInfo=getUserByUserId(userId);
         if(userInfo==null){
             return null;
         }

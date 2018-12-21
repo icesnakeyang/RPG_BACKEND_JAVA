@@ -218,7 +218,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
                     jobApplies.get(i).getApplyUserId(),
                     jobApplies.get(i).getJobId());
             if (jobMatch == null) {
-                UserInfo userInfo = iUserInfoService.loadUserByUserId(jobApplies.get(i).getApplyUserId());
+                UserInfo userInfo = iUserInfoService.getUserByUserId(jobApplies.get(i).getApplyUserId());
                 if (userInfo != null) {
                     users.add(userInfo);
                 }
