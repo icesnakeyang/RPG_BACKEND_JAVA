@@ -141,6 +141,7 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
         email.setEmail(strEmail);
         email.setDefault(true);
         email.setCreatedTime(new Date());
+        email.setUserId(userInfo.getUserId());
         email.setCreatedUserId(userInfo.getUserId());
         iEmailService.insertEmail(email);
     }
@@ -194,6 +195,7 @@ public class UserInfoBusinessService implements IUserInfoBusinessService {
         phone.setPhone(strPhone);
         phone.setDefault(true);
         phone.setCreatedTime(new Date());
+        phone.setUserId(userInfo.getUserId());
         phone.setCreatedUserId(userInfo.getUserId());
         iPhoneService.insertPhone(phone);
     }

@@ -41,6 +41,7 @@ public class JobPlazaController {
                 return response;
             } catch (Exception ex2) {
                 response.setErrorCode(10026);
+                System.out.println(ex.getMessage());
                 return response;
             }
         }

@@ -20,7 +20,7 @@ public interface ISpotService {
      * @return
      * @throws Exception
      */
-    Page<Spot> loadSpotlight(Integer pageIndex, Integer pageSize) throws Exception;
+    Page<Spot> listSpotlight(Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 获取一个任务的所有申诉
@@ -28,7 +28,7 @@ public interface ISpotService {
      * @return
      * @throws Exception
      */
-    ArrayList<Spot> listSpotlightByJobId(Integer jobId) throws Exception;
+    Page<Spot> listSpotlightByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 获取一个任务当前正在申诉的事件
@@ -37,11 +37,4 @@ public interface ISpotService {
      * @throws Exception
      */
     Spot getSpotlightByJobId(Integer jobId) throws Exception;
-
-    /**
-     * 修改验收日志/处理验收日志申请
-     * @param spot
-     * @throws Exception
-     */
-    void updateSpotlight(Spot spot) throws Exception;
 }

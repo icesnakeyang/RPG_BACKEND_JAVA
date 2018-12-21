@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.job.mySpotlight.service;
 
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -14,5 +15,5 @@ public interface IMySpotBusinessService {
      */
     Map createSpotlight(Map in) throws Exception;
 
-    ArrayList<Spot> listMySpotlight(Map in) throws Exception;
+    Page<Spot> listMySpotlight(Map in) throws Exception;
 }

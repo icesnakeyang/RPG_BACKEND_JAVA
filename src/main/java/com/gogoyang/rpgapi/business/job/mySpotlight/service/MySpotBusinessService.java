@@ -8,6 +8,7 @@ import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -104,9 +105,11 @@ public class MySpotBusinessService implements IMySpotBusinessService {
     }
 
     @Override
-    public ArrayList<Spot> listMySpotlight(Map in) throws Exception {
+    public Page<Spot> listMySpotlight(Map in) throws Exception {
         Integer jobId = (Integer) in.get("jobId");
         String token = in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
         UserInfo userInfo = iUserInfoService.loadUserByToken(token);
         Job job = iJobService.getJobByJobIdTiny(jobId);
         if (userInfo.getUserId() != job.getPartyAId()) {
@@ -114,7 +117,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
                 throw new Exception("10089");
             }
         }
-        ArrayList<Spot> spots = iSpotService.listSpotlightByJobId(jobId);
+        Page<Spot> spots = iSpotService.listSpotlightByJobId(jobId, pageIndex, pageSize);
         return spots;
     }
 }

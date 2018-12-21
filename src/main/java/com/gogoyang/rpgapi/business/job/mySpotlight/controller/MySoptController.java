@@ -6,6 +6,7 @@ import com.gogoyang.rpgapi.business.spotlight.vo.SpotlightRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,7 +75,9 @@ public class MySoptController {
             Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
-            ArrayList<Spot> spots = iMySpotBusinessService.listMySpotlight(in);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Page<Spot> spots = iMySpotBusinessService.listMySpotlight(in);
             response.setData(spots);
         } catch (Exception ex) {
             try {

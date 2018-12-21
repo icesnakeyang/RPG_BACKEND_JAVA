@@ -38,7 +38,7 @@ public class PublishBusinessService implements IPublishBusinessService{
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Map publishJob(Map in) throws Exception {
+    public void publishJob(Map in) throws Exception {
         /**
          * 检查任务是否已经发布了
          * create a job
@@ -48,21 +48,31 @@ public class PublishBusinessService implements IPublishBusinessService{
          */
         Integer taskId=(Integer)in.get("taskId");
 
+        //读取当前用户
         UserInfo userInfo=iUserInfoService.loadUserByToken(in.get("token").toString());
         if(userInfo==null){
+            //当前用户不存在
             throw new Exception("10004");
         }
 
+        //根据taskId读取job
         Job job=iJobService.getJobByTaskId(taskId);
         if(job!=null){
+            //该task已经发布过了，且，发布的任务正在进行中
             if(job.getStatus()==JobStatus.PROGRESS) {
                 throw new Exception("10092");
             }
+            //该Task已经发布过了在，且，目前该任务正在匹配中
             if(job.getStatus()==JobStatus.MATCHING){
+                throw new Exception("10092");
+            }
+            //该Task已经发布过了，且，正在等待匹配中
+            if(job.getStatus()==JobStatus.PENDING){
                 throw new Exception("10092");
             }
         }
 
+        //创建Job
         job=new Job();
         job.setPartyAId(userInfo.getUserId());
         job.setCreatedTime(new Date());
@@ -75,6 +85,7 @@ public class PublishBusinessService implements IPublishBusinessService{
         job.setDetail(in.get("detail").toString());
         job=iJobService.insertJob(job);
 
+        //新增account记录，publish任务时在甲方账户扣除对应的任务金额
         Account account=new Account();
         account.setUserId(job.getPartyAId());
         account.setAmount(job.getPrice());
@@ -82,14 +93,16 @@ public class PublishBusinessService implements IPublishBusinessService{
         account.setType(AccountType.PUBLISH);
         iAccountService.insertNewAccount(account);
 
-        Double balance;
-        Map balance1=iAccountService.refreshAccountBalance(job.getPartyAId());
-        balance=(Double)balance1.get("balance");
-        job.setAccountBalance((Double)iAccountService.refreshAccountBalance(job.getPartyAId()).get("balance"));
-        iJobService.updateJob(job);
+        //计算甲方账户的balance余额
+        Map accountMap=iAccountService.refreshAccountBalance(job.getPartyAId());
+        Double balance=(Double)accountMap.get("balance");
+        Double income=(Double)accountMap.get("income");
+        Double outgoing=(Double)accountMap.get("outgoing");
 
-        Map out=new HashMap();
-        out.put("job", job);
-        return out;
+        //更新甲方的账户统计信息
+        userInfo.setAccount(balance);
+        userInfo.setAccountIn(income);
+        userInfo.setAccountOut(outgoing);
+        iUserInfoService.updateUser(userInfo);
     }
 }

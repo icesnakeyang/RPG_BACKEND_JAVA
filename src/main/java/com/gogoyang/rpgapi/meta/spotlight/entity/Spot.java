@@ -30,8 +30,11 @@ public class Spot {
     @Column(name = "comments")
     private Integer comments;
 
-    @Column(name = "job_status")
-    private JobStatus jobStatus;
+    @Column(name = "upvote")
+    private Integer upvote;
+
+    @Column(name = "downvote")
+    private Integer downvote;
 
     @Transient
     private String content;
@@ -117,12 +120,20 @@ public class Spot {
         this.comments = comments;
     }
 
-    public JobStatus getJobStatus() {
-        return jobStatus;
+    public Integer getUpvote() {
+        return upvote;
     }
 
-    public void setJobStatus(JobStatus jobStatus) {
-        this.jobStatus = jobStatus;
+    public void setUpvote(Integer upvote) {
+        this.upvote = upvote;
+    }
+
+    public Integer getDownvote() {
+        return downvote;
+    }
+
+    public void setDownvote(Integer downvote) {
+        this.downvote = downvote;
     }
 
     public Integer getPartyAId() {

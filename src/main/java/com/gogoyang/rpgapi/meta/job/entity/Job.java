@@ -84,9 +84,6 @@ public class Job {
     @Column(name = "job_match_num")
     private Integer jobMatchNum;
 
-    @Column(name = "account_balance")
-    private Double accountBalance;
-
     /**
      * 我未阅读的日志总数
      */
@@ -213,14 +210,6 @@ public class Job {
 
     public void setPartyBName(String partyBName) {
         this.partyBName = partyBName;
-    }
-
-    public Double getAccountBalance() {
-        return accountBalance;
-    }
-
-    public void setAccountBalance(Double accountBalance) {
-        this.accountBalance = accountBalance;
     }
 
     public Double getPrice() {

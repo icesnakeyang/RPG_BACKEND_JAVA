@@ -64,10 +64,14 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         }
 
         /**
-         * 1、读取所有job，JobStatus.MATCHING
+         * 1、读取所有job，JobStatus.MATCHING，和status.pending
          * 2、逐条查询jobApply，如果有，添加到list
          */
-        Page<Job> jobs = iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
+        Map qIn=new HashMap();
+        qIn.put("type", "jobtomatch");
+        qIn.put("pageIndex", pageIndex);
+        qIn.put("pageSize", pageSize);
+        Page<Job> jobs = iJobService.listJobByStausMap(qIn);
 
         ArrayList<Job> jobsOut = new ArrayList<Job>();
 
@@ -112,6 +116,30 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         }
 
         /**
+         * 首先，查询userId是否已经申请了jobId的任务，且未处理
+         * 如果用户有申请，就直接处理jobApply，把任务直接给userId，修改job 为 process
+         * 如果没有申请，则创建jobMatch，把任务匹配给userId，等待用户处理。
+         */
+        JobApply jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
+        if (jobApply != null) {
+            //处理jobApply为matched
+            jobApply.setProcessResult(LogStatus.MATCHED);
+            jobApply.setProcessUserId(admin.getAdminId());
+            jobApply.setProcessTime(new Date());
+            iJobApplyService.updateJobApply(jobApply);
+
+            //创建一个match日志，直接处理成功
+
+            //把job status 改成process
+        }
+
+        jobApply.setProcessResult(LogStatus.MATCHED);
+        jobApply.setProcessTime(new Date());
+        jobApply.setProcessUserId(-1);
+        iJobApplyService.updateJobApply(jobApply);
+
+
+        /**
          * 首先，查询JobMatch, jobId, userId，processResult==null,
          * 如果有记录即说明，已经保存了该用户对该任务的分配
          * 如果没有记录，增加新的记录。
@@ -136,7 +164,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         jobMatch.setMatchUserId(userId);
         iJobMatchService.insertJobMatch(jobMatch);
 
-        JobApply jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
+        jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
         if (jobApply == null) {
             throw new Exception("10012");
         }
