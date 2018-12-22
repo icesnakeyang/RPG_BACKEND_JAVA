@@ -31,7 +31,10 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     private final IJobMatchService iJobMatchService;
 
     @Autowired
-    public SecretaryMatchBusinessService(IAdminService iAdminService, IJobService iJobService, IJobApplyService iJobApplyService, IUserInfoService iUserInfoService, IJobMatchService iJobMatchService) {
+    public SecretaryMatchBusinessService(IAdminService iAdminService, IJobService iJobService,
+                                         IJobApplyService iJobApplyService,
+                                         IUserInfoService iUserInfoService,
+                                         IJobMatchService iJobMatchService) {
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
@@ -227,5 +230,21 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         Map out = new HashMap();
         out.put("users", users);
         return out;
+    }
+
+    @Override
+    public Map listUserAppliedJob(Map in) throws Exception {
+        /**
+         * 1、检查用户权限
+         * 2、读取jobApply，result=null
+         */
+        String token=in.get("token").toString();
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+
+        JobApply jobapply=iJobApplyService.listJobApplyByJobId()
+        return null;
     }
 }

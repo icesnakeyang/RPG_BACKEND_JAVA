@@ -4,11 +4,13 @@ import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.dao.JobApplyDao;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class JobApplyService implements IJobApplyService {
@@ -61,7 +63,14 @@ public class JobApplyService implements IJobApplyService {
         return jobApplies;
     }
 
+    @Override
+    public Page<JobApply> listJobApply(Map qIn) throws Exception {
+        Integer pageIndex=(Integer)qIn.get("pageIndex");
+        Integer pageSize=(Integer)qIn.get("pageSize");
 
+
+        return null;
+    }
 
 
     /**

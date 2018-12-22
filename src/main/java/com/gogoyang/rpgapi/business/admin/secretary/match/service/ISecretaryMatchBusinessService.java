@@ -9,4 +9,8 @@ public interface ISecretaryMatchBusinessService {
 
     Map loadUserApplyJob(Map in) throws Exception;
 
+    /**
+     * list all users who applied jobs
+     */
+    Map listUserAppliedJob(Map in) throws Exception;
 }
