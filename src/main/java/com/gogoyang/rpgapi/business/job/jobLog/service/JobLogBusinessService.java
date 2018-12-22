@@ -36,7 +36,7 @@ public class JobLogBusinessService implements IJobLogBusinessService{
         Integer jobId=(Integer)in.get("jobId");
         String content=in.get("content").toString();
 
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }
@@ -80,7 +80,7 @@ public class JobLogBusinessService implements IJobLogBusinessService{
          */
         Integer jobId=(Integer)in.get("jobId");
         String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }
@@ -103,7 +103,7 @@ public class JobLogBusinessService implements IJobLogBusinessService{
         Integer userId;
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            UserInfo userInfo = iUserInfoService.getUserByToken(token);
             userId=userInfo.getUserId();
         }else {
             userId=(Integer)in.get("userId");

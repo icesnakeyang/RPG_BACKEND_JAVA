@@ -38,7 +38,7 @@ public class PartyABusinessService implements IPartyABusinessService{
     public Page<Job> loadMyPartyAJob(Map in) throws Exception {
         String token=in.get("token").toString();
 
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }

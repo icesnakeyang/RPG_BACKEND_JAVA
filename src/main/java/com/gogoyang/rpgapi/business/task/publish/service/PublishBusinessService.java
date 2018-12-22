@@ -49,7 +49,7 @@ public class PublishBusinessService implements IPublishBusinessService{
         Integer taskId=(Integer)in.get("taskId");
 
         //读取当前用户
-        UserInfo userInfo=iUserInfoService.loadUserByToken(in.get("token").toString());
+        UserInfo userInfo=iUserInfoService.getUserByToken(in.get("token").toString());
         if(userInfo==null){
             //当前用户不存在
             throw new Exception("10004");

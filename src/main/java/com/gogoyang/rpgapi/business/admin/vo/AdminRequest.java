@@ -14,7 +14,8 @@ public class AdminRequest {
     private RoleType roleType;
     private Integer jobId;
     private Integer userId;
-
+    private Integer pageIndex;
+    private Integer pageSize;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,5 +57,21 @@ public class AdminRequest {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }

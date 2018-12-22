@@ -108,7 +108,7 @@ public class StopBusinessService implements IStopBusinessService {
         }
 
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -145,7 +145,7 @@ public class StopBusinessService implements IStopBusinessService {
         //获取当前用户id
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            UserInfo userInfo = iUserInfoService.getUserByToken(token);
             userId=userInfo.getUserId();
         }else {
             userId=(Integer)in.get("userId");
@@ -182,7 +182,7 @@ public class StopBusinessService implements IStopBusinessService {
         iJobStopService.updateJobStop(jobStop);
 
         //处理refund
-        UserInfo userA=iUserInfoService.loadUserByUserId(job.getPartyAId());
+        UserInfo userA=iUserInfoService.getUserByUserId(job.getPartyAId());
         Double refund=jobStop.getRefund();
         if(userA.getAccount()==null){
             userA.setAccount(refund);
@@ -195,7 +195,7 @@ public class StopBusinessService implements IStopBusinessService {
             userA.setAccountIn(userA.getAccountIn()+refund);
         }
 
-        UserInfo userB=iUserInfoService.loadUserByUserId(job.getPartyBId());
+        UserInfo userB=iUserInfoService.getUserByUserId(job.getPartyBId());
         if(userB.getAccount()==null){
             userB.setAccount(-refund);
         }else {
@@ -239,7 +239,7 @@ public class StopBusinessService implements IStopBusinessService {
         Integer userId;
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            UserInfo userInfo = iUserInfoService.getUserByToken(token);
             userId=userInfo.getUserId();
         }else {
             userId=(Integer)in.get("userId");

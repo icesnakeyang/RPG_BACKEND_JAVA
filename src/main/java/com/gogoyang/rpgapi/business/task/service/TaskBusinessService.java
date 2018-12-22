@@ -37,7 +37,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
 
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -60,7 +60,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer pid = (Integer) in.get("pid");
         String title = in.get("title").toString();
 
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -101,7 +101,7 @@ public class TaskBusinessService implements ITaskBusinessService {
          */
         String token = in.get("token").toString();
         Integer taskId = (Integer) in.get("taskId");
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -119,14 +119,14 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
         Integer taskId = (Integer) in.get("taskId");
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
 
-        UserInfo createUser = iUserInfoService.loadUserByUserId(task.getCreatedUserId());
+        UserInfo createUser = iUserInfoService.getUserByUserId(task.getCreatedUserId());
         if(createUser.getRealName()!=null){
             task.setCreatedUserName(createUser.getRealName());
         }else {
@@ -152,7 +152,7 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -168,7 +168,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         Page<Task> tasks = iTaskService.listTaskByUserId(userInfo.getUserId(), pageIndex, pageSize);
         for (int i = 0; i < tasks.getContent().size(); i++) {
             tasks.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(

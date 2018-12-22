@@ -46,7 +46,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
 
         Job job = iJobService.getJobByJobIdTiny(jobId);
 
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo.getUserId() != job.getPartyAId()) {
             if (userInfo.getUserId() != job.getPartyBId()) {
                 throw new Exception("10090");
@@ -66,7 +66,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         spot.setContent(content);
         spot = iSpotService.insertSpotlight(spot);
 
-        UserInfo userA = iUserInfoService.loadUserByUserId(job.getPartyAId());
+        UserInfo userA = iUserInfoService.getUserByUserId(job.getPartyAId());
         Double honor = 0.0;
         if (userA.getHonor() != null) {
             honor = userA.getHonor();
@@ -81,7 +81,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         honor += job.getPrice();
         userA.setHonorOut(honor);
 
-        UserInfo userB = iUserInfoService.loadUserByUserId(job.getPartyBId());
+        UserInfo userB = iUserInfoService.getUserByUserId(job.getPartyBId());
         honor = 0.0;
         if (userB.getHonor() != null) {
             honor = userB.getHonor();
@@ -110,7 +110,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         String token = in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         Job job = iJobService.getJobByJobIdTiny(jobId);
         if (userInfo.getUserId() != job.getPartyAId()) {
             if (userInfo.getUserId() != job.getPartyBId()) {

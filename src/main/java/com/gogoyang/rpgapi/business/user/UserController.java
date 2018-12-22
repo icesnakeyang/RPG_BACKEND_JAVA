@@ -67,12 +67,12 @@ public class UserController {
         Response response = new Response();
         try {
             String token=httpServletRequest.getHeader("token");
-            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            UserInfo userInfo = iUserInfoService.getUserByToken(token);
             if(userInfo==null){
                 response.setErrorCode(10004);
                 return response;
             }
-            UserInfo theUserInfo=iUserInfoService.loadUserByUserId(id);
+            UserInfo theUserInfo=iUserInfoService.getUserByUserId(id);
             response.setData(theUserInfo);
         } catch (Exception ex) {
             try {
@@ -99,7 +99,7 @@ public class UserController {
     public Response loginUser(@RequestBody UserRequest request) {
         Response response = new Response();
         try {
-            UserInfo userInfo = iUserInfoService.loadUserByUsername(request.getUsername());
+            UserInfo userInfo = iUserInfoService.getUserByUsername(request.getUsername());
             if (userInfo == null) {
                 response.setErrorCode(10024);
                 return response;
@@ -135,7 +135,7 @@ public class UserController {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
-            UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+            UserInfo userInfo=iUserInfoService.getUserByToken(token);
             if(userInfo==null){
                 response.setErrorCode(10004);
                 return response;

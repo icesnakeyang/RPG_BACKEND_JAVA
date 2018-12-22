@@ -29,7 +29,7 @@ public class AccountBusinessService implements IAccountBusinessService {
     public Page<Account> listMyAccount(Map in) throws Exception {
         String token=in.get("token").toString();
 
-        UserInfo user=iUserInfoService.loadUserByToken(token);
+        UserInfo user=iUserInfoService.getUserByToken(token);
         if(user==null){
             throw new Exception("10004");
         }

@@ -54,6 +54,35 @@ public class SecretaryMatchController {
     }
 
     /**
+     * 读取申请了任务的用户和任务
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listUserAppliedJob")
+    public Response listUserAppliedJob(@RequestBody AdminRequest request,
+                                       HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        try{
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pageIndex",request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Map out=iSecretaryMatchBusinessService.listUserAppliedJob(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try{
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10107);
+            }
+        }
+        return response;
+    }
+
+    /**
      * 分配一个任务给一个用户
      * Assign jobId to userId
      *

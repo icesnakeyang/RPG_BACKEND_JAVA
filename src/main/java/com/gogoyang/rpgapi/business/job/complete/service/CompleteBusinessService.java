@@ -44,7 +44,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         Integer jobId = (Integer) in.get("jobId");
         String content = in.get("content").toString();
 
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -84,7 +84,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     public void setCompleteReadTime(Map in) throws Exception {
         Integer jobId = (Integer) in.get("jobId");
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
@@ -112,7 +112,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             throw new Exception("10063");
         }
         String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         String processRemark=null;
         if(in.get("processRemark")!=null){
             processRemark=in.get("processRemark").toString();
@@ -150,7 +150,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         String processRemark="";
         if(in.get("processRemark")!=null){
             processRemark=in.get("processRemark").toString();
@@ -182,7 +182,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iJobService.updateJob(job);
 
         //给甲方增加honor
-        UserInfo userA=iUserInfoService.loadUserByUserId(job.getPartyAId());
+        UserInfo userA=iUserInfoService.getUserByUserId(job.getPartyAId());
         Double ha=0.0;
         if(userA.getHonor()!=null){
             ha=userA.getHonor();
@@ -193,7 +193,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iUserInfoService.updateUser(userA);
 
         //给乙方增加honor
-        UserInfo userB=iUserInfoService.loadUserByUserId(job.getPartyBId());
+        UserInfo userB=iUserInfoService.getUserByUserId(job.getPartyBId());
         Double hb=0.0;
         if(userB.getHonor()!=null){
             hb=userB.getHonor();
@@ -210,7 +210,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         Integer userId;
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+            UserInfo userInfo = iUserInfoService.getUserByToken(token);
             userId=userInfo.getUserId();
         }else {
             userId=(Integer)in.get("userId");

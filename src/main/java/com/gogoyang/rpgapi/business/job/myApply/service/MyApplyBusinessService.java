@@ -50,7 +50,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
          * 3. 根据jobId读取job信息
          */
         String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }
@@ -88,7 +88,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         String token = in.get("token").toString();
         Integer jobId=(Integer)in.get("jobId");
 
-        UserInfo userInfo=iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }

@@ -33,7 +33,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     @Override
     public Map listMyPendingJob(Map in) throws Exception {
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         Integer partyAId = userInfo.getUserId();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
@@ -62,7 +62,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         Double price = (Double) in.get("price");
         String jobDetail = in.get("jobDetail").toString();
 
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
 
         if (userInfo == null) {
             throw new Exception("10004");
@@ -100,7 +100,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         Integer jobId = (Integer) in.get("jobId");
 
         //read current user
-        UserInfo userInfo = iUserInfoService.loadUserByToken(token);
+        UserInfo userInfo = iUserInfoService.getUserByToken(token);
         if (userInfo == null) {
             //no user
             throw new Exception("10004");
