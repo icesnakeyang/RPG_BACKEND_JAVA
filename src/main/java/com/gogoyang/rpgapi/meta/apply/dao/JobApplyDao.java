@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
@@ -36,5 +37,7 @@ public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
      * @return
      */
     ArrayList<JobApply> findAllByApplyUserIdAndProcessResultIsNull(Integer userId);
+
+    Page<JobApply> findAllByApplyUserId(Integer userId, Pageable pageable);
 
 }

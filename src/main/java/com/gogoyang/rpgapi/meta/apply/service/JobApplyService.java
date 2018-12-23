@@ -3,6 +3,7 @@ package com.gogoyang.rpgapi.meta.apply.service;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.dao.JobApplyDao;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -158,5 +159,21 @@ public class JobApplyService implements IJobApplyService {
             throw new Exception("10010");
         }
         jobApplyDao.save(jobApply);
+    }
+
+    /**
+     * read apply job by userId
+     * @param userId
+     * @param pageIndex
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Page<JobApply> listJobapplybyUserId(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort=new Sort(Sort.Direction.DESC, "jobApplyId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<JobApply> jobApplies=jobApplyDao.findAllByApplyUserId(userId, pageable);
+        return jobApplies;
     }
 }

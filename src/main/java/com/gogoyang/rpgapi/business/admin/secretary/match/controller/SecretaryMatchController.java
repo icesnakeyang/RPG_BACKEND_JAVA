@@ -143,4 +143,63 @@ public class SecretaryMatchController {
         }
         return response;
     }
+
+    /**
+     * Read new apply job by users
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listNewApply")
+    public Response listNewApply(@RequestBody AdminRequest request,
+                                 HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Map out=iSecretaryMatchBusinessService.listNewApply(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10109);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * Rpg secretary ead users history
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listHistory")
+    public Response listHistory(@RequestBody AdminRequest request,
+                                HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            in.put("userId", request.getUserId());
+            Map out=iSecretaryMatchBusinessService.listHistory(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(10108);
+            }
+        }
+        return response;
+    }
 }

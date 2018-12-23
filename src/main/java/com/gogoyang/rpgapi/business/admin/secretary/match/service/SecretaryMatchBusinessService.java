@@ -256,4 +256,74 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         out.put("jobApplies", jobApplies);
         return out;
     }
+
+    /**
+     * list users history
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map listHistory(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+        Integer userId=(Integer)in.get("userId");
+
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+
+        Page<JobApply> jobApplies=iJobApplyService.listJobapplybyUserId(userId, pageIndex, pageSize);
+
+        Map out=new HashMap();
+        out.put("jobApply", jobApplies);
+        return out;
+    }
+
+    /**
+     * list new applies
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map listNewApply(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+
+        UserInfo user=iUserInfoService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Map qIn=new HashMap();
+        qIn.put("pageIndex", pageIndex);
+        qIn.put("pageSize", pageSize);
+        Page<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
+
+        for(int i=0;i<jobApplies.getContent().size();i++){
+            JobApply jobApply=jobApplies.getContent().get(i);
+            Map map=new HashMap();
+            Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+            map.put("jobId", job.getJobId());
+            map.put("jobTitle", job.getTitle());
+            map.put("applyTime", jobApply.getApplyTime());
+            UserInfo applyUser=iUserInfoService.getUserByUserId(jobApply.getApplyUserId());
+            map.put("userId", applyUser.getUserId());
+            if(applyUser.getRealName()!=null) {
+                map.put("userName", applyUser.getRealName());
+            }else{
+                map.put("userName", applyUser.getEmail());
+            }
+            map.put("price", job.getPrice());
+            map.put("days", job.getDays());
+        }
+
+        Map out=new HashMap();
+        out.put("newApply", jobApplies);
+        return out;
+    }
 }
