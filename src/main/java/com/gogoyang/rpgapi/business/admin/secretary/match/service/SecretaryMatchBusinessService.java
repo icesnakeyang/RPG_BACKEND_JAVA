@@ -239,12 +239,21 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
          * 2、读取jobApply，result=null
          */
         String token=in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+
         UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }
 
-        JobApply jobapply=iJobApplyService.listJobApplyByJobId()
-        return null;
+        Map qIn=new HashMap();
+        qIn.put("pageIndex", pageIndex);
+        qIn.put("pageSize", pageSize);
+        Page<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
+
+        Map out=new HashMap();
+        out.put("jobApplies", jobApplies);
+        return out;
     }
 }

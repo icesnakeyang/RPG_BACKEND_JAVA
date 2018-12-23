@@ -3,7 +3,6 @@ package com.gogoyang.rpgapi.business.admin.secretary.match.controller;
 import com.gogoyang.rpgapi.business.admin.secretary.match.service.ISecretaryMatchBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
-import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

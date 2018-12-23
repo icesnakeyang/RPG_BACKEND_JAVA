@@ -5,6 +5,9 @@ import com.gogoyang.rpgapi.meta.apply.dao.JobApplyDao;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -68,8 +71,12 @@ public class JobApplyService implements IJobApplyService {
         Integer pageIndex=(Integer)qIn.get("pageIndex");
         Integer pageSize=(Integer)qIn.get("pageSize");
 
+        Sort sort=new Sort(Sort.Direction.DESC, "jobApplyId");
+        Pageable pageable= new PageRequest(pageIndex, pageSize, sort);
+        //查找所有任务申请
+        Page<JobApply> jobApplies=jobApplyDao.findAllByProcessResultIsNull(pageable);
 
-        return null;
+        return jobApplies;
     }
 
 
