@@ -35,7 +35,7 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/create/root")
-    Response createRoot(@RequestBody AdminRequest request,
+    public Response createRoot(@RequestBody AdminRequest request,
                         HttpServletRequest httpServletRequest) {
 
         Response response = new Response();
@@ -68,7 +68,7 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/create/super")
-    Response createSuperAdmin(@RequestBody AdminRequest request,
+    public Response createSuperAdmin(@RequestBody AdminRequest request,
                          HttpServletRequest httpServletRequest) {
 
         Response response = new Response();
@@ -120,7 +120,7 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/create/administrator")
-    Response createAdministrator(@RequestBody AdminRequest request,
+    public Response createAdministrator(@RequestBody AdminRequest request,
                                  HttpServletRequest httpServletRequest){
         Response response=new Response();
         try{
@@ -149,7 +149,7 @@ public class AdminController {
      */
     @ResponseBody
     @PostMapping("/login")
-    Response loginAdmin(@RequestBody AdminRequest request) {
+    public Response loginAdmin(@RequestBody AdminRequest request) {
 
         Response response = new Response();
         /**
@@ -181,7 +181,7 @@ public class AdminController {
      */
     @ResponseBody
     @GetMapping("/admin")
-    Response loadAdmins(HttpServletRequest httpServletRequest) {
+    public Response loadAdmins(HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
             Map in=new HashMap();

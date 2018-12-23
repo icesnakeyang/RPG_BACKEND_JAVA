@@ -54,9 +54,6 @@ public class SecretaryMatchController {
 
     /**
      * 读取申请了任务的用户和任务
-     * @param request
-     * @param httpServletRequest
-     * @return
      */
     @ResponseBody
     @PostMapping("/listUserAppliedJob")
@@ -121,10 +118,6 @@ public class SecretaryMatchController {
 
     /**
      * 读取所有申请了jobId任务，且等待处理的用户
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
      */
     @ResponseBody
     @PostMapping("/listUserApplyJob")
