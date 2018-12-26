@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.admin.secretary.match.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
@@ -290,6 +291,9 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
      */
     @Override
     public Map listNewApply(Map in) throws Exception {
+        /**
+         * list job status=matching
+         */
         String token=in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
@@ -299,35 +303,10 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
             throw new Exception("10004");
         }
 
-        Map qIn=new HashMap();
-        qIn.put("pageIndex", pageIndex);
-        qIn.put("pageSize", pageSize);
-        Page<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
-
-        ArrayList<Map> newApplyList=new ArrayList<Map>();
-        for(int i=0;i<jobApplies.getContent().size();i++){
-            JobApply jobApply=jobApplies.getContent().get(i);
-            Map map=new HashMap();
-            Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
-            map.put("applyId", jobApply.getJobApplyId());
-            map.put("jobId", job.getJobId());
-            map.put("jobTitle", job.getTitle());
-            map.put("code", job.getCode());
-            map.put("applyTime", jobApply.getApplyTime());
-            UserInfo applyUser=iUserInfoService.getUserByUserId(jobApply.getApplyUserId());
-            map.put("userId", applyUser.getUserId());
-            if(applyUser.getRealName()!=null) {
-                map.put("userName", applyUser.getRealName());
-            }else{
-                map.put("userName", applyUser.getEmail());
-            }
-            map.put("price", job.getPrice());
-            map.put("days", job.getDays());
-            newApplyList.add(map);
-        }
+        Page<Job> jobs=iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
 
         Map out=new HashMap();
-        out.put("newApplyList", newApplyList);
+        out.put("newApplyList", jobs);
         return out;
     }
 }

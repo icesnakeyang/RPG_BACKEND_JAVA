@@ -131,11 +131,14 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         jobApply.setJobId(jobId);
         iJobApplyService.insertJobApply(jobApply);
 
-        //刷新job的applyNum次数
+        //刷新job的applyNum次数，且把jobStatus改成Matching
         Integer applyNum=iJobApplyService.countApplyUsers(jobId);
         if(job.getJobApplyNum()!=applyNum){
             job.setJobApplyNum(applyNum);
-            iJobService.updateJob(job);
         }
+        if(job.getStatus()!=JobStatus.MATCHING){
+            job.setStatus(JobStatus.MATCHING);
+        }
+        iJobService.updateJob(job);
     }
 }
