@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/secretary")
+@RequestMapping("/secretary/match")
 public class SecretaryMatchController {
     private final ISecretaryMatchBusinessService iSecretaryMatchBusinessService;
 
@@ -180,8 +180,8 @@ public class SecretaryMatchController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/listHistory")
-    public Response listHistory(@RequestBody AdminRequest request,
+    @PostMapping("/listApplyHistory")
+    public Response listApplyHistory(@RequestBody AdminRequest request,
                                 HttpServletRequest httpServletRequest){
         Response response=new Response();
         try {
@@ -191,7 +191,7 @@ public class SecretaryMatchController {
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
             in.put("userId", request.getUserId());
-            Map out=iSecretaryMatchBusinessService.listHistory(in);
+            Map out=iSecretaryMatchBusinessService.listApplyHistory(in);
             response.setData(out);
         }catch (Exception ex){
             try {

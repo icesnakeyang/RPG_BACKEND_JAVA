@@ -20,7 +20,7 @@ public interface ISecretaryMatchBusinessService {
      * @return
      * @throws Exception
      */
-    Map listHistory(Map in) throws Exception;
+    Map listApplyHistory(Map in) throws Exception;
 
     Map listNewApply(Map in) throws Exception;
 }

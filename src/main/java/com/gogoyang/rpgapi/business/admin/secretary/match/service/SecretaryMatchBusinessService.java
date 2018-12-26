@@ -264,21 +264,21 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
      * @throws Exception
      */
     @Override
-    public Map listHistory(Map in) throws Exception {
+    public Map listApplyHistory(Map in) throws Exception {
         String token=in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
         Integer userId=(Integer)in.get("userId");
 
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
+        Admin admin=iAdminService.loadAdminByToken(token);
+        if(admin==null){
             throw new Exception("10004");
         }
 
         Page<JobApply> jobApplies=iJobApplyService.listJobapplybyUserId(userId, pageIndex, pageSize);
 
         Map out=new HashMap();
-        out.put("jobApply", jobApplies);
+        out.put("applyList", jobApplies);
         return out;
     }
 
@@ -294,8 +294,8 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
 
-        UserInfo user=iUserInfoService.getUserByToken(token);
-        if(user==null){
+        Admin admin=iAdminService.loadAdminByToken(token);
+        if(admin==null){
             throw new Exception("10004");
         }
 
@@ -304,12 +304,15 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         qIn.put("pageSize", pageSize);
         Page<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
 
+        ArrayList<Map> newApplyList=new ArrayList<Map>();
         for(int i=0;i<jobApplies.getContent().size();i++){
             JobApply jobApply=jobApplies.getContent().get(i);
             Map map=new HashMap();
             Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+            map.put("applyId", jobApply.getJobApplyId());
             map.put("jobId", job.getJobId());
             map.put("jobTitle", job.getTitle());
+            map.put("code", job.getCode());
             map.put("applyTime", jobApply.getApplyTime());
             UserInfo applyUser=iUserInfoService.getUserByUserId(jobApply.getApplyUserId());
             map.put("userId", applyUser.getUserId());
@@ -320,10 +323,11 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
             }
             map.put("price", job.getPrice());
             map.put("days", job.getDays());
+            newApplyList.add(map);
         }
 
         Map out=new HashMap();
-        out.put("newApply", jobApplies);
+        out.put("newApplyList", newApplyList);
         return out;
     }
 }
