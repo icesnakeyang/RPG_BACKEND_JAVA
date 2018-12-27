@@ -3,6 +3,7 @@ package com.gogoyang.rpgapi.business.admin.secretary.match.controller;
 import com.gogoyang.rpgapi.business.admin.secretary.match.service.ISecretaryMatchBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
+import com.sun.jndi.ldap.ext.StartTlsResponseImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,138 +22,14 @@ public class SecretaryMatchController {
     }
 
     /**
-     * 查询等待匹配的任务，PENDING/MATCHING
-     * 按createdTime排倒序
-     *
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/listJobToMatch")
-    public Response listJobToMatch(HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            Map in=new HashMap();
-            in.put("token", token);
-            in.put("pageIndex", 0);
-            in.put("pageSize", 100);
-            Map out=iSecretaryMatchBusinessService.listJobToMatch(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10035);
-                return response;
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * 读取申请了任务的用户和任务
-     */
-    @ResponseBody
-    @PostMapping("/listUserAppliedJob")
-    public Response listUserAppliedJob(@RequestBody AdminRequest request,
-                                       HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        try{
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
-            in.put("token", token);
-            in.put("pageIndex",request.getPageIndex());
-            in.put("pageSize", request.getPageSize());
-            Map out=iSecretaryMatchBusinessService.listUserAppliedJob(in);
-            response.setData(out);
-        }catch (Exception ex){
-            try{
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
-                response.setErrorCode(10107);
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 分配一个任务给一个用户
-     * Assign jobId to userId
-     *
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/matchJobToUser")
-    public Response matchJobToUser(@RequestBody AdminRequest request,
-                                   HttpServletRequest httpServletRequest) {
-        /**
-         * check whether the admin is rpg secretary
-         * create a new jobMatch
-         */
-        Response response = new Response();
-        try {
-            Integer userId=request.getUserId();
-            Integer jobId=request.getJobId();
-            String token = httpServletRequest.getHeader("token");
-            Map in=new HashMap();
-            in.put("userId", userId);
-            in.put("jobId", jobId);
-            in.put("token", token);
-            iSecretaryMatchBusinessService.matchJobToUser(in);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10011);
-                return response;
-            }
-        }
-        return response;
-    }
-
-    /**
-     * 读取所有申请了jobId任务，且等待处理的用户
-     */
-    @ResponseBody
-    @PostMapping("/listUserApplyJob")
-    public Response listUserApplyJob(@RequestBody AdminRequest request,
-                                                  HttpServletRequest httpServletRequest) {
-        Response response = new Response();
-        try {
-            String token = httpServletRequest.getHeader("token");
-            Integer jobId=(Integer)request.getJobId();
-            Map in=new HashMap();
-            in.put("token", token);
-            in.put("jobId", jobId);
-            Map out= iSecretaryMatchBusinessService.loadUserApplyJob(in);
-            response.setData(out);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            } catch (Exception ex2) {
-                response.setErrorCode(10029);
-                return response;
-            }
-        }
-        return response;
-    }
-
-    /**
      * Read new apply job by users
      * @param request
      * @param httpServletRequest
      * @return
      */
     @ResponseBody
-    @PostMapping("/listNewApply")
-    public Response listNewApply(@RequestBody AdminRequest request,
+    @PostMapping("/listJobMatching")
+    public Response listJobMatching(@RequestBody AdminRequest request,
                                  HttpServletRequest httpServletRequest){
         Response response=new Response();
         try {
@@ -161,13 +38,44 @@ public class SecretaryMatchController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Map out=iSecretaryMatchBusinessService.listNewApply(in);
+            Map out=iSecretaryMatchBusinessService.listJobMatching(in);
             response.setData(out);
         }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10109);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 读取申请任务的用户列表
+     * read apply user of jobId
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listApplyByJobId")
+    public Response listApplyByJobId(@RequestBody AdminRequest request,
+                                     HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            in.put("jobId", request.getJobId());
+            Map out=iSecretaryMatchBusinessService.listApplyByJobId(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10029);
             }
         }
         return response;

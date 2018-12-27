@@ -7,8 +7,6 @@ public interface ISecretaryMatchBusinessService {
 
     void matchJobToUser(Map in) throws Exception;
 
-    Map loadUserApplyJob(Map in) throws Exception;
-
     /**
      * list all users who applied jobs
      */
@@ -22,5 +20,7 @@ public interface ISecretaryMatchBusinessService {
      */
     Map listApplyHistory(Map in) throws Exception;
 
-    Map listNewApply(Map in) throws Exception;
+    Map listJobMatching(Map in) throws Exception;
+
+    Map listApplyByJobId(Map in) throws Exception;
 }

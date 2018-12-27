@@ -182,57 +182,6 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         iJobApplyService.updateJobApply(jobApply);
     }
 
-    /**
-     * 读取所有申请了当前任务的用户
-     * read all users who have applied the job
-     *
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public Map loadUserApplyJob(Map in) throws Exception {
-        String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
-
-        /**
-         * 当前操作用户必须是RPG秘书权限
-         */
-        Admin admin = iAdminService.loadAdminByToken(token);
-        if (admin == null) {
-            throw new Exception("10004");
-        }
-        if (admin.getRoleType() != RoleType.SECRETARY) {
-            throw new Exception("10040");
-        }
-
-        /**
-         * read jobApply by jobId where processResult==null
-         */
-        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(jobId);
-
-        /**
-         * 逐条查询JobMatch里是否已经分配了该用户
-         * 若没分配则读取userInfo
-         */
-        ArrayList<UserInfo> users = new ArrayList<UserInfo>();
-        for (int i = 0; i < jobApplies.size(); i++) {
-            //检查是否已经分配
-            JobMatch jobMatch = iJobMatchService.loadJobMatchByUserIdAndJobId(
-                    jobApplies.get(i).getApplyUserId(),
-                    jobApplies.get(i).getJobId());
-            if (jobMatch == null) {
-                UserInfo userInfo = iUserInfoService.getUserByUserId(jobApplies.get(i).getApplyUserId());
-                if (userInfo != null) {
-                    users.add(userInfo);
-                }
-            }
-        }
-        Map out = new HashMap();
-        out.put("users", users);
-        return out;
-    }
-
     @Override
     public Map listUserAppliedJob(Map in) throws Exception {
         /**
@@ -290,7 +239,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
      * @throws Exception
      */
     @Override
-    public Map listNewApply(Map in) throws Exception {
+    public Map listJobMatching(Map in) throws Exception {
         /**
          * list job status=matching
          */
@@ -307,6 +256,35 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
 
         Map out=new HashMap();
         out.put("newApplyList", jobs);
+        return out;
+    }
+
+    @Override
+    public Map listApplyByJobId(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+
+        /**
+         * 当前操作用户必须是RPG秘书权限
+         */
+        Admin admin = iAdminService.loadAdminByToken(token);
+        if (admin == null) {
+            throw new Exception("10004");
+        }
+        if (admin.getRoleType() != RoleType.SECRETARY) {
+            throw new Exception("10040");
+        }
+
+        /**
+         * read jobApply by jobId where processResult==null
+         */
+        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(jobId);
+
+
+        Map out = new HashMap();
+        out.put("users", jobApplies);
         return out;
     }
 }
