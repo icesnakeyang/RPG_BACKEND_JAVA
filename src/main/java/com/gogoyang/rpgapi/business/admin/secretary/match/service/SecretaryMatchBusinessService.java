@@ -13,6 +13,7 @@ import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -44,170 +45,6 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     }
 
     /**
-     * 读取所有有用户申请的任务，以便秘书处理。
-     *
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public Map listJobToMatch(Map in) throws Exception {
-        /**
-         * 检查当前用户是否RPG秘书
-         * 读取job, status==pending, matching， order by created_time desc
-         * 循环，查询每个job的jobApply记录
-         */
-        String token = in.get("token").toString();
-        Integer pageIndex = (Integer) in.get("pageIndex");
-        Integer pageSize = (Integer) in.get("pageSize");
-
-        //check operator permission
-        Admin admin = iAdminService.loadAdminByToken(token);
-        if (admin == null) {
-            throw new Exception("10004");
-        }
-
-        if (admin.getRoleType() != RoleType.SECRETARY) {
-            throw new Exception("10034");
-        }
-
-        /**
-         * 1、读取所有job，JobStatus.MATCHING，和status.pending
-         * 2、逐条查询jobApply，如果有，添加到list
-         */
-        Map qIn=new HashMap();
-        qIn.put("type", "jobtomatch");
-        qIn.put("pageIndex", pageIndex);
-        qIn.put("pageSize", pageSize);
-        Page<Job> jobs = iJobService.listJobByStausMap(qIn);
-
-        ArrayList<Job> jobsOut = new ArrayList<Job>();
-
-        for (int i = 0; i < jobs.getContent().size(); i++) {
-            ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(
-                    jobs.getContent().get(i).getJobId());
-            if (jobApplies.size() > 0) {
-                //加上用户名
-                jobs.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
-                        jobs.getContent().get(i).getPartyAId()));
-                jobsOut.add(jobs.getContent().get(i));
-            }
-        }
-        Map out = new HashMap();
-        out.put("jobs", jobsOut);
-        return out;
-    }
-
-    /**
-     * 分配一个任务给一个用户
-     *
-     * @param in
-     * @throws Exception
-     */
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void matchJobToUser(Map in) throws Exception {
-
-        Integer jobId = (Integer) in.get("jobId");
-        Integer userId = (Integer) in.get("userId");
-        String token = in.get("token").toString();
-
-        /**
-         * only secretary can match job
-         */
-        Admin admin = iAdminService.loadAdminByToken(token);
-        if (admin == null) {
-            throw new Exception("10004");
-        }
-        if (admin.getRoleType() != RoleType.SECRETARY) {
-            throw new Exception("10034");
-        }
-
-        /**
-         * 首先，查询userId是否已经申请了jobId的任务，且未处理
-         * 如果用户有申请，就直接处理jobApply，把任务直接给userId，修改job 为 process
-         * 如果没有申请，则创建jobMatch，把任务匹配给userId，等待用户处理。
-         */
-        JobApply jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
-        if (jobApply != null) {
-            //处理jobApply为matched
-            jobApply.setProcessResult(LogStatus.MATCHED);
-            jobApply.setProcessUserId(admin.getAdminId());
-            jobApply.setProcessTime(new Date());
-            iJobApplyService.updateJobApply(jobApply);
-
-            //创建一个match日志，直接处理成功
-
-            //把job status 改成process
-        }
-
-        jobApply.setProcessResult(LogStatus.MATCHED);
-        jobApply.setProcessTime(new Date());
-        jobApply.setProcessUserId(-1);
-        iJobApplyService.updateJobApply(jobApply);
-
-
-        /**
-         * 首先，查询JobMatch, jobId, userId，processResult==null,
-         * 如果有记录即说明，已经保存了该用户对该任务的分配
-         * 如果没有记录，增加新的记录。
-         *
-         */
-        JobMatch checkJobMatch = iJobMatchService.loadJobMatchByUserIdAndJobId(userId, jobId);
-        if (checkJobMatch != null) {
-            throw new Exception("10012");
-        }
-
-        /**
-         * 首先，创建一个jobMatch
-         * 然后，处理用户的任务申请
-         * 1、createJobMatch
-         * 2、loadJobApplyBy jobId and userId
-         */
-
-
-        JobMatch jobMatch = new JobMatch();
-        jobMatch.setJobId(jobId);
-        jobMatch.setMatchTime(new Date());
-        jobMatch.setMatchUserId(userId);
-        iJobMatchService.insertJobMatch(jobMatch);
-
-        jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(userId, jobId);
-        if (jobApply == null) {
-            throw new Exception("10012");
-        }
-        jobApply.setProcessResult(LogStatus.MATCHED);
-        jobApply.setProcessTime(new Date());
-        jobApply.setProcessUserId(-1);
-        iJobApplyService.updateJobApply(jobApply);
-    }
-
-    @Override
-    public Map listUserAppliedJob(Map in) throws Exception {
-        /**
-         * 1、检查用户权限
-         * 2、读取jobApply，result=null
-         */
-        String token=in.get("token").toString();
-        Integer pageIndex=(Integer)in.get("pageIndex");
-        Integer pageSize=(Integer)in.get("pageSize");
-
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
-            throw new Exception("10004");
-        }
-
-        Map qIn=new HashMap();
-        qIn.put("pageIndex", pageIndex);
-        qIn.put("pageSize", pageSize);
-        Page<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
-
-        Map out=new HashMap();
-        out.put("jobApplies", jobApplies);
-        return out;
-    }
-
-    /**
      * list users history
      * @param in
      * @return
@@ -227,8 +64,24 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
 
         Page<JobApply> jobApplies=iJobApplyService.listJobapplybyUserId(userId, pageIndex, pageSize);
 
+        ArrayList<Map<String, Object>> applyHistoryList=new ArrayList<Map<String, Object>>();
+        for(int i=0;i<jobApplies.getContent().size();i++){
+            JobApply apply=jobApplies.getContent().get(i);
+            /**
+             * output: job title, price, apply time, apply result, job status
+             */
+            Map map=new HashMap();
+            Job job=iJobService.getJobByJobIdTiny(apply.getJobId());
+            map.put("title", job.getTitle());
+            map.put("price", job.getPrice());
+            map.put("result", apply.getProcessResult());
+            map.put("status", job.getStatus());
+            map.put("applyTime", apply.getApplyTime());
+            applyHistoryList.add(map);
+        }
+
         Map out=new HashMap();
-        out.put("applyList", jobApplies);
+        out.put("applyHistoryList", applyHistoryList);
         return out;
     }
 
@@ -282,9 +135,24 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
          */
         ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(jobId);
 
+        ArrayList<Map<String, Object>> applyList=new ArrayList<Map<String, Object>>();
+        for(int i=0;i<jobApplies.size();i++){
+            JobApply apply=jobApplies.get(i);
+            Map map=new HashMap();
+            UserInfo userInfo=iUserInfoService.getUserByUserId(apply.getApplyUserId());
+            if(userInfo.getRealName()!=null){
+                map.put("applyUser", userInfo.getRealName());
+            }else {
+                map.put("applyUser", userInfo.getEmail());
+            }
+            map.put("applyUserId", userInfo.getUserId());
+            map.put("applyTime", apply.getApplyTime());
+            map.put("applyId", apply.getJobApplyId());
+            applyList.add(map);
+        }
 
         Map out = new HashMap();
-        out.put("users", jobApplies);
+        out.put("applyList", applyList);
         return out;
     }
 }
