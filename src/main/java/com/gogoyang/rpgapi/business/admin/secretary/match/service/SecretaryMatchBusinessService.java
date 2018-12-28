@@ -155,4 +155,33 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         out.put("applyList", applyList);
         return out;
     }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void agreeApply(Map in) throws Exception {
+
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void rejectApply(Map in) throws Exception {
+        /**
+         * check authority
+         * load apply
+         * set to reject
+         */
+        String token=in.get("token").toString();
+        Integer applyId=(Integer)in.get("applyId");
+        String remark=(String)in.get("remark");
+
+        Admin admin=iAdminService.loadAdminByToken(token);
+        if(admin==null){
+            throw new Exception("10004");
+        }
+
+        JobApply jobApply=iJobApplyService.getJobApplyByJobApplyId(applyId);
+        if(jobApply==null){
+            throw new Exception("")
+        }
+    }
 }

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface IJobApplyService {
+    JobApply getJobApplyByJobApplyId(Integer applyId) throws Exception;
+
     JobApply loadJobApplyByUserIdAndJobId(Integer userId, Integer jobId) throws Exception;
 
     void insertJobApply(JobApply jobApply) throws Exception;

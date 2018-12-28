@@ -16,6 +16,8 @@ public class AdminRequest {
     private Integer userId;
     private Integer pageIndex;
     private Integer pageSize;
+    private Integer applyId;
+    private String remark;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,5 +75,21 @@ public class AdminRequest {
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Integer getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(Integer applyId) {
+        this.applyId = applyId;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

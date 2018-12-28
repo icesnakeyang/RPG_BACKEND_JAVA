@@ -40,6 +40,12 @@ public class JobApplyService implements IJobApplyService {
         jobApplyDao.save(jobApply);
     }
 
+    @Override
+    public JobApply getJobApplyByJobApplyId(Integer applyId) throws Exception {
+        JobApply jobApply=jobApplyDao.findByJobApplyId(applyId);
+        return jobApply;
+    }
+
     /**
      * 根据userId和jobId读取未处理的申请
      * @param userId

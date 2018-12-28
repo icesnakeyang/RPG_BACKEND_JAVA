@@ -9,6 +9,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
+    JobApply findByJobApplyId(Integer applyId);
+
     /**
      * 查找一个任务的所有申请
      * @param jobId

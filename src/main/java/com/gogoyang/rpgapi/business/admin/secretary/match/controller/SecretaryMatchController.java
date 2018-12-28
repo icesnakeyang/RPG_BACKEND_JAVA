@@ -110,4 +110,59 @@ public class SecretaryMatchController {
         }
         return response;
     }
+
+    /**
+     * reject job apply
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/rejectApply")
+    public Response rejectApply(@RequestBody AdminRequest request,
+                                HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("applyId", request.getApplyId());
+            in.put("remark", request.getRemark());
+            iSecretaryMatchBusinessService.rejectApply(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10110);
+            }
+        }
+        return response;
+    }
+
+    /**
+     * Agree job apply
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/agreeApply")
+    public Response agreeApply(@RequestBody AdminRequest request,
+                                HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("applyId", request.getApplyId());
+            iSecretaryMatchBusinessService.agreeApply(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10110);
+            }
+        }
+        return response;
+    }
 }
