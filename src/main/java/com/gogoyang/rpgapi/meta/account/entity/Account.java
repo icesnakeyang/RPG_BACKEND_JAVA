@@ -27,6 +27,9 @@ public class Account {
     @Column(name = "remark")
     private String remark;
 
+    @Column(name = "job_id")
+    private Integer jobId;
+
     @Transient
     private String cratedTimeStr;
 
@@ -86,5 +89,13 @@ public class Account {
 
     public void setCratedTimeStr(String cratedTimeStr) {
         this.cratedTimeStr = cratedTimeStr;
+    }
+
+    public Integer getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(Integer jobId) {
+        this.jobId = jobId;
     }
 }

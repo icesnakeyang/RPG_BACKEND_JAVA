@@ -20,6 +20,7 @@ public class JobRequest {
     private Integer pageIndex;
     private Integer pageSize;
     private String remark;
+    private String content;
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -117,5 +118,13 @@ public class JobRequest {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

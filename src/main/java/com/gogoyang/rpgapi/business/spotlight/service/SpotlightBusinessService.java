@@ -1,13 +1,29 @@
 package com.gogoyang.rpgapi.business.spotlight.service;
 
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
+import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
+import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
+import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
+import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class SpotlightBusinessService implements ISpotlightBusinessService{
+    private final IUserInfoService iUserInfoService;
+    private final ISpotService iSpotService;
+
+    @Autowired
+    public SpotlightBusinessService(IUserInfoService iUserInfoService, ISpotService iSpotService) {
+        this.iUserInfoService = iUserInfoService;
+        this.iSpotService = iSpotService;
+    }
 
     @Override
     public Page<Spot> listSpotlight(Map in) throws Exception {
@@ -34,6 +50,35 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
          * 根据token获取当前用户，如果不是创建用户，就增加一次views。
          * views并不判断一个用户的重复访问，只要访问一次就加一次
          */
-        return null;
+        Integer spotId=(Integer)in.get("spotId");
+
+        Spot spot=iSpotService.getSpotlightBySpotId(spotId);
+        Map out=new HashMap();
+        out.put("spot", spot);
+        return out;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void createSpotBook(Map in) throws Exception {
+        /**
+         * 创建一个申诉事件的用户留言
+         * 用户必须登录
+         */
+        String token=in.get("token").toString();
+        Integer spotId=(Integer)in.get("spotId");
+        String content=in.get("content").toString();
+
+        UserInfo userInfo=iUserInfoService.getUserByToken(token);
+        if(userInfo==null){
+            throw new Exception("10004");
+        }
+
+        SpotBook spotBook=new SpotBook();
+        spotBook.setContent(content);
+        spotBook.setCreatedTime(new Date());
+        spotBook.setCreatedUserId(userInfo.getUserId());
+        spotBook.setSpotId(spotId);
+        iSpotService.insertSpotBook(spotBook);
     }
 }

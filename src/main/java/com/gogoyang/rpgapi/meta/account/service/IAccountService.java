@@ -8,7 +8,7 @@ import java.util.Map;
 public interface IAccountService {
     Account insertNewAccount(Account account) throws Exception;
 
-    Map refreshAccountBalance(Integer userId) throws Exception;
+    Map loadAccountBalance(Integer userId) throws Exception;
 
     /**
      * Read my account data

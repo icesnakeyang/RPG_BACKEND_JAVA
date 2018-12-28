@@ -1,9 +1,9 @@
 package com.gogoyang.rpgapi.meta.spotlight.service;
 
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
+import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 
 public interface ISpotService {
     /**
@@ -30,11 +30,9 @@ public interface ISpotService {
      */
     Page<Spot> listSpotlightByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception;
 
-    /**
-     * 获取一个任务当前正在申诉的事件
-     * @param jobId
-     * @return
-     * @throws Exception
-     */
-    Spot getSpotlightByJobId(Integer jobId) throws Exception;
+    Spot getSpotlightBySpotId(Integer spotId) throws Exception;
+
+    void insertSpotBook(SpotBook spotBook) throws Exception;
+
+    Page<SpotBook> listSpotBook(Integer spotId, Integer pageIndex, Integer pageSize) throws Exception;
 }

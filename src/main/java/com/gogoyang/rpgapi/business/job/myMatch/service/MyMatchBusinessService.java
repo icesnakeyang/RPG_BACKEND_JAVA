@@ -151,7 +151,7 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         iAccountService.insertNewAccount(account);
 
         //刷新乙方的balance
-        Map money = iAccountService.refreshAccountBalance(userId);
+        Map money = iAccountService.loadAccountBalance(userId);
         userInfo.setAccount((Double) money.get("balance"));
         iUserInfoService.updateUser(userInfo);
     }

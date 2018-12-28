@@ -1,8 +1,10 @@
 package com.gogoyang.rpgapi.business.spotlight.controller;
 
+import com.gogoyang.rpgapi.business.spotlight.service.ISpotlightBusinessService;
 import com.gogoyang.rpgapi.business.spotlight.vo.SpotlightRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("spotlight")
 public class SpotlightController {
+    private final ISpotlightBusinessService iSpotlightBusinessService;
+
+    @Autowired
+    public SpotlightController(ISpotlightBusinessService iSpotlightBusinessService) {
+        this.iSpotlightBusinessService = iSpotlightBusinessService;
+    }
     /**
      * 本spotlight用于申诉广场的信息显示
      * 以及，甲方或乙方查看任务的申诉详情
@@ -71,17 +79,16 @@ public class SpotlightController {
     /**
      * 读取一个详细的申诉事件
      * 包含申诉详情
-     * @param request
-     * @param httpServletRequest
-     * @return
      */
     @ResponseBody
-    @PostMapping("/detail")
-    public Response getSpotlightDetail(@RequestBody SpotlightRequest request,
-                                     HttpServletRequest httpServletRequest){
+    @GetMapping("/detail/{spotId}")
+    public Response getSpotlightDetail(@PathVariable Integer spotId){
         Response response=new Response();
         try {
-
+            Map in=new HashMap();
+            in.put("spotId", spotId);
+            Map out=iSpotlightBusinessService.getSpotlightDetail(in);
+            response.setData(out);
         }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
@@ -89,6 +96,34 @@ public class SpotlightController {
             }catch (Exception ex2){
                 response.setErrorCode(10076);
                 return response;
+            }
+        }
+        return response;
+    }
+
+    /**
+     * create a spot book
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/createSpotBook")
+    public Response createSpotBook(@RequestBody SpotlightRequest request,
+                                   HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("spotId", request.getSpotId());
+            in.put("content", request.getContent());
+            iSpotlightBusinessService.createSpotBook(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10113);
             }
         }
         return response;

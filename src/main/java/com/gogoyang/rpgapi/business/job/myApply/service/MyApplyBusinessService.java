@@ -87,6 +87,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         //check token
         String token = in.get("token").toString();
         Integer jobId=(Integer)in.get("jobId");
+        String content=(String)in.get("content");
 
         UserInfo userInfo=iUserInfoService.getUserByToken(token);
         if(userInfo==null){
@@ -129,6 +130,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         jobApply.setApplyTime(new Date());
         jobApply.setApplyUserId(userInfo.getUserId());
         jobApply.setJobId(jobId);
+        jobApply.setContent(content);
         iJobApplyService.insertJobApply(jobApply);
 
         //刷新job的applyNum次数，且把jobStatus改成Matching

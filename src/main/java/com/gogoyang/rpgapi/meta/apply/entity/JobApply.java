@@ -39,6 +39,9 @@ public class JobApply {
     @Column(name = "process_remark")
     private String processRemark;
 
+    @Column(name = "content")
+    private String content;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Integer getJobApplyId() {
         return jobApplyId;
@@ -110,5 +113,13 @@ public class JobApply {
 
     public void setProcessResult(LogStatus processResult) {
         this.processResult = processResult;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

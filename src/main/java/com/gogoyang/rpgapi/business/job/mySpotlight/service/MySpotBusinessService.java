@@ -53,12 +53,8 @@ public class MySpotBusinessService implements IMySpotBusinessService {
             }
         }
 
-        Spot spot = iSpotService.getSpotlightByJobId(jobId);
-        if (spot != null) {
-            throw new Exception("10091");
-        }
+        Spot spot = new Spot();
 
-        spot = new Spot();
         spot.setTitle(title);
         spot.setJobId(jobId);
         spot.setCreatedUserId(userInfo.getUserId());

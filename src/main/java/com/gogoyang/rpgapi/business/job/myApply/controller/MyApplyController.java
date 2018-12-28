@@ -67,6 +67,7 @@ public class MyApplyController {
             Map in=new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
+            in.put("content",request.getContent());
             iMyApplyBusinessService.applyJob(in);
         } catch (Exception ex) {
             try {

@@ -1,8 +1,11 @@
 package com.gogoyang.rpgapi.business.admin.secretary.match.service;
 
+import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
+import com.gogoyang.rpgapi.meta.account.entity.Account;
+import com.gogoyang.rpgapi.meta.account.service.IAccountService;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
@@ -31,17 +34,21 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     private final IJobApplyService iJobApplyService;
     private final IUserInfoService iUserInfoService;
     private final IJobMatchService iJobMatchService;
+    private final IAccountService iAccountService;
 
     @Autowired
-    public SecretaryMatchBusinessService(IAdminService iAdminService, IJobService iJobService,
+    public SecretaryMatchBusinessService(IAdminService iAdminService,
+                                         IJobService iJobService,
                                          IJobApplyService iJobApplyService,
                                          IUserInfoService iUserInfoService,
-                                         IJobMatchService iJobMatchService) {
+                                         IJobMatchService iJobMatchService,
+                                         IAccountService iAccountService) {
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
         this.iUserInfoService = iUserInfoService;
         this.iJobMatchService = iJobMatchService;
+        this.iAccountService = iAccountService;
     }
 
     /**
@@ -148,6 +155,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
             map.put("applyUserId", userInfo.getUserId());
             map.put("applyTime", apply.getApplyTime());
             map.put("applyId", apply.getJobApplyId());
+            map.put("content", apply.getContent());
             applyList.add(map);
         }
 
@@ -159,7 +167,80 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void agreeApply(Map in) throws Exception {
+        /**
+         * check authority
+         * load apply
+         * set to agree
+         * set job to progress
+         * transfer money to user
+         * set all other apply to disable
+         */
+        String token=in.get("token").toString();
+        Integer applyId=(Integer)in.get("applyId");
 
+        //检查用户权限，必须是秘书
+        Admin admin=iAdminService.loadAdminByToken(token);
+        if(admin==null){
+            throw new Exception("10004");
+        }
+        if(admin.getRoleType()!=RoleType.SECRETARY){
+            throw new Exception("10034");
+        }
+
+        //读取申请，保存为成功
+        JobApply jobApply=iJobApplyService.getJobApplyByJobApplyId(applyId);
+        if(jobApply==null){
+            throw new Exception("10109");
+        }
+        jobApply.setProcessUserId(admin.getAdminId());
+        jobApply.setProcessTime(new Date());
+        jobApply.setProcessResult(LogStatus.ACCEPT);
+        iJobApplyService.updateJobApply(jobApply);
+
+        //读取任务，保存乙方信息，任务状态为进行中
+        Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+        if(job==null){
+            throw new Exception("10112");
+        }
+        job.setStatus(JobStatus.PROGRESS);
+        job.setContractTime(jobApply.getProcessTime());
+        job.setPartyBId(jobApply.getApplyUserId());
+        iJobService.updateJob(job);
+
+        //把任务金额转给乙方
+        UserInfo userB=iUserInfoService.getUserByUserId(jobApply.getApplyUserId());
+        if(userB==null){
+            throw new Exception("10019");
+        }
+        Account account=new Account();
+        account.setAmount(job.getPrice());
+        account.setCreatedTime(jobApply.getProcessTime());
+        account.setType(AccountType.ACCEPT);
+        account.setUserId(jobApply.getApplyUserId());
+        account.setJobId(jobApply.getJobId());
+        iAccountService.insertNewAccount(account);
+
+        Map accountMap=new HashMap();
+        accountMap=iAccountService.loadAccountBalance(jobApply.getApplyUserId());
+        Double balance=(Double)accountMap.get("balance");
+        Double income=(Double)accountMap.get("income");
+        Double outgoing=(Double)accountMap.get("outgoing");
+
+        //更新乙方的账户统计信息
+        userB.setAccount(balance);
+        userB.setAccountIn(income);
+        userB.setAccountOut(outgoing);
+        iUserInfoService.updateUser(userB);
+
+        //处理其他用户的申请
+        ArrayList<JobApply> otherApplies=iJobApplyService.listJobApplyByNotProcesJobId(jobApply.getJobId());
+        for(int i=0;i<otherApplies.size();i++){
+            JobApply otherApply=otherApplies.get(i);
+            otherApply.setProcessResult(LogStatus.ACCEPT_BY_OTHERS);
+            otherApply.setProcessTime(jobApply.getProcessTime());
+            otherApply.setProcessUserId(admin.getAdminId());
+            iJobApplyService.updateJobApply(otherApply);
+        }
     }
 
     @Override
@@ -179,9 +260,20 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
             throw new Exception("10004");
         }
 
+        if(admin.getRoleType()!=RoleType.SECRETARY){
+            throw new Exception("10034");
+        }
+
         JobApply jobApply=iJobApplyService.getJobApplyByJobApplyId(applyId);
         if(jobApply==null){
-            throw new Exception("")
+            throw new Exception("10109");
         }
+
+        jobApply.setProcessResult(LogStatus.REJECT);
+        jobApply.setProcessTime(new Date());
+        jobApply.setProcessUserId(admin.getAdminId());
+        jobApply.setProcessRemark(remark);
+
+        iJobApplyService.updateJobApply(jobApply);
     }
 }

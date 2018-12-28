@@ -49,7 +49,7 @@ public class AccountService implements IAccountService {
      * @throws Exception
      */
     @Override
-    public Map refreshAccountBalance(Integer userId) throws Exception {
+    public Map loadAccountBalance(Integer userId) throws Exception {
         /**
          * load all userId account record
          * calculate the total income, total outgoing, and balance

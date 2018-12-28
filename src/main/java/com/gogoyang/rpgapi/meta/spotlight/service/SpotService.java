@@ -1,8 +1,10 @@
 package com.gogoyang.rpgapi.meta.spotlight.service;
 
+import com.gogoyang.rpgapi.meta.spotlight.dao.SpotBookDao;
 import com.gogoyang.rpgapi.meta.spotlight.dao.SpotContentDao;
 import com.gogoyang.rpgapi.meta.spotlight.dao.SpotDao;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
+import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
 import com.gogoyang.rpgapi.meta.spotlight.entity.SpotContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,11 +19,13 @@ import javax.transaction.Transactional;
 public class SpotService implements ISpotService {
     private final SpotDao spotDao;
     private final SpotContentDao spotContentDao;
+    private final SpotBookDao spotBookDao;
 
     @Autowired
-    public SpotService(SpotDao spotDao, SpotContentDao spotContentDao) {
+    public SpotService(SpotDao spotDao, SpotContentDao spotContentDao, SpotBookDao spotBookDao) {
         this.spotDao = spotDao;
         this.spotContentDao = spotContentDao;
+        this.spotBookDao = spotBookDao;
     }
 
     @Override
@@ -70,8 +74,27 @@ public class SpotService implements ISpotService {
     }
 
     @Override
-    public Spot getSpotlightByJobId(Integer spotId) throws Exception {
-        Spot spot = spotDao.findBySpotId(spotId);
+    public Spot getSpotlightBySpotId(Integer spotId) throws Exception {
+        Spot spot=spotDao.findBySpotId(spotId);
+        SpotContent detail=spotContentDao.findOne(spotId);
+        spot.setContent(detail.getContent());
         return spot;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void insertSpotBook(SpotBook spotBook) throws Exception {
+        if(spotBook.getSpotBookId()!=null){
+            throw new Exception("10113");
+        }
+        spotBookDao.save(spotBook);
+    }
+
+    @Override
+    public Page<SpotBook> listSpotBook(Integer spotId, Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort=new Sort(Sort.Direction.DESC, "spotBookId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<SpotBook> spotBooks=spotBookDao.findAllBySpotId(spotId, pageable);
+        return spotBooks;
     }
 }

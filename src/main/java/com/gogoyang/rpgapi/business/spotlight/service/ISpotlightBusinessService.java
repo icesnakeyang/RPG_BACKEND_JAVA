@@ -30,4 +30,6 @@ public interface ISpotlightBusinessService {
      * @throws Exception
      */
     Map getSpotlightDetail(Map in) throws Exception;
+
+    void createSpotBook(Map in) throws Exception;
 }

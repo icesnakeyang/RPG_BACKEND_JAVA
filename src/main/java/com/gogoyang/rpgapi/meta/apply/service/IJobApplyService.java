@@ -9,6 +9,8 @@ import java.util.Map;
 public interface IJobApplyService {
     JobApply getJobApplyByJobApplyId(Integer applyId) throws Exception;
 
+    ArrayList<JobApply> listJobApplyByNotProcesJobId(Integer jobId) throws Exception;
+
     JobApply loadJobApplyByUserIdAndJobId(Integer userId, Integer jobId) throws Exception;
 
     void insertJobApply(JobApply jobApply) throws Exception;

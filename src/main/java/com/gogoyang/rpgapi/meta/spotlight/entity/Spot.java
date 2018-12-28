@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.meta.spotlight.entity;
 
-import com.gogoyang.rpgapi.framework.constant.JobStatus;
 
 import javax.persistence.*;
 import java.util.Date;

@@ -94,7 +94,7 @@ public class PublishBusinessService implements IPublishBusinessService{
         iAccountService.insertNewAccount(account);
 
         //计算甲方账户的balance余额
-        Map accountMap=iAccountService.refreshAccountBalance(job.getPartyAId());
+        Map accountMap=iAccountService.loadAccountBalance(job.getPartyAId());
         Double balance=(Double)accountMap.get("balance");
         Double income=(Double)accountMap.get("income");
         Double outgoing=(Double)accountMap.get("outgoing");

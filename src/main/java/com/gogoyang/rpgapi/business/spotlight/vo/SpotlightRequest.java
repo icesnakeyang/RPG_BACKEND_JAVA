@@ -12,6 +12,7 @@ public class SpotlightRequest {
     private Integer createdUserId;
     private String title;
     private String content;
+    private Integer spotId;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,5 +46,13 @@ public class SpotlightRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Integer getSpotId() {
+        return spotId;
+    }
+
+    public void setSpotId(Integer spotId) {
+        this.spotId = spotId;
     }
 }

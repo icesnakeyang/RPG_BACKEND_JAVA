@@ -46,6 +46,12 @@ public class JobApplyService implements IJobApplyService {
         return jobApply;
     }
 
+    @Override
+    public ArrayList<JobApply> listJobApplyByNotProcesJobId(Integer jobId) throws Exception {
+        ArrayList<JobApply> jobApplies=jobApplyDao.findAllByJobIdAndProcessResultIsNull(jobId);
+        return jobApplies;
+    }
+
     /**
      * 根据userId和jobId读取未处理的申请
      * @param userId
