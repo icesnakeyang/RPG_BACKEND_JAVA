@@ -13,6 +13,8 @@ public class SpotlightRequest {
     private String title;
     private String content;
     private Integer spotId;
+    private Integer pageIndex;
+    private Integer pageSize;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,5 +56,21 @@ public class SpotlightRequest {
 
     public void setSpotId(Integer spotId) {
         this.spotId = spotId;
+    }
+
+    public Integer getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }

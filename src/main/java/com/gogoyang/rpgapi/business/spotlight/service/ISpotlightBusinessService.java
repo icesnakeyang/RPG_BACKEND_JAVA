@@ -13,7 +13,7 @@ public interface ISpotlightBusinessService {
      * @return
      * @throws Exception
      */
-    Page<Spot> listSpotlight(Map in) throws Exception;
+    Map listSpotlight(Map in) throws Exception;
 
     /**
      * 读取一个简要的申诉

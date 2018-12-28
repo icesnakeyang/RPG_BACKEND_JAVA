@@ -33,11 +33,14 @@ public class SpotlightController {
      */
     @ResponseBody
     @PostMapping("/list")
-    public Response listSpotlight(@RequestBody SpotlightRequest request,
-                                  HttpServletRequest httpServletRequest){
+    public Response listSpotlight(@RequestBody SpotlightRequest request){
         Response response=new Response();
         try {
-
+            Map in=new HashMap();
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Map out=iSpotlightBusinessService.listSpotlight(in);
+            response.setData(out);
         }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

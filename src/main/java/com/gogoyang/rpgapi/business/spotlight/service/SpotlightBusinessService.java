@@ -5,6 +5,7 @@ import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
 import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
 import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,28 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
     }
 
     @Override
-    public Page<Spot> listSpotlight(Map in) throws Exception {
+    public Map listSpotlight(Map in) throws Exception {
         /**
          * 分页读取所有当前有效的申诉，用于申诉广场的列表显示
          * 把用户id的用户名加上
          * 统计下阅读人数
          */
-        return null;
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+        Page<Spot> spots=iSpotService.listSpotlight(pageIndex, pageSize);
+
+        for(int i=0;i<spots.getContent().size();i++){
+            UserInfo user=iUserInfoService.getUserByUserId(spots.getContent().get(i).getCreatedUserId());
+            if(user.getRealName()!=null) {
+                spots.getContent().get(i).setCreatedUserName(user.getRealName());
+            }else{
+                spots.getContent().get(i).setCreatedUserName(user.getEmail());
+            }
+        }
+
+        Map out=new HashMap();
+        out.put("spotlightList", spots);
+        return out;
     }
 
     @Override
