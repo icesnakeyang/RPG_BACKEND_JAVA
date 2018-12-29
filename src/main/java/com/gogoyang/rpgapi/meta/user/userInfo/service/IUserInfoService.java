@@ -10,6 +10,8 @@ public interface IUserInfoService {
 
     UserInfo insertUser(UserInfo userInfo) throws Exception;
 
+    UserInfo getUserByEmailPassword(String email, String password) throws Exception;
+
     UserInfo getUserByUsername(String username) throws Exception;
 
     UserInfo getUserByToken(String token) throws Exception;

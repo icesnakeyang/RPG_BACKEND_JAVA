@@ -58,6 +58,12 @@ public class UserInfoService implements IUserInfoService {
         return userInfo;
     }
 
+    @Override
+    public UserInfo getUserByEmailPassword(String email, String password) throws Exception {
+        UserInfo userInfo=userInfoDao.findByEmailAndPassword(email, password);
+        return userInfo;
+    }
+
     /**
      * 根据username查询userinfo
      *

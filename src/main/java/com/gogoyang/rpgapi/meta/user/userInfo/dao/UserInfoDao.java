@@ -5,6 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserInfoDao extends JpaRepository<UserInfo, Integer> {
     /**
+     * 根据用户的email查询用户
+     * @param email
+     * @param password
+     * @return
+     */
+    UserInfo findByEmailAndPassword(String email, String password);
+
+    /**
      * 根据username查询
      *
      * @param username
