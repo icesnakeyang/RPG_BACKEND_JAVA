@@ -2,8 +2,6 @@ package com.gogoyang.rpgapi.meta.honor.service;
 
 import com.gogoyang.rpgapi.meta.honor.dao.HonorDao;
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

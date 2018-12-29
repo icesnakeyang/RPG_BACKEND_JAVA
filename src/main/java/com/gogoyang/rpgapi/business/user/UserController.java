@@ -32,27 +32,7 @@ public class UserController {
      * @param request
      * @return
      */
-    @ResponseBody
-    @PostMapping("/register")
-    public Response registerUser(@RequestBody UserRequest request) {
-        Response response = new Response();
 
-        try {
-            UserInfo userInfo = new UserInfo();
-            userInfo.setUsername(request.getUsername());
-            userInfo.setPassword(request.getPassword());
-
-            userInfo = iUserInfoService.insertUser(userInfo);
-            response.setData(userInfo);
-        } catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setErrorCode(10014);
-            }
-        }
-        return response;
-    }
 
     /**
      * 根据userId读取一个用户

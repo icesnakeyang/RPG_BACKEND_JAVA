@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.meta.user.phone.entity;
+package com.gogoyang.rpgapi.meta.email.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,17 +7,17 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class Phone {
+public class Email {
     @Id
     @GeneratedValue
-    @Column(name = "phone_id")
-    private Integer phoneId;
+    @Column(name = "email_id")
+    private Integer emailId;
 
-    @Column(name = "user_id")
+    @Column(name ="user_Id")
     private Integer userId;
 
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "created_time")
     private Date createdTime;
@@ -28,28 +28,26 @@ public class Phone {
     @Column(name = "is_default")
     private Boolean isDefault;
 
-    @Column(name = "is_verify")
-    private Boolean isVerify;
+    @Column(name = "is_verified")
+    private Boolean isVerified;
+
+    @Column(name = "verify_key")
+    private String verifyKey;
 
     @Column(name = "send_verify_time")
     private Date sendVerifyTime;
 
-    @Column(name = "verify_code")
-    private String verifyCode;
-
     @Column(name = "verify_time")
     private Date verifyTime;
 
+    //////////////////////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-    public Integer getPhoneId() {
-        return phoneId;
+    public Integer getEmailId() {
+        return emailId;
     }
 
-    public void setPhoneId(Integer phoneId) {
-        this.phoneId = phoneId;
+    public void setEmailId(Integer emailId) {
+        this.emailId = emailId;
     }
 
     public Integer getUserId() {
@@ -60,12 +58,12 @@ public class Phone {
         this.userId = userId;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getCreatedTime() {
@@ -92,12 +90,20 @@ public class Phone {
         isDefault = aDefault;
     }
 
-    public Boolean getVerify() {
-        return isVerify;
+    public Boolean getVerified() {
+        return isVerified;
     }
 
-    public void setVerify(Boolean verify) {
-        isVerify = verify;
+    public void setVerified(Boolean verified) {
+        isVerified = verified;
+    }
+
+    public String getVerifyKey() {
+        return verifyKey;
+    }
+
+    public void setVerifyKey(String verifyKey) {
+        this.verifyKey = verifyKey;
     }
 
     public Date getSendVerifyTime() {
@@ -106,14 +112,6 @@ public class Phone {
 
     public void setSendVerifyTime(Date sendVerifyTime) {
         this.sendVerifyTime = sendVerifyTime;
-    }
-
-    public String getVerifyCode() {
-        return verifyCode;
-    }
-
-    public void setVerifyCode(String verifyCode) {
-        this.verifyCode = verifyCode;
     }
 
     public Date getVerifyTime() {
