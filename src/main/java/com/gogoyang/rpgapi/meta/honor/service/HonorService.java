@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.meta.honor.service;
 
 import com.gogoyang.rpgapi.meta.honor.dao.HonorDao;
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,13 @@ import java.util.Map;
 @Service
 public class HonorService implements IHonorService {
     private final HonorDao honorDao;
-    private final IUserInfoService iUserInfoService;
+    private final IUserService iUserService;
 
     @Autowired
-    public HonorService(HonorDao honorDao, IUserInfoService iUserInfoService) {
+    public HonorService(HonorDao honorDao,
+                        IUserService iUserService) {
         this.honorDao = honorDao;
-        this.iUserInfoService = iUserInfoService;
+        this.iUserService = iUserService;
     }
 
     /**
@@ -28,7 +30,7 @@ public class HonorService implements IHonorService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void insertHonor(Honor honor) throws Exception {
-        if(honor.getHonorLogId()!=null){
+        if(honor.getHonorId()!=null){
             throw new Exception("10062");
         }
         honorDao.save(honor);
@@ -44,7 +46,7 @@ public class HonorService implements IHonorService {
      * @throws Exception
      */
     @Transactional(rollbackOn = Exception.class)
-    public Map RefreshUserHonorPoint(Integer userId) throws Exception {
+    public Map refreshUserHonorPoint(Integer userId) throws Exception {
         /**
          * 读取userId的所有HonorLog记录
          * 逐条计算point
@@ -53,9 +55,9 @@ public class HonorService implements IHonorService {
 
         //todo
 
-        Double honor = 0.0;
-        Double honorIn = 0.0;
-        Double honorOut = 0.0;
+        Integer honor=0;
+        Integer honorIn=0;
+        Integer honorOut=0;
 
         Map out = new HashMap();
         out.put("honor", honor);

@@ -4,7 +4,7 @@ import com.gogoyang.rpgapi.meta.task.dao.TaskDao;
 import com.gogoyang.rpgapi.meta.task.dao.TaskDetailDao;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.entity.TaskDetail;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,19 +14,20 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Map;
 
 @Service
 public class TaskService implements ITaskService {
     private final TaskDao taskDao;
     private final TaskDetailDao taskDetailDao;
-    private final IUserInfoService iUserInfoService;
+    private final IUserService iUserService;
 
     @Autowired
-    public TaskService(TaskDao taskDao, TaskDetailDao taskDetailDao, IUserInfoService iUserInfoService) {
+    public TaskService(TaskDao taskDao,
+                       TaskDetailDao taskDetailDao,
+                       IUserService iUserService) {
         this.taskDao = taskDao;
         this.taskDetailDao = taskDetailDao;
-        this.iUserInfoService = iUserInfoService;
+        this.iUserService = iUserService;
     }
 
     /**

@@ -12,8 +12,8 @@ import java.util.Date;
 public class Honor {
     @Id
     @GeneratedValue
-    @Column(name = "honor_log_id")
-    private Integer honorLogId;
+    @Column(name = "honor_id")
+    private Integer honorId;
 
     @Column(name = "user_id")
     private Integer userId;
@@ -23,9 +23,6 @@ public class Honor {
 
     @Column(name = "type")
     private HonorType type;
-
-    @Column(name = "appeal_id")
-    private Integer appealId;
 
     @Column(name = "job_id")
     private Integer jobId;
@@ -38,15 +35,13 @@ public class Honor {
 
     @Column(name = "remark")
     private String remark;
-
     ////////////////////////////////////////////////////////////////////////////////
-
-    public Integer getHonorLogId() {
-        return honorLogId;
+    public Integer getHonorId() {
+        return honorId;
     }
 
-    public void setHonorLogId(Integer honorLogId) {
-        this.honorLogId = honorLogId;
+    public void setHonorId(Integer honorId) {
+        this.honorId = honorId;
     }
 
     public Integer getUserId() {
@@ -71,14 +66,6 @@ public class Honor {
 
     public void setType(HonorType type) {
         this.type = type;
-    }
-
-    public Integer getAppealId() {
-        return appealId;
-    }
-
-    public void setAppealId(Integer appealId) {
-        this.appealId = appealId;
     }
 
     public Integer getJobId() {

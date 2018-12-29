@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.user.login.service;
 
+import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.meta.email.entity.Email;
 import com.gogoyang.rpgapi.meta.email.service.IEmailService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
@@ -14,12 +15,15 @@ import java.util.Map;
 public class UserLoginBusinessService implements IUserLoginBusinessService{
     private final IEmailService iEmailService;
     private final IUserService iUserService;
+    private final IRPGFunction irpgFunction;
 
     @Autowired
     public UserLoginBusinessService(IEmailService iEmailService,
-                                    IUserService iUserService) {
+                                    IUserService iUserService,
+                                    IRPGFunction irpgFunction) {
         this.iEmailService = iEmailService;
         this.iUserService = iUserService;
+        this.irpgFunction = irpgFunction;
     }
 
     /**
@@ -52,6 +56,7 @@ public class UserLoginBusinessService implements IUserLoginBusinessService{
             throw new Exception("10024");
         }
 
+        password=irpgFunction.encoderByMd5(password);
         if(!user.getLoginPassword().equals(password)){
             throw new Exception("10024");
         }

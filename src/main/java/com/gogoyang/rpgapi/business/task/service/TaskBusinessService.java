@@ -3,8 +3,8 @@ package com.gogoyang.rpgapi.business.task.service;
 import com.gogoyang.rpgapi.business.job.detail.service.IJobDetailBusinessService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,15 +17,17 @@ import java.util.Map;
 
 @Service
 public class TaskBusinessService implements ITaskBusinessService {
-    private final IUserInfoService iUserInfoService;
     private final ITaskService iTaskService;
     private final IJobDetailBusinessService iJobDetailBusinessService;
+    private final IUserService iUserService;
 
     @Autowired
-    public TaskBusinessService(IUserInfoService iUserInfoService, ITaskService iTaskService, IJobDetailBusinessService iJobDetailBusinessService) {
-        this.iUserInfoService = iUserInfoService;
+    public TaskBusinessService(ITaskService iTaskService,
+                               IJobDetailBusinessService iJobDetailBusinessService,
+                               IUserService iUserService) {
         this.iTaskService = iTaskService;
         this.iJobDetailBusinessService = iJobDetailBusinessService;
+        this.iUserService = iUserService;
     }
 
     @Override
@@ -37,12 +39,12 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
 
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
         Task task = new Task();
-        task.setCreatedUserId(userInfo.getUserId());
+        task.setCreatedUserId(user.getUserId());
         task.setDetail(detail);
         task.setCreatedTime(new Date());
         task.setCode(code);
@@ -60,12 +62,12 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer pid = (Integer) in.get("pid");
         String title = in.get("title").toString();
 
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
         Task task = new Task();
-        task.setCreatedUserId(userInfo.getUserId());
+        task.setCreatedUserId(user.getUserId());
         task.setCreatedTime(new Date());
         task.setCode(code);
         task.setPid(pid);
@@ -101,8 +103,8 @@ public class TaskBusinessService implements ITaskBusinessService {
          */
         String token = in.get("token").toString();
         Integer taskId = (Integer) in.get("taskId");
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
 
@@ -119,14 +121,14 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
+        User userInfo = iUserService.getUserByToken(token);
         if (userInfo == null) {
             throw new Exception("10004");
         }
         Integer taskId = (Integer) in.get("taskId");
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
 
-        UserInfo createUser = iUserInfoService.getUserByUserId(task.getCreatedUserId());
+        User createUser = iUserService.getUserByUserId(task.getCreatedUserId());
         if(createUser.getRealName()!=null){
             task.setCreatedUserName(createUser.getRealName());
         }else {

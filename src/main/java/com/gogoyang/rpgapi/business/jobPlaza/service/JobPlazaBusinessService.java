@@ -1,10 +1,8 @@
 package com.gogoyang.rpgapi.business.jobPlaza.service;
 
-import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -14,12 +12,12 @@ import java.util.Map;
 
 @Service
 public class JobPlazaBusinessService implements IJobPlazaBusinessService{
-    private final IUserInfoService iUserInfoService;
-    private IJobMatchService iJobMatchService;
     private final IJobService iJobService;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public JobPlazaBusinessService(IJobService iJobService, IUserInfoService iUserInfoService) {
+    public JobPlazaBusinessService(IJobService iJobService,
+                                   IUserInfoService iUserInfoService) {
         this.iJobService = iJobService;
         this.iUserInfoService = iUserInfoService;
     }

@@ -1,7 +1,7 @@
-package com.gogoyang.rpgapi.business.user.info.controller;
+package com.gogoyang.rpgapi.business.user.profile.controller;
 
-import com.gogoyang.rpgapi.business.user.UserRequest;
-import com.gogoyang.rpgapi.business.user.info.service.IUserInfoBusinessService;
+import com.gogoyang.rpgapi.business.user.profile.service.IProfileBusinessService;
+import com.gogoyang.rpgapi.business.user.profile.vo.ProfileRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/info")
-public class UserInfoController {
-    private final IUserInfoBusinessService iUserInfoBusinessService;
+@RequestMapping("/user/profile")
+public class ProfileController {
+    private final IProfileBusinessService iProfileBusinessService;
 
     @Autowired
-    public UserInfoController(IUserInfoBusinessService iUserInfoBusinessService) {
-        this.iUserInfoBusinessService = iUserInfoBusinessService;
+    public ProfileController(IProfileBusinessService iProfileBusinessService) {
+        this.iProfileBusinessService = iProfileBusinessService;
     }
 
     /**
@@ -29,7 +29,7 @@ public class UserInfoController {
      */
     @ResponseBody
     @PostMapping("/saveContactInfo")
-    public Response saveContactInfo(@RequestBody UserRequest request,
+    public Response saveContactInfo(@RequestBody ProfileRequest request,
                                     HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
@@ -40,7 +40,7 @@ public class UserInfoController {
             in.put("phone", request.getPhone());
             in.put("realName", request.getRealName());
 
-            iUserInfoBusinessService.saveUserContactInfo(in);
+            iProfileBusinessService.saveUserContactInfo(in);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
