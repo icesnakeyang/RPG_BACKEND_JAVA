@@ -8,4 +8,6 @@ public interface IUserService {
     User insert(User user) throws Exception;
 
     User getUserByToken(String token) throws Exception;
+
+    void update(User user) throws Exception;
 }

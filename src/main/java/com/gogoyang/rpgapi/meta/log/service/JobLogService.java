@@ -1,8 +1,8 @@
 package com.gogoyang.rpgapi.meta.log.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.meta.log.dao.JobLogDao;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,8 @@ public class JobLogService implements IJobLogService{
     private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public JobLogService(JobLogDao jobLogDao, IUserInfoService iUserInfoService) {
+    public JobLogService(JobLogDao jobLogDao,
+                         IUserInfoService iUserInfoService) {
         this.jobLogDao = jobLogDao;
         this.iUserInfoService = iUserInfoService;
     }

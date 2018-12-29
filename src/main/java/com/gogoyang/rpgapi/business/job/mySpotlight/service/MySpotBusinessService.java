@@ -1,17 +1,13 @@
 package com.gogoyang.rpgapi.business.job.mySpotlight.service;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

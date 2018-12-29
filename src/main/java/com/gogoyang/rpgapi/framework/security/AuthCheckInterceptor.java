@@ -1,7 +1,5 @@
 package com.gogoyang.rpgapi.framework.security;
 
-import com.gogoyang.rpgapi.meta.user.userInfo.dao.UserInfoDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -11,12 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class AuthCheckInterceptor implements HandlerInterceptor {
-    private final UserInfoDao userInfoDao;
-
-    @Autowired
-    public AuthCheckInterceptor(UserInfoDao userInfoDao) {
-        this.userInfoDao = userInfoDao;
-    }
 
 
     @Override

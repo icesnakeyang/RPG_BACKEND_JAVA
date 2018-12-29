@@ -5,8 +5,8 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.job.service.IJobDetail;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,24 +17,24 @@ import java.util.Map;
 
 @Service
 public class MyPendingBusinessService implements IMyPendingBusinessService {
-    private final IUserInfoService iUserInfoService;
     private final IJobService iJobService;
     private final IJobDetail iJobDetail;
+    private final IUserService iUserService;
 
     @Autowired
     public MyPendingBusinessService(IJobService iJobService,
-                                    IUserInfoService iUserInfoService,
-                                    IJobDetail iJobDetail) {
+                                    IJobDetail iJobDetail,
+                                    IUserService iUserService) {
         this.iJobService = iJobService;
-        this.iUserInfoService = iUserInfoService;
         this.iJobDetail = iJobDetail;
+        this.iUserService = iUserService;
     }
 
     @Override
     public Map listMyPendingJob(Map in) throws Exception {
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        Integer partyAId = userInfo.getUserId();
+        User user = iUserService.getUserByToken(token);
+        Integer partyAId = user.getUserId();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         Page<Job> jobs = iJobService.listMyPendingJob(partyAId, JobStatus.PENDING, pageIndex, pageSize);
@@ -62,9 +62,9 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         Double price = (Double) in.get("price");
         String jobDetail = in.get("jobDetail").toString();
 
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
+        User user = iUserService.getUserByToken(token);
 
-        if (userInfo == null) {
+        if (user == null) {
             throw new Exception("10004");
         }
 
@@ -78,7 +78,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
             throw new Exception("10101");
         }
 
-        if (userInfo.getUserId().intValue() != job.getPartyAId().intValue()) {
+        if (user.getUserId().intValue() != job.getPartyAId().intValue()) {
             throw new Exception("10102");
         }
 
@@ -100,8 +100,8 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         Integer jobId = (Integer) in.get("jobId");
 
         //read current user
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             //no user
             throw new Exception("10004");
         }
@@ -116,7 +116,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
             throw new Exception("10104");
         }
         //check the party a of this job must be current user
-        if (job.getPartyAId().intValue() != userInfo.getUserId().intValue()) {
+        if (job.getPartyAId().intValue() != user.getUserId().intValue()) {
             throw new Exception("10105");
         }
         //delete

@@ -46,4 +46,10 @@ public class PhoneService implements IPhoneService{
         }
         phoneDao.save(phone);
     }
+
+    @Override
+    public Phone getDefaultPhoneByUserId(Integer userId) throws Exception {
+        Phone phone=phoneDao.findByUserIdAndIsDefaultIsTrue(userId);
+        return phone;
+    }
 }

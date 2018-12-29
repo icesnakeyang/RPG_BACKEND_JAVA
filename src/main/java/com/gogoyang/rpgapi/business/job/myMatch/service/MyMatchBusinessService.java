@@ -11,8 +11,6 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +22,16 @@ import java.util.Map;
 
 @Service
 public class MyMatchBusinessService implements IMyMatchBusinessService {
-    private final IUserInfoService iUserInfoService;
     private final IJobMatchService iJobMatchService;
     private final IJobService iJobService;
     private final IJobApplyService iJobApplyService;
     private final IAccountService iAccountService;
 
     @Autowired
-    public MyMatchBusinessService(IUserInfoService iUserInfoService, IJobMatchService iJobMatchService,
-                                  IJobService iJobService, IJobApplyService iJobApplyService,
+    public MyMatchBusinessService(IJobMatchService iJobMatchService,
+                                  IJobService iJobService,
+                                  IJobApplyService iJobApplyService,
                                   IAccountService iAccountService) {
-        this.iUserInfoService = iUserInfoService;
         this.iJobMatchService = iJobMatchService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;

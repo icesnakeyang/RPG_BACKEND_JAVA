@@ -2,7 +2,6 @@ package com.gogoyang.rpgapi.meta.stop.service;
 
 import com.gogoyang.rpgapi.meta.stop.dao.JobStopDao;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,12 +15,10 @@ import java.util.ArrayList;
 @Service
 public class StopService implements IJobStopService {
     private final JobStopDao jobStopDao;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public StopService(JobStopDao jobStopDao, IUserInfoService iUserInfoService) {
+    public StopService(JobStopDao jobStopDa) {
         this.jobStopDao = jobStopDao;
-        this.iUserInfoService = iUserInfoService;
     }
 
     @Override

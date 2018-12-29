@@ -8,4 +8,5 @@ import java.util.ArrayList;
 public interface PhoneDao extends JpaRepository<Phone, Integer> {
     Phone findByPhone(String phone);
     ArrayList<Phone> findAllByUserId(Integer userId);
+    Phone findByUserIdAndIsDefaultIsTrue(Integer userId);
 }

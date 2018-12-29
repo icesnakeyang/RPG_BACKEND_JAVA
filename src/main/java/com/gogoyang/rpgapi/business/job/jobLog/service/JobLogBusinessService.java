@@ -2,8 +2,6 @@ package com.gogoyang.rpgapi.business.job.jobLog.service;
 
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -16,12 +14,10 @@ import java.util.Map;
 @Service
 public class JobLogBusinessService implements IJobLogBusinessService{
     private final IJobLogService iJobLogService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public JobLogBusinessService(IJobLogService iJobLogService, IUserInfoService iUserInfoService) {
+    public JobLogBusinessService(IJobLogService iJobLogService) {
         this.iJobLogService = iJobLogService;
-        this.iUserInfoService = iUserInfoService;
     }
 
     /**

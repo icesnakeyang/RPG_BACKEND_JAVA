@@ -6,8 +6,6 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import com.gogoyang.rpgapi.meta.stop.service.IJobStopService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -19,13 +17,12 @@ import java.util.Map;
 
 @Service
 public class StopBusinessService implements IStopBusinessService {
-    private final IUserInfoService iUserInfoService;
     private final IJobStopService iJobStopService;
     private final IJobService iJobService;
 
     @Autowired
-    public StopBusinessService(IUserInfoService iUserInfoService, IJobStopService iJobStopService, IJobService iJobService) {
-        this.iUserInfoService = iUserInfoService;
+    public StopBusinessService(IJobStopService iJobStopService,
+                               IJobService iJobService) {
         this.iJobStopService = iJobStopService;
         this.iJobService = iJobService;
     }

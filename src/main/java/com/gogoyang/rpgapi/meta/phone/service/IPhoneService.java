@@ -9,4 +9,5 @@ public interface IPhoneService {
     Phone getPhoneByPhone(String strPhone) throws Exception;
     ArrayList<Phone> listPhoneByUserId(Integer userId) throws Exception;
     void updatePhone(Phone phone) throws Exception;
+    Phone getDefaultPhoneByUserId(Integer userId) throws Exception;
 }

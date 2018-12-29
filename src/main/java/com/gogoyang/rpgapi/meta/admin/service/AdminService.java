@@ -3,35 +3,28 @@ package com.gogoyang.rpgapi.meta.admin.service;
 import com.gogoyang.rpgapi.meta.admin.dao.AdminDao;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
-import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
-import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class AdminService implements IAdminService {
     private final AdminDao adminDao;
     private final IJobMatchService iJobMatchService;
     private final IJobApplyService iJobApplyService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public AdminService(AdminDao adminDao, IJobMatchService iJobMatchService,
-                        IJobApplyService iJobApplyService,
-                        IUserInfoService iUserInfoService) {
+    public AdminService(AdminDao adminDao,
+                        IJobMatchService iJobMatchService,
+                        IJobApplyService iJobApplyService) {
         this.adminDao = adminDao;
         this.iJobMatchService = iJobMatchService;
         this.iJobApplyService=iJobApplyService;
-        this.iUserInfoService=iUserInfoService;
+
     }
 
     /**

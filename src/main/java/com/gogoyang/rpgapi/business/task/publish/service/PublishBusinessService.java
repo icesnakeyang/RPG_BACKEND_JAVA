@@ -6,27 +6,23 @@ import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class PublishBusinessService implements IPublishBusinessService{
     private final IJobService iJobService;
     private final IAccountService iAccountService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public PublishBusinessService(IJobService iJobService, IAccountService iAccountService, IUserInfoService iUserInfoService) {
+    public PublishBusinessService(IJobService iJobService,
+                                  IAccountService iAccountService) {
         this.iJobService = iJobService;
         this.iAccountService = iAccountService;
-        this.iUserInfoService = iUserInfoService;
     }
 
     /**

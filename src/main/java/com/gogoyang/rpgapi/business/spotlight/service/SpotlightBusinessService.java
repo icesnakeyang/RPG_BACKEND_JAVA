@@ -3,9 +3,6 @@ package com.gogoyang.rpgapi.business.spotlight.service;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
 import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
-import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,12 +14,10 @@ import java.util.Map;
 
 @Service
 public class SpotlightBusinessService implements ISpotlightBusinessService{
-    private final IUserInfoService iUserInfoService;
     private final ISpotService iSpotService;
 
     @Autowired
-    public SpotlightBusinessService(IUserInfoService iUserInfoService, ISpotService iSpotService) {
-        this.iUserInfoService = iUserInfoService;
+    public SpotlightBusinessService(ISpotService iSpotService) {
         this.iSpotService = iSpotService;
     }
 

@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.framework.aop;
 
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -11,8 +11,12 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class SecurityAspect {
+    private final IUserService iUserService;
+
     @Autowired
-    IUserInfoService iUserInfoService;
+    public SecurityAspect(IUserService iUserService) {
+        this.iUserService = iUserService;
+    }
 
     @Pointcut("@annotation(SignedUser)")
     public void signedUser(){
@@ -22,7 +26,7 @@ public class SecurityAspect {
     @Before("signedUser()")
     public void checkToken() throws Exception{
         String token=AspectVariable.getToken();
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
+        User userInfo=iUserService.getUserByToken(token);
         if(userInfo==null){
             throw new Exception("10004");
         }

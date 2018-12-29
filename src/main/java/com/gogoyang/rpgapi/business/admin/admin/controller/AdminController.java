@@ -2,7 +2,6 @@ package com.gogoyang.rpgapi.business.admin.admin.controller;
 
 import com.gogoyang.rpgapi.business.admin.admin.service.IAdminBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
-import com.gogoyang.rpgapi.business.common.IRPGService;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
@@ -17,13 +16,12 @@ import java.util.*;
 public class AdminController {
     private final IRPGFunction irpgFunction;
     private final IAdminBusinessService iAdminBusinessService;
-    private final IRPGService irpgService;
 
     @Autowired
-    public AdminController(IRPGFunction irpgFunction, IAdminBusinessService iAdminBusinessService, IRPGService irpgService) {
+    public AdminController(IRPGFunction irpgFunction,
+                           IAdminBusinessService iAdminBusinessService) {
         this.irpgFunction = irpgFunction;
         this.iAdminBusinessService = iAdminBusinessService;
-        this.irpgService = irpgService;
     }
 
     /**

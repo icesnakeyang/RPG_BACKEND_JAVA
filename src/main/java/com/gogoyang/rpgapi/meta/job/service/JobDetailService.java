@@ -4,7 +4,6 @@ import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,6 @@ import java.util.Map;
 @Service
 public class JobDetailService implements IJobDetail {
     private IJobService iJobService;
-    private IUserInfoService iUserInfoService;
     private ITaskService iTaskService;
     private IJobApplyService iJobApplyService;
     private final JobDetailDao jobDetailDao;

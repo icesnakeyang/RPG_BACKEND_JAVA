@@ -8,7 +8,6 @@ import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,18 +23,18 @@ import java.util.Map;
 class JobService implements IJobService {
 
     private final JobDao jobDao;
-    private final IUserInfoService iUserInfoService;
     private final ITaskService iTaskService;
     private final IJobApplyService iJobApplyService;
     private final IJobMatchService iJobMatchService;
     private final JobDetailDao jobDetailDao;
 
     @Autowired
-    public JobService(JobDao jobDao, IUserInfoService iUserInfoService, ITaskService iTaskService,
-                      IJobApplyService iJobApplyService, IJobMatchService iJobMatchService,
+    public JobService(JobDao jobDao,
+                      ITaskService iTaskService,
+                      IJobApplyService iJobApplyService,
+                      IJobMatchService iJobMatchService,
                       JobDetailDao jobDetailDao) {
         this.jobDao = jobDao;
-        this.iUserInfoService = iUserInfoService;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
         this.iJobMatchService = iJobMatchService;

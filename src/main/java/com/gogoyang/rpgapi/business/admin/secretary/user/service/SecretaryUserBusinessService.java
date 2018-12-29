@@ -2,8 +2,6 @@ package com.gogoyang.rpgapi.business.admin.secretary.user.service;
 
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -13,13 +11,10 @@ import java.util.Map;
 
 @Service
 public class SecretaryUserBusinessService implements ISecretaryUserBusinessService{
-    private final IUserInfoService iUserInfoService;
     private final IJobApplyService iJobApplyService;
 
     @Autowired
-    public SecretaryUserBusinessService(IUserInfoService iUserInfoService,
-                                        IJobApplyService iJobApplyService) {
-        this.iUserInfoService = iUserInfoService;
+    public SecretaryUserBusinessService(IJobApplyService iJobApplyService) {
         this.iJobApplyService = iJobApplyService;
     }
 

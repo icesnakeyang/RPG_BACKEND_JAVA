@@ -1,8 +1,9 @@
 package com.gogoyang.rpgapi.meta.complete.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,8 @@ public class JobCompleteService implements IJobCompleteService {
     private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public JobCompleteService(JobCompleteDao jobCompleteDao, IUserInfoService iUserInfoService) {
+    public JobCompleteService(JobCompleteDao jobCompleteDao,
+                              IUserInfoService iUserInfoService) {
         this.jobCompleteDao = jobCompleteDao;
         this.iUserInfoService = iUserInfoService;
     }

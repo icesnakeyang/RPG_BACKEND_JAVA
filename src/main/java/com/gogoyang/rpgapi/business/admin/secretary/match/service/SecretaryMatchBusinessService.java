@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.business.admin.secretary.match.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
+import com.gogoyang.rpgapi.business.user.userInfo.UserInfo;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -12,11 +14,9 @@ import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
-import org.omg.CORBA.OBJECT_NOT_EXIST;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -32,23 +32,26 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     private final IAdminService iAdminService;
     private final IJobService iJobService;
     private final IJobApplyService iJobApplyService;
-    private final IUserInfoService iUserInfoService;
     private final IJobMatchService iJobMatchService;
     private final IAccountService iAccountService;
+    private final IUserInfoService iUserInfoService;
+    private final IUserService iUserService;
 
     @Autowired
     public SecretaryMatchBusinessService(IAdminService iAdminService,
                                          IJobService iJobService,
                                          IJobApplyService iJobApplyService,
-                                         IUserInfoService iUserInfoService,
                                          IJobMatchService iJobMatchService,
-                                         IAccountService iAccountService) {
+                                         IAccountService iAccountService,
+                                         IUserInfoService iUserInfoService,
+                                         IUserService iUserService) {
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
-        this.iUserInfoService = iUserInfoService;
         this.iJobMatchService = iJobMatchService;
         this.iAccountService = iAccountService;
+        this.iUserInfoService = iUserInfoService;
+        this.iUserService = iUserService;
     }
 
     /**
@@ -146,13 +149,13 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         for(int i=0;i<jobApplies.size();i++){
             JobApply apply=jobApplies.get(i);
             Map map=new HashMap();
-            UserInfo userInfo=iUserInfoService.getUserByUserId(apply.getApplyUserId());
+            UserInfo userInfo=iUserInfoService.getUserInfoByUserId(apply.getApplyUserId());
             if(userInfo.getRealName()!=null){
-                map.put("applyUser", userInfo.getRealName());
+                map.put("applyUser", userInfo.getRealName().getRealName());
             }else {
-                map.put("applyUser", userInfo.getEmail());
+                map.put("applyUser", userInfo.getEmail().getEmail());
             }
-            map.put("applyUserId", userInfo.getUserId());
+            map.put("applyUserId", userInfo.getUser().getUserId());
             map.put("applyTime", apply.getApplyTime());
             map.put("applyId", apply.getJobApplyId());
             map.put("content", apply.getContent());
@@ -208,7 +211,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         iJobService.updateJob(job);
 
         //把任务金额转给乙方
-        UserInfo userB=iUserInfoService.getUserByUserId(jobApply.getApplyUserId());
+        User userB=iUserService.getUserByUserId(jobApply.getApplyUserId());
         if(userB==null){
             throw new Exception("10019");
         }
@@ -230,7 +233,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         userB.setAccount(balance);
         userB.setAccountIn(income);
         userB.setAccountOut(outgoing);
-        iUserInfoService.updateUser(userB);
+        iUserService.update(userB);
 
         //处理其他用户的申请
         ArrayList<JobApply> otherApplies=iJobApplyService.listJobApplyByNotProcesJobId(jobApply.getJobId());

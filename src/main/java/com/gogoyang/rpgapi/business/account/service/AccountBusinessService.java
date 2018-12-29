@@ -3,8 +3,6 @@ package com.gogoyang.rpgapi.business.account.service;
 
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.service.IAccountService;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,12 +15,10 @@ import java.util.Map;
 @Service
 public class AccountBusinessService implements IAccountBusinessService {
     private final IAccountService iAccountService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public AccountBusinessService(IAccountService iAccountService, IUserInfoService iUserInfoService) {
+    public AccountBusinessService(IAccountService iAccountService) {
         this.iAccountService = iAccountService;
-        this.iUserInfoService = iUserInfoService;
     }
 
     @Override

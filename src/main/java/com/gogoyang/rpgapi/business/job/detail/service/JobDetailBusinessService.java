@@ -5,7 +5,6 @@ import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
 import com.gogoyang.rpgapi.business.job.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.user.userInfo.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +15,16 @@ import java.util.Map;
 public class JobDetailBusinessService implements IJobDetailBusinessService{
     private final IJobService iJobService;
     private final IJobLogBusinessService iJobLogBusinessService;
-    private final IUserInfoService iUserInfoService;
     private final ICompleteBusinessService iCompleteBusinessService;
     private final IStopBusinessService iStopBusinessService;
 
     @Autowired
-    public JobDetailBusinessService(IJobService iJobService, IJobLogBusinessService iJobLogBusinessService, IUserInfoService iUserInfoService, ICompleteBusinessService iCompleteBusinessService, IStopBusinessService iStopBusinessService) {
+    public JobDetailBusinessService(IJobService iJobService,
+                                    IJobLogBusinessService iJobLogBusinessService,
+                                    ICompleteBusinessService iCompleteBusinessService,
+                                    IStopBusinessService iStopBusinessService) {
         this.iJobService = iJobService;
         this.iJobLogBusinessService = iJobLogBusinessService;
-        this.iUserInfoService = iUserInfoService;
         this.iCompleteBusinessService = iCompleteBusinessService;
         this.iStopBusinessService = iStopBusinessService;
     }

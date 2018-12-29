@@ -37,4 +37,13 @@ public class UserService implements IUserService{
         User user=userDao.findByToken(token);
         return user;
     }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void update(User user) throws Exception {
+        if(user.getUserId()==null){
+            throw new Exception("10010");
+        }
+        userDao.save(user);
+    }
 }
