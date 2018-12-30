@@ -1,8 +1,13 @@
 package com.gogoyang.rpgapi.business.spotlight.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
+import com.gogoyang.rpgapi.meta.realname.entity.RealName;
+import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
 import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -15,10 +20,17 @@ import java.util.Map;
 @Service
 public class SpotlightBusinessService implements ISpotlightBusinessService{
     private final ISpotService iSpotService;
+    private final IUserService iUserService;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
-    public SpotlightBusinessService(ISpotService iSpotService) {
+    public SpotlightBusinessService(ISpotService iSpotService,
+                                    IUserService iUserService,
+                                    IRealNameService iRealNameService,
+                                    IUserInfoService iUserInfoService) {
         this.iSpotService = iSpotService;
+        this.iUserService = iUserService;
+        this.iUserInfoService = iUserInfoService;
     }
 
     @Override
@@ -33,12 +45,8 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
         Page<Spot> spots=iSpotService.listSpotlight(pageIndex, pageSize);
 
         for(int i=0;i<spots.getContent().size();i++){
-            UserInfo user=iUserInfoService.getUserByUserId(spots.getContent().get(i).getCreatedUserId());
-            if(user.getRealName()!=null) {
-                spots.getContent().get(i).setCreatedUserName(user.getRealName());
-            }else{
-                spots.getContent().get(i).setCreatedUserName(user.getEmail());
-            }
+                spots.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
+                        spots.getContent().get(i).getCreatedUserId()));
         }
 
         Map out=new HashMap();
@@ -80,15 +88,15 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
         Integer spotId=(Integer)in.get("spotId");
         String content=in.get("content").toString();
 
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
             throw new Exception("10004");
         }
 
         SpotBook spotBook=new SpotBook();
         spotBook.setContent(content);
         spotBook.setCreatedTime(new Date());
-        spotBook.setCreatedUserId(userInfo.getUserId());
+        spotBook.setCreatedUserId(user.getUserId());
         spotBook.setSpotId(spotId);
         iSpotService.insertSpotBook(spotBook);
     }

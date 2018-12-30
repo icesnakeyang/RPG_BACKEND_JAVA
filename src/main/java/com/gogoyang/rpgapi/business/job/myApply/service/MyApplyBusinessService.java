@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myApply.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
@@ -7,6 +8,9 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
+import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +25,20 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
     private final IJobApplyService iJobApplyService;
     private final IJobService iJobService;
     private final IJobMatchService iJobMatchService;
+    private final IUserService iUserService;
+    private final IRealNameService iRealNameService;
 
     @Autowired
     public MyApplyBusinessService(IJobApplyService iJobApplyService,
                                   IJobService iJobService,
-                                  IJobMatchService iJobMatchService) {
+                                  IJobMatchService iJobMatchService,
+                                  IUserService iUserService,
+                                  IRealNameService iRealNameService) {
         this.iJobApplyService = iJobApplyService;
         this.iJobService = iJobService;
         this.iJobMatchService = iJobMatchService;
+        this.iUserService = iUserService;
+        this.iRealNameService = iRealNameService;
     }
 
     /**
@@ -47,16 +57,16 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
          * 3. 根据jobId读取job信息
          */
         String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
             throw new Exception("10004");
         }
-        ArrayList<JobApply> myApplyList = iJobApplyService.loadMyApplies(userInfo.getUserId());
+        ArrayList<JobApply> myApplyList = iJobApplyService.loadMyApplies(user.getUserId());
         ArrayList jobList = new ArrayList();
         for (int i = 0; i < myApplyList.size(); i++) {
             Job job = iJobService.getJobByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
-                job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
+                job.setPartyAName(iRealNameService.getRealNameByUserId(job.getPartyAId()).getRealName());
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
                 Integer matchNum = iJobMatchService.countMatchingUsers(job.getJobId());
                 Map theMap = new HashMap();
@@ -86,8 +96,8 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         Integer jobId=(Integer)in.get("jobId");
         String content=(String)in.get("content");
 
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
             throw new Exception("10004");
         }
 
@@ -104,19 +114,19 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         }
 
         //检查用户是否为甲方
-        if(job.getPartyAId()==userInfo.getUserId()){
+        if(job.getPartyAId()==user.getUserId()){
             throw new Exception("10037");
         }
 
         //检查用户是否已经申请过该任务了
-        JobApply jobApply=iJobApplyService.loadJobApplyByUserIdAndJobId(userInfo.getUserId(), jobId);
+        JobApply jobApply=iJobApplyService.loadJobApplyByUserIdAndJobId(user.getUserId(), jobId);
         if(jobApply!=null){
             //the job has applied by current user already
             throw new Exception("10007");
         }
 
         //检查用户是否已经分配了该任务
-        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(userInfo.getUserId(),jobId);
+        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(user.getUserId(),jobId);
         if(jobMatch!=null){
             // the job has been assigned to this user already.
             throw new Exception("10049");
@@ -125,7 +135,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         //保存任务申请日志
         jobApply = new JobApply();
         jobApply.setApplyTime(new Date());
-        jobApply.setApplyUserId(userInfo.getUserId());
+        jobApply.setApplyUserId(user.getUserId());
         jobApply.setJobId(jobId);
         jobApply.setContent(content);
         iJobApplyService.insertJobApply(jobApply);

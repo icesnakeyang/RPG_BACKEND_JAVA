@@ -8,4 +8,6 @@ public interface IAdminBusinessService {
     Map createAdministrator(Map in) throws Exception;
     Map login(Map in) throws Exception;
     Map loadAdmin(Map in) throws Exception;
+
+    Map listRoleTypes() throws Exception;
 }

@@ -2,6 +2,8 @@ package com.gogoyang.rpgapi.business.job.jobLog.service;
 
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,13 @@ import java.util.Map;
 @Service
 public class JobLogBusinessService implements IJobLogBusinessService{
     private final IJobLogService iJobLogService;
+    private final IUserService iUserService;
 
     @Autowired
-    public JobLogBusinessService(IJobLogService iJobLogService) {
+    public JobLogBusinessService(IJobLogService iJobLogService,
+                                 IUserService iUserService) {
         this.iJobLogService = iJobLogService;
+        this.iUserService = iUserService;
     }
 
     /**
@@ -32,15 +37,15 @@ public class JobLogBusinessService implements IJobLogBusinessService{
         Integer jobId=(Integer)in.get("jobId");
         String content=in.get("content").toString();
 
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
             throw new Exception("10004");
         }
 
         JobLog jobLog=new JobLog();
         jobLog.setContent(content);
         jobLog.setCreatedTime(new Date());
-        jobLog.setCreatedUserId(userInfo.getUserId());
+        jobLog.setCreatedUserId(user.getUserId());
         jobLog.setJobId(jobId);
         iJobLogService.createJobLog(jobLog);
     }
@@ -76,11 +81,11 @@ public class JobLogBusinessService implements IJobLogBusinessService{
          */
         Integer jobId=(Integer)in.get("jobId");
         String token=in.get("token").toString();
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(userInfo==null){
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
             throw new Exception("10004");
         }
-        ArrayList<JobLog> jobLogs=iJobLogService.loadMyUnreadJobLog(jobId, userInfo.getUserId());
+        ArrayList<JobLog> jobLogs=iJobLogService.loadMyUnreadJobLog(jobId, user.getUserId());
 
         for(int i=0;i<jobLogs.size();i++){
             jobLogs.get(i).setReadTime(new Date());
@@ -99,8 +104,8 @@ public class JobLogBusinessService implements IJobLogBusinessService{
         Integer userId;
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.getUserByToken(token);
-            userId=userInfo.getUserId();
+            User user = iUserService.getUserByToken(token);
+            userId=user.getUserId();
         }else {
             userId=(Integer)in.get("userId");
         }

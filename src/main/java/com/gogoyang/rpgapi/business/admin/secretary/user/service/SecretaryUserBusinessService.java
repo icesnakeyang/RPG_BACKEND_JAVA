@@ -2,6 +2,8 @@ package com.gogoyang.rpgapi.business.admin.secretary.user.service;
 
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,13 @@ import java.util.Map;
 @Service
 public class SecretaryUserBusinessService implements ISecretaryUserBusinessService{
     private final IJobApplyService iJobApplyService;
+    private final IUserService iUserService;
 
     @Autowired
-    public SecretaryUserBusinessService(IJobApplyService iJobApplyService) {
+    public SecretaryUserBusinessService(IJobApplyService iJobApplyService,
+                                        IUserService iUserService) {
         this.iJobApplyService = iJobApplyService;
+        this.iUserService = iUserService;
     }
 
     /**
@@ -40,8 +45,8 @@ public class SecretaryUserBusinessService implements ISecretaryUserBusinessServi
         Integer pageSize=(Integer)in.get("pageSize");
         Integer userId=(Integer)in.get("userId");
 
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        if(token==null){
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
             throw new Exception("10004");
         }
 

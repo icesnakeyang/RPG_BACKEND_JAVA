@@ -208,4 +208,9 @@ public class AdminBusinessService implements IAdminBusinessService {
         out.put("admins", adminList);
         return out;
     }
+
+    @Override
+    public Map listRoleTypes() throws Exception {
+        return null;
+    }
 }

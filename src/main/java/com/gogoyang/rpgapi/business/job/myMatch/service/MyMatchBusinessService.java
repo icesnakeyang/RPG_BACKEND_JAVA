@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myMatch.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -11,6 +12,9 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
+import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,16 +30,22 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
     private final IJobService iJobService;
     private final IJobApplyService iJobApplyService;
     private final IAccountService iAccountService;
+    private final IUserService iUserService;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
     public MyMatchBusinessService(IJobMatchService iJobMatchService,
                                   IJobService iJobService,
                                   IJobApplyService iJobApplyService,
-                                  IAccountService iAccountService) {
+                                  IAccountService iAccountService,
+                                  IUserService iUserService,
+                                  IUserInfoService iUserInfoService) {
         this.iJobMatchService = iJobMatchService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
         this.iAccountService = iAccountService;
+        this.iUserService = iUserService;
+        this.iUserInfoService = iUserInfoService;
     }
 
     /**
@@ -54,12 +64,12 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
          * 3、逐条根据jobMatch读取所有job
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
 
-        ArrayList<JobMatch> newMatchs = iJobMatchService.loadMyNewJobMatch(userInfo.getUserId());
+        ArrayList<JobMatch> newMatchs = iJobMatchService.loadMyNewJobMatch(user.getUserId());
         ArrayList newJobs = new ArrayList();
         for (int i = 0; i < newMatchs.size(); i++) {
             Map map = new HashMap();
@@ -97,12 +107,12 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
          */
         Integer jobId = (Integer) in.get("jobId");
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
 
-        Integer userId = userInfo.getUserId();
+        Integer userId = user.getUserId();
 
         //把jobMatch改成Accept
         JobMatch jobMatch = iJobMatchService.loadJobMatchByUserIdAndJobId(userId, jobId);
@@ -149,8 +159,8 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
 
         //刷新乙方的balance
         Map money = iAccountService.loadAccountBalance(userId);
-        userInfo.setAccount((Double) money.get("balance"));
-        iUserInfoService.updateUser(userInfo);
+        user.setAccount((Double) money.get("balance"));
+        iUserService.update(user);
     }
 
     /**
@@ -171,8 +181,8 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
         Integer jobId=(Integer)in.get("jobId");
         String remark=in.get("remark").toString();
 
-        UserInfo userInfo=iUserInfoService.getUserByToken(token);
-        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(userInfo.getUserId(), jobId);
+        User user=iUserService.getUserByToken(token);
+        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(user.getUserId(), jobId);
         jobMatch.setProcessResult(LogStatus.REJECT);
         jobMatch.setProcessTime(new Date());
         jobMatch.setProcessRemark(remark);

@@ -2,8 +2,6 @@ package com.gogoyang.rpgapi.meta.admin.service;
 
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
-import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
-import com.gogoyang.rpgapi.meta.user.userInfo.entity.UserInfo;
 
 import java.util.ArrayList;
 

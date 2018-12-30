@@ -6,6 +6,8 @@ import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,15 @@ import java.util.Map;
 public class PublishBusinessService implements IPublishBusinessService{
     private final IJobService iJobService;
     private final IAccountService iAccountService;
+    private final IUserService iUserService;
 
     @Autowired
     public PublishBusinessService(IJobService iJobService,
-                                  IAccountService iAccountService) {
+                                  IAccountService iAccountService,
+                                  IUserService iUserService) {
         this.iJobService = iJobService;
         this.iAccountService = iAccountService;
+        this.iUserService = iUserService;
     }
 
     /**
@@ -45,8 +50,8 @@ public class PublishBusinessService implements IPublishBusinessService{
         Integer taskId=(Integer)in.get("taskId");
 
         //读取当前用户
-        UserInfo userInfo=iUserInfoService.getUserByToken(in.get("token").toString());
-        if(userInfo==null){
+        User user=iUserService.getUserByToken(in.get("token").toString());
+        if(user==null){
             //当前用户不存在
             throw new Exception("10004");
         }
@@ -70,7 +75,7 @@ public class PublishBusinessService implements IPublishBusinessService{
 
         //创建Job
         job=new Job();
-        job.setPartyAId(userInfo.getUserId());
+        job.setPartyAId(user.getUserId());
         job.setCreatedTime(new Date());
         job.setCode(in.get("code").toString());
         job.setDays((Integer)in.get("days"));
@@ -96,9 +101,9 @@ public class PublishBusinessService implements IPublishBusinessService{
         Double outgoing=(Double)accountMap.get("outgoing");
 
         //更新甲方的账户统计信息
-        userInfo.setAccount(balance);
-        userInfo.setAccountIn(income);
-        userInfo.setAccountOut(outgoing);
-        iUserInfoService.updateUser(userInfo);
+        user.setAccount(balance);
+        user.setAccountIn(income);
+        user.setAccountOut(outgoing);
+        iUserService.update(user);
     }
 }

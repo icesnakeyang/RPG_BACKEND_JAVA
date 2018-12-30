@@ -207,8 +207,9 @@ public class AdminController {
     public Response loadRoleType() {
         Response response = new Response();
         try {
-            ArrayList roles = irpgService.loadRoleTypes();
-            response.setData(roles);
+//            ArrayList roles = irpgService.loadRoleTypes();
+            Map out=iAdminBusinessService.listRoleTypes();
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

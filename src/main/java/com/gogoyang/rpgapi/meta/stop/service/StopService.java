@@ -17,7 +17,7 @@ public class StopService implements IJobStopService {
     private final JobStopDao jobStopDao;
 
     @Autowired
-    public StopService(JobStopDao jobStopDa) {
+    public StopService(JobStopDao jobStopDao) {
         this.jobStopDao = jobStopDao;
     }
 

@@ -1,6 +1,8 @@
 package com.gogoyang.rpgapi.business.task.service;
 
 import com.gogoyang.rpgapi.business.job.detail.service.IJobDetailBusinessService;
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
+import com.gogoyang.rpgapi.business.user.userInfo.UserInfo;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
@@ -20,14 +22,17 @@ public class TaskBusinessService implements ITaskBusinessService {
     private final ITaskService iTaskService;
     private final IJobDetailBusinessService iJobDetailBusinessService;
     private final IUserService iUserService;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
                                IJobDetailBusinessService iJobDetailBusinessService,
-                               IUserService iUserService) {
+                               IUserService iUserService,
+                               IUserInfoService iUserInfoService) {
         this.iTaskService = iTaskService;
         this.iJobDetailBusinessService = iJobDetailBusinessService;
         this.iUserService = iUserService;
+        this.iUserInfoService = iUserInfoService;
     }
 
     @Override
@@ -128,11 +133,11 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer taskId = (Integer) in.get("taskId");
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
 
-        User createUser = iUserService.getUserByUserId(task.getCreatedUserId());
+        UserInfo createUser = iUserInfoService.getUserInfoByUserId(task.getCreatedUserId());
         if(createUser.getRealName()!=null){
-            task.setCreatedUserName(createUser.getRealName());
+            task.setCreatedUserName(createUser.getRealName().getRealName());
         }else {
-            task.setCreatedUserName(createUser.getUsername());
+            task.setCreatedUserName(createUser.getEmail().getEmail());
         }
 
         /**
@@ -154,8 +159,8 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
         Integer taskId = (Integer) in.get("taskId");
@@ -170,8 +175,8 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        Page<Task> tasks = iTaskService.listTaskByUserId(userInfo.getUserId(), pageIndex, pageSize);
+        User user = iUserService.getUserByToken(token);
+        Page<Task> tasks = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
         for (int i = 0; i < tasks.getContent().size(); i++) {
             tasks.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
                     tasks.getContent().get(i).getCreatedUserId()));

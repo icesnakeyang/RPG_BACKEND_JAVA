@@ -4,6 +4,8 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -15,14 +17,16 @@ import java.util.Map;
 @Service
 public class MySpotBusinessService implements IMySpotBusinessService {
     private final ISpotService iSpotService;
-    private final IUserInfoService iUserInfoService;
     private final IJobService iJobService;
+    private final IUserService iUserService;
 
     @Autowired
-    public MySpotBusinessService(ISpotService iSpotService, IUserInfoService iUserInfoService, IJobService iJobService) {
+    public MySpotBusinessService(ISpotService iSpotService,
+                                 IJobService iJobService,
+                                 IUserService iUserService) {
         this.iSpotService = iSpotService;
-        this.iUserInfoService = iUserInfoService;
         this.iJobService = iJobService;
+        this.iUserService = iUserService;
     }
 
     @Override
@@ -42,9 +46,9 @@ public class MySpotBusinessService implements IMySpotBusinessService {
 
         Job job = iJobService.getJobByJobIdTiny(jobId);
 
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo.getUserId() != job.getPartyAId()) {
-            if (userInfo.getUserId() != job.getPartyBId()) {
+        User user = iUserService.getUserByToken(token);
+        if (user.getUserId() != job.getPartyAId()) {
+            if (user.getUserId() != job.getPartyBId()) {
                 throw new Exception("10090");
             }
         }
@@ -53,12 +57,12 @@ public class MySpotBusinessService implements IMySpotBusinessService {
 
         spot.setTitle(title);
         spot.setJobId(jobId);
-        spot.setCreatedUserId(userInfo.getUserId());
+        spot.setCreatedUserId(user.getUserId());
         spot.setCreatedTime(new Date());
         spot.setContent(content);
         spot = iSpotService.insertSpotlight(spot);
 
-        UserInfo userA = iUserInfoService.getUserByUserId(job.getPartyAId());
+        User userA = iUserService.getUserByUserId(job.getPartyAId());
         Double honor = 0.0;
         if (userA.getHonor() != null) {
             honor = userA.getHonor();
@@ -73,7 +77,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         honor += job.getPrice();
         userA.setHonorOut(honor);
 
-        UserInfo userB = iUserInfoService.getUserByUserId(job.getPartyBId());
+        User userB = iUserService.getUserByUserId(job.getPartyBId());
         honor = 0.0;
         if (userB.getHonor() != null) {
             honor = userB.getHonor();
@@ -88,8 +92,8 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         honor += job.getPrice();
         userB.setHonorOut(honor);
 
-        iUserInfoService.updateUser(userA);
-        iUserInfoService.updateUser(userB);
+        iUserService.update(userA);
+        iUserService.update(userB);
 
         Map out = new HashMap();
         out.put("spot", spot);
@@ -102,10 +106,10 @@ public class MySpotBusinessService implements IMySpotBusinessService {
         String token = in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
+        User user = iUserService.getUserByToken(token);
         Job job = iJobService.getJobByJobIdTiny(jobId);
-        if (userInfo.getUserId() != job.getPartyAId()) {
-            if (userInfo.getUserId() != job.getPartyBId()) {
+        if (user.getUserId() != job.getPartyAId()) {
+            if (user.getUserId() != job.getPartyBId()) {
                 throw new Exception("10089");
             }
         }

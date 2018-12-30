@@ -35,13 +35,13 @@ public class User {
     private Double accountOut;
 
     @Column(name = "honor")
-    private Integer honor;
+    private Double honor;
 
     @Column(name = "honor_in")
-    private Integer honorIn;
+    private Double honorIn;
 
     @Column(name = "honor_out")
-    private Integer honorOut;
+    private Double honorOut;
     //////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getUserId() {
@@ -108,27 +108,27 @@ public class User {
         this.accountOut = accountOut;
     }
 
-    public Integer getHonor() {
+    public Double getHonor() {
         return honor;
     }
 
-    public void setHonor(Integer honor) {
+    public void setHonor(Double honor) {
         this.honor = honor;
     }
 
-    public Integer getHonorIn() {
+    public Double getHonorIn() {
         return honorIn;
     }
 
-    public void setHonorIn(Integer honorIn) {
+    public void setHonorIn(Double honorIn) {
         this.honorIn = honorIn;
     }
 
-    public Integer getHonorOut() {
+    public Double getHonorOut() {
         return honorOut;
     }
 
-    public void setHonorOut(Integer honorOut) {
+    public void setHonorOut(Double honorOut) {
         this.honorOut = honorOut;
     }
 }

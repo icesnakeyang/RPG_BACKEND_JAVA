@@ -1,11 +1,14 @@
 package com.gogoyang.rpgapi.business.job.stop.service;
 
+import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import com.gogoyang.rpgapi.meta.stop.service.IJobStopService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -19,12 +22,18 @@ import java.util.Map;
 public class StopBusinessService implements IStopBusinessService {
     private final IJobStopService iJobStopService;
     private final IJobService iJobService;
+    private final IUserService iUserService;
+    private final IUserInfoService iUserInfoService;
 
     @Autowired
     public StopBusinessService(IJobStopService iJobStopService,
-                               IJobService iJobService) {
+                               IJobService iJobService,
+                               IUserService iUserService,
+                               IUserInfoService iUserInfoService) {
         this.iJobStopService = iJobStopService;
         this.iJobService = iJobService;
+        this.iUserService = iUserService;
+        this.iUserInfoService = iUserInfoService;
     }
 
     @Override
@@ -40,8 +49,8 @@ public class StopBusinessService implements IStopBusinessService {
         }
 
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
         String content=in.get("content").toString();
@@ -50,7 +59,7 @@ public class StopBusinessService implements IStopBusinessService {
         jobStop = new JobStop();
         jobStop.setContent(content);
         jobStop.setCreatedTime(new Date());
-        jobStop.setCreatedUserId(userInfo.getUserId());
+        jobStop.setCreatedUserId(user.getUserId());
         jobStop.setJobId(jobId);
         jobStop.setRefund(refund);
         iJobStopService.insertJobStop(jobStop);
@@ -78,11 +87,11 @@ public class StopBusinessService implements IStopBusinessService {
     public void setStopReadTime(Map in) throws Exception {
         Integer jobId = (Integer) in.get("jobId");
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
-        ArrayList<JobStop> stops = iJobStopService.loadMyUnReadStop(jobId, userInfo.getUserId());
+        ArrayList<JobStop> stops = iJobStopService.loadMyUnReadStop(jobId, user.getUserId());
 
         for (int i = 0; i < stops.size(); i++) {
             stops.get(i).setReadTime(new Date());
@@ -105,8 +114,8 @@ public class StopBusinessService implements IStopBusinessService {
         }
 
         String token = in.get("token").toString();
-        UserInfo userInfo = iUserInfoService.getUserByToken(token);
-        if (userInfo == null) {
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
 
@@ -119,7 +128,7 @@ public class StopBusinessService implements IStopBusinessService {
 
         jobStop.setProcessRemark(processRemark);
         jobStop.setProcessTime(new Date());
-        jobStop.setProcessUserId(userInfo.getUserId());
+        jobStop.setProcessUserId(user.getUserId());
         jobStop.setResult(LogStatus.REJECT);
         iJobStopService.updateJobStop(jobStop);
     }
@@ -142,8 +151,8 @@ public class StopBusinessService implements IStopBusinessService {
         //获取当前用户id
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.getUserByToken(token);
-            userId=userInfo.getUserId();
+            User user = iUserService.getUserByToken(token);
+            userId=user.getUserId();
         }else {
             userId=(Integer)in.get("userId");
         }
@@ -179,7 +188,7 @@ public class StopBusinessService implements IStopBusinessService {
         iJobStopService.updateJobStop(jobStop);
 
         //处理refund
-        UserInfo userA=iUserInfoService.getUserByUserId(job.getPartyAId());
+        User userA=iUserService.getUserByUserId(job.getPartyAId());
         Double refund=jobStop.getRefund();
         if(userA.getAccount()==null){
             userA.setAccount(refund);
@@ -192,7 +201,7 @@ public class StopBusinessService implements IStopBusinessService {
             userA.setAccountIn(userA.getAccountIn()+refund);
         }
 
-        UserInfo userB=iUserInfoService.getUserByUserId(job.getPartyBId());
+        User userB=iUserService.getUserByUserId(job.getPartyBId());
         if(userB.getAccount()==null){
             userB.setAccount(-refund);
         }else {
@@ -227,8 +236,8 @@ public class StopBusinessService implements IStopBusinessService {
             userB.setHonorOut(userB.getHonorOut() + refund);
         }
 
-        iUserInfoService.updateUser(userA);
-        iUserInfoService.updateUser(userB);
+        iUserService.update(userA);
+        iUserService.update(userB);
     }
 
     @Override
@@ -236,8 +245,8 @@ public class StopBusinessService implements IStopBusinessService {
         Integer userId;
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.getUserByToken(token);
-            userId=userInfo.getUserId();
+            User user = iUserService.getUserByToken(token);
+            userId=user.getUserId();
         }else {
             userId=(Integer)in.get("userId");
         }

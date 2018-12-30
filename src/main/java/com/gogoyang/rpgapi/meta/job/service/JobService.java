@@ -7,6 +7,7 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
+import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,18 +28,21 @@ class JobService implements IJobService {
     private final IJobApplyService iJobApplyService;
     private final IJobMatchService iJobMatchService;
     private final JobDetailDao jobDetailDao;
+    private final IRealNameService iRealNameService;
 
     @Autowired
     public JobService(JobDao jobDao,
                       ITaskService iTaskService,
                       IJobApplyService iJobApplyService,
                       IJobMatchService iJobMatchService,
-                      JobDetailDao jobDetailDao) {
+                      JobDetailDao jobDetailDao,
+                      IRealNameService iRealNameService) {
         this.jobDao = jobDao;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
         this.iJobMatchService = iJobMatchService;
         this.jobDetailDao = jobDetailDao;
+        this.iRealNameService = iRealNameService;
     }
 
     /**
@@ -80,8 +84,8 @@ class JobService implements IJobService {
     public Job getJobByJobId(Integer jobId) throws Exception {
         Job job = jobDao.findByJobId(jobId);
 
-        job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
-        job.setPartyBName(iUserInfoService.getUserName(job.getPartyBId()));
+        job.setPartyAName(iRealNameService.getRealNameByUserId(job.getPartyAId()).getRealName());
+        job.setPartyBName(iRealNameService.getRealNameByUserId(job.getPartyBId()).getRealName());
 
         JobDetail jobDetail = jobDetailDao.findByJobId(job.getJobId());
         job.setDetail(jobDetail.getDetail());

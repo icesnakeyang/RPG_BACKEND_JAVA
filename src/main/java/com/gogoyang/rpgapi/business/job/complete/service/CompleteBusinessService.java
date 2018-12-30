@@ -185,16 +185,16 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         //给甲方增加honor
         User userA=iUserService.getUserByUserId(job.getPartyAId());
         Double ha=0.0;
-        if(userA()!=null){
+        if(userA!=null){
             ha=userA.getHonor();
         }
         ha+=job.getPrice();
         userA.setHonor(ha);
         userA.setHonorIn(ha);
-        iUserInfoService.updateUser(userA);
+        iUserService.update(userA);
 
         //给乙方增加honor
-        UserInfo userB=iUserInfoService.getUserByUserId(job.getPartyBId());
+        User userB=iUserService.getUserByUserId(job.getPartyBId());
         Double hb=0.0;
         if(userB.getHonor()!=null){
             hb=userB.getHonor();
@@ -202,7 +202,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         hb+=job.getPrice();
         userB.setHonor(hb);
         userB.setHonorIn(hb);
-        iUserInfoService.updateUser(userB);
+        iUserService.update(userB);
 
     }
 
@@ -211,8 +211,8 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         Integer userId;
         if(in.get("userId")==null){
             String token=in.get("token").toString();
-            UserInfo userInfo = iUserInfoService.getUserByToken(token);
-            userId=userInfo.getUserId();
+            User user= iUserService.getUserByToken(token);
+            userId=user.getUserId();
         }else {
             userId=(Integer)in.get("userId");
         }
