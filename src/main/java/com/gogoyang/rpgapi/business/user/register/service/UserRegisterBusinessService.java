@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.user.register.service;
 
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
+import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.email.entity.Email;
 import com.gogoyang.rpgapi.meta.email.service.IEmailService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
@@ -76,6 +77,16 @@ public class UserRegisterBusinessService implements IUserRegisterBusinessService
         out.put("userId", user.getUserId());
         out.put("token", user.getToken());
         out.put("email", email.getEmail());
+        out.put("roleType", RoleType.NORMAL);
+        return out;
+    }
+
+    @Override
+    public Map getEmailByEmail(Map in) throws Exception {
+        String emailStr=in.get("email").toString();
+        Email email=iEmailService.getEmailByEmail(emailStr);
+        Map out=new HashMap();
+        out.put("email", email);
         return out;
     }
 }

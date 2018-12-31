@@ -26,14 +26,14 @@ public class JobPlazaController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/publicJob")
-    public Response publicJob(@RequestBody JobRequest request) {
+    @PostMapping("/listPublicJob")
+    public Response listPublicJob(@RequestBody JobRequest request) {
         Response response = new Response();
         try {
             Map in=new HashMap();
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Map out =iJobPlazaBusinessService.loadPublicJob(in);
+            Map out =iJobPlazaBusinessService.listPublicJob(in);
             response.setData(out);
         } catch (Exception ex) {
             try {

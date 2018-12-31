@@ -43,4 +43,30 @@ public class UserRegisterController {
         }
         return response;
     }
+
+    /**
+     * Read email from database
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getEmailByEmail")
+    public Response getEmailByEmail(@RequestBody RegisterRequest request){
+        Response response=new Response();
+        try {
+            String emailStr=request.getEmail();
+            Map in=new HashMap();
+            in.put("email", emailStr);
+            Map out=iUserRegisterBusinessService.getEmailByEmail(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10118);
+            }
+        }
+        return response;
+    }
+
 }

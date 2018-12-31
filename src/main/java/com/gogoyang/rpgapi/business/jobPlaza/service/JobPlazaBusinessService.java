@@ -23,7 +23,7 @@ public class JobPlazaBusinessService implements IJobPlazaBusinessService{
     }
 
     @Override
-    public Map loadPublicJob(Map in) throws Exception {
+    public Map listPublicJob(Map in) throws Exception {
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
         Map qIn=new HashMap();

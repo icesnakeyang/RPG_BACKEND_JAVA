@@ -21,7 +21,7 @@ public class UserLoginController {
 
     @ResponseBody
     @PostMapping("/loginByEmail")
-    public Response loginByEmail(@RequestBody LoginRequest request){
+    public Response login(@RequestBody LoginRequest request){
         Response response=new Response();
         try {
             Map in=new HashMap();
