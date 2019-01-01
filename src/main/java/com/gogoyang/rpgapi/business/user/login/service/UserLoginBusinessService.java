@@ -74,8 +74,6 @@ public class UserLoginBusinessService implements IUserLoginBusinessService{
         }
         out.put("roleType", RoleType.NORMAL);
 
-        out.put("user", user);
-
         return out;
     }
 }

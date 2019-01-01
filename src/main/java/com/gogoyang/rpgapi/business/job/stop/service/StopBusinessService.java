@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.business.job.stop.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
@@ -23,17 +22,14 @@ public class StopBusinessService implements IStopBusinessService {
     private final IJobStopService iJobStopService;
     private final IJobService iJobService;
     private final IUserService iUserService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
     public StopBusinessService(IJobStopService iJobStopService,
                                IJobService iJobService,
-                               IUserService iUserService,
-                               IUserInfoService iUserInfoService) {
+                               IUserService iUserService) {
         this.iJobStopService = iJobStopService;
         this.iJobService = iJobService;
         this.iUserService = iUserService;
-        this.iUserInfoService = iUserInfoService;
     }
 
     @Override
@@ -72,11 +68,20 @@ public class StopBusinessService implements IStopBusinessService {
         Integer pageSize = (Integer) in.get("pageSize");
         Page<JobStop> stops = iJobStopService.loadJobStopByJobId(jobId, pageIndex, pageSize);
         for (int i = 0; i < stops.getContent().size(); i++) {
-            stops.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
-                    stops.getContent().get(i).getCreatedUserId()));
-            if(stops.getContent().get(i).getProcessUserId()!=null){
-                stops.getContent().get(i).setProcessUserName(iUserInfoService.getUserName(
-                        stops.getContent().get(i).getProcessUserId()));
+             JobStop stop =stops.getContent().get(i);
+            User user=iUserService.getUserByUserId(stop.getCreatedUserId());
+            if(user.getRealName()!=null) {
+                stops.getContent().get(i).setCreatedUserName(user.getRealName());
+            }else {
+                stops.getContent().get(i).setCreatedUserName(user.getEmail());
+            }
+            if(stop.getProcessUserId()!=null){
+                user=iUserService.getUserByUserId(stop.getProcessUserId());
+                if(user.getRealName()!=null) {
+                    stops.getContent().get(i).setProcessUserName(user.getRealName());
+                }else {
+                    stops.getContent().get(i).setProcessUserName(user.getEmail());
+                }
             }
         }
         return stops;

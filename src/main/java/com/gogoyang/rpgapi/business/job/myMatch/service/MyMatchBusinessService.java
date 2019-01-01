@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.business.job.myMatch.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -12,7 +11,6 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
-import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,21 +29,18 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
     private final IJobApplyService iJobApplyService;
     private final IAccountService iAccountService;
     private final IUserService iUserService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
     public MyMatchBusinessService(IJobMatchService iJobMatchService,
                                   IJobService iJobService,
                                   IJobApplyService iJobApplyService,
                                   IAccountService iAccountService,
-                                  IUserService iUserService,
-                                  IUserInfoService iUserInfoService) {
+                                  IUserService iUserService) {
         this.iJobMatchService = iJobMatchService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
         this.iAccountService = iAccountService;
         this.iUserService = iUserService;
-        this.iUserInfoService = iUserInfoService;
     }
 
     /**
@@ -76,7 +71,12 @@ public class MyMatchBusinessService implements IMyMatchBusinessService {
             Job job = iJobService.getJobByJobIdTiny(newMatchs.get(i).getJobId());
             if (job != null) {
                 map.put("match", newMatchs.get(i));
-                job.setPartyAName(iUserInfoService.getUserName(job.getPartyAId()));
+                User partyAUser=iUserService.getUserByUserId(job.getPartyAId());
+                if(partyAUser.getRealName()!=null) {
+                    job.setPartyAName(partyAUser.getRealName());
+                }else{
+                    job.setPartyAName(partyAUser.getEmail());
+                }
                 job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
                 job.setJobMatchNum(iJobMatchService.countMatchingUsers(job.getJobId()));
                 map.put("job", job);

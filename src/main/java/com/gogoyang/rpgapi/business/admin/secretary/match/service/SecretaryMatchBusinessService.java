@@ -144,13 +144,13 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         for(int i=0;i<jobApplies.size();i++){
             JobApply apply=jobApplies.get(i);
             Map map=new HashMap();
-            UserInfo userInfo=iUserInfoService.getUserInfoByUserId(apply.getApplyUserId());
-            if(userInfo.getRealName()!=null){
-                map.put("applyUser", userInfo.getRealName().getRealName());
+            User user=iUserService.getUserByUserId(apply.getApplyUserId());
+            if(user.getRealName()!=null){
+                map.put("applyUser", user.getRealName());
             }else {
-                map.put("applyUser", userInfo.getEmail().getEmail());
+                map.put("applyUser", user.getEmail());
             }
-            map.put("applyUserId", userInfo.getUser().getUserId());
+            map.put("applyUserId", user.getUserId());
             map.put("applyTime", apply.getApplyTime());
             map.put("applyId", apply.getJobApplyId());
             map.put("content", apply.getContent());

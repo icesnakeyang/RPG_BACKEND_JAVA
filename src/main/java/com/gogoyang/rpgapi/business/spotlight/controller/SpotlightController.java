@@ -3,7 +3,6 @@ package com.gogoyang.rpgapi.business.spotlight.controller;
 import com.gogoyang.rpgapi.business.spotlight.service.ISpotlightBusinessService;
 import com.gogoyang.rpgapi.business.spotlight.vo.SpotlightRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
-import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,12 +26,9 @@ public class SpotlightController {
 
     /**
      * 申诉广场读取当前的申诉事件
-     * @param request
-     * @param httpServletRequest
-     * @return
      */
     @ResponseBody
-    @PostMapping("/list")
+    @PostMapping("/listSpotlight")
     public Response listSpotlight(@RequestBody SpotlightRequest request){
         Response response=new Response();
         try {
