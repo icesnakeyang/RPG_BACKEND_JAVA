@@ -1,7 +1,5 @@
 package com.gogoyang.rpgapi.business.admin.secretary.match.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
-import com.gogoyang.rpgapi.business.user.userInfo.UserInfo;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -34,7 +32,6 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     private final IJobApplyService iJobApplyService;
     private final IJobMatchService iJobMatchService;
     private final IAccountService iAccountService;
-    private final IUserInfoService iUserInfoService;
     private final IUserService iUserService;
 
     @Autowired
@@ -43,14 +40,12 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
                                          IJobApplyService iJobApplyService,
                                          IJobMatchService iJobMatchService,
                                          IAccountService iAccountService,
-                                         IUserInfoService iUserInfoService,
                                          IUserService iUserService) {
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
         this.iJobMatchService = iJobMatchService;
         this.iAccountService = iAccountService;
-        this.iUserInfoService = iUserInfoService;
         this.iUserService = iUserService;
     }
 

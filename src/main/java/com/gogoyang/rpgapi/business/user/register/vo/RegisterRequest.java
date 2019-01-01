@@ -10,6 +10,15 @@ import lombok.NoArgsConstructor;
 public class RegisterRequest {
     private String email;
     private String loginPassword;
+    private String realName;
+    //////////////////////////////////////////////////////////////////////////////////////////
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
 
     public String getEmail() {
         return email;

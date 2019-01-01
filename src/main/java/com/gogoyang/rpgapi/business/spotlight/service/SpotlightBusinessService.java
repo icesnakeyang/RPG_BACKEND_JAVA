@@ -1,7 +1,5 @@
 package com.gogoyang.rpgapi.business.spotlight.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
-import com.gogoyang.rpgapi.meta.realname.entity.RealName;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
@@ -21,16 +19,13 @@ import java.util.Map;
 public class SpotlightBusinessService implements ISpotlightBusinessService{
     private final ISpotService iSpotService;
     private final IUserService iUserService;
-    private final IUserInfoService iUserInfoService;
 
     @Autowired
     public SpotlightBusinessService(ISpotService iSpotService,
                                     IUserService iUserService,
-                                    IRealNameService iRealNameService,
-                                    IUserInfoService iUserInfoService) {
+                                    IRealNameService iRealNameService) {
         this.iSpotService = iSpotService;
         this.iUserService = iUserService;
-        this.iUserInfoService = iUserInfoService;
     }
 
     @Override
@@ -45,8 +40,12 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
         Page<Spot> spots=iSpotService.listSpotlight(pageIndex, pageSize);
 
         for(int i=0;i<spots.getContent().size();i++){
-                spots.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
-                        spots.getContent().get(i).getCreatedUserId()));
+            User user=iUserService.getUserByUserId(spots.getContent().get(i).getCreatedUserId());
+            if(user.getRealName()!=null){
+                spots.getContent().get(i).setCreatedUserName(user.getRealName());
+            }else {
+                spots.getContent().get(i).setCreatedUserName(user.getEmail());
+            }
         }
 
         Map out=new HashMap();

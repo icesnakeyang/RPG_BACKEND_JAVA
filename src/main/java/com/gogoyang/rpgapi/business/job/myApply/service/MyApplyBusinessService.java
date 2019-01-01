@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.business.job.myApply.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;

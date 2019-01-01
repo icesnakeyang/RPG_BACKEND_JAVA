@@ -32,6 +32,7 @@ public class UserRegisterController {
             Map in=new HashMap();
             in.put("email", request.getEmail());
             in.put("loginPassword", request.getLoginPassword());
+            in.put("realName", request.getRealName());
             Map out=iUserRegisterBusinessService.registerByEmail(in);
             response.setData(out);
         } catch (Exception ex) {

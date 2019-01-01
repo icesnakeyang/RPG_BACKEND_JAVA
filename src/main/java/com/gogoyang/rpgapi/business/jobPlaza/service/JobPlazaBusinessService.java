@@ -1,8 +1,9 @@
 package com.gogoyang.rpgapi.business.jobPlaza.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,12 @@ import java.util.Map;
 @Service
 public class JobPlazaBusinessService implements IJobPlazaBusinessService{
     private final IJobService iJobService;
-    private final IUserInfoService iUserInfoService;
+    private final IUserService iUserService;
 
     @Autowired
-    public JobPlazaBusinessService(IJobService iJobService,
-                                   IUserInfoService iUserInfoService) {
+    public JobPlazaBusinessService(IJobService iJobService, IUserService iUserService) {
         this.iJobService = iJobService;
-        this.iUserInfoService = iUserInfoService;
+        this.iUserService = iUserService;
     }
 
     @Override
@@ -32,12 +32,13 @@ public class JobPlazaBusinessService implements IJobPlazaBusinessService{
         qIn.put("pageSize", pageSize);
         Page<Job> jobPage= iJobService.listJobByStausMap(qIn);
         for(int i=0;i<jobPage.getContent().size();i++){
-            jobPage.getContent().get(i).setPartyAName(iUserInfoService.getUserName(
-                    jobPage.getContent().get(i).getPartyAId()));
-            jobPage.getContent().get(i).setJobApplyNum(
-                    jobPage.getContent().get(i).getJobApplyNum());
-            jobPage.getContent().get(i).setJobMatchNum(
-                    jobPage.getContent().get(i).getJobMatchNum());
+            Job job=jobPage.getContent().get(i);
+            User user=iUserService.getUserByUserId(job.getPartyAId());
+            if(user.getRealName()!=null){
+                jobPage.getContent().get(i).setPartyAName(user.getRealName());
+            }else{
+                jobPage.getContent().get(i).setPartyAName(user.getEmail());
+            }
         }
         Map out=new HashMap();
         out.put("jobs", jobPage);

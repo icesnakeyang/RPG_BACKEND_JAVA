@@ -26,7 +26,7 @@ public class TaskController {
      * 创建任务
      */
     @ResponseBody
-    @PostMapping("/create")
+    @PostMapping("/createTask")
     public Response createTask(@RequestBody TaskRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();

@@ -42,6 +42,15 @@ public class User {
 
     @Column(name = "honor_out")
     private Double honorOut;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "real_name")
+    private String realName;
     //////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getUserId() {
@@ -130,5 +139,29 @@ public class User {
 
     public void setHonorOut(Double honorOut) {
         this.honorOut = honorOut;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 }

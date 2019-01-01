@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.business.job.complete.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.UserInfo;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;

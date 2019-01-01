@@ -49,6 +49,7 @@ public class UserRegisterBusinessService implements IUserRegisterBusinessService
          */
         String emailName=in.get("email").toString();
         String password=in.get("loginPassword").toString();
+        String realName=(String)in.get("realName");
 
         //check the mail
         Email email=iEmailService.getEmailByEmail(emailName);
@@ -62,6 +63,8 @@ public class UserRegisterBusinessService implements IUserRegisterBusinessService
         user.setToken(UUID.randomUUID().toString().replace("-", ""));
         user.setRegisterTime(new Date());
         user.setTokenCreatedTime(new Date());
+        user.setEmail(emailName);
+        user.setRealName(realName);
         user=iUserService.insert(user);
 
         email=new Email();
@@ -77,6 +80,11 @@ public class UserRegisterBusinessService implements IUserRegisterBusinessService
         out.put("userId", user.getUserId());
         out.put("token", user.getToken());
         out.put("email", email.getEmail());
+        if(realName!=null){
+            out.put("username", realName);
+        }else {
+            out.put("username", emailName);
+        }
         out.put("roleType", RoleType.NORMAL);
         return out;
     }

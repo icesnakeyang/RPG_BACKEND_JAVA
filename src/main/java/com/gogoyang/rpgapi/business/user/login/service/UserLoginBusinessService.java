@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.user.login.service;
 
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
+import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.email.entity.Email;
 import com.gogoyang.rpgapi.meta.email.service.IEmailService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
@@ -62,6 +63,17 @@ public class UserLoginBusinessService implements IUserLoginBusinessService{
         }
 
         Map out=new HashMap();
+
+        out.put("userId", user.getUserId());
+        out.put("token", user.getToken());
+        out.put("email", email.getEmail());
+        if(user.getRealName()!=null){
+            out.put("username", user.getRealName());
+        }else{
+            out.put("username", user.getEmail());
+        }
+        out.put("roleType", RoleType.NORMAL);
+
         out.put("user", user);
 
         return out;

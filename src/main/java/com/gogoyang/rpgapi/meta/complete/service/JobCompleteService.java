@@ -1,8 +1,8 @@
 package com.gogoyang.rpgapi.meta.complete.service;
 
-import com.gogoyang.rpgapi.business.user.userInfo.IUserInfoService;
 import com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
+import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,13 +17,13 @@ import java.util.ArrayList;
 @Service
 public class JobCompleteService implements IJobCompleteService {
     private final JobCompleteDao jobCompleteDao;
-    private final IUserInfoService iUserInfoService;
+    private final IUserService iUserService;
 
     @Autowired
     public JobCompleteService(JobCompleteDao jobCompleteDao,
-                              IUserInfoService iUserInfoService) {
+                              IUserService iUserService) {
         this.jobCompleteDao = jobCompleteDao;
-        this.iUserInfoService = iUserInfoService;
+        this.iUserService = iUserService;
     }
 
     /**
@@ -56,8 +56,12 @@ public class JobCompleteService implements IJobCompleteService {
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
         Page<JobComplete> jobCompletes = jobCompleteDao.findAllByJobId(jobId, pageable);
         for (int i = 0; i < jobCompletes.getContent().size(); i++) {
-            jobCompletes.getContent().get(i).setCreatedUserName(iUserInfoService.getUserName(
-                    jobCompletes.getContent().get(i).getCreatedUserId()));
+            User user = iUserService.getUserByUserId(jobCompletes.getContent().get(i).getCreatedUserId());
+            if (user.getRealName() != null) {
+                jobCompletes.getContent().get(i).setCreatedUserName(user.getRealName());
+            } else {
+                jobCompletes.getContent().get(i).setCreatedUserName(user.getEmail());
+            }
         }
         return jobCompletes;
     }
