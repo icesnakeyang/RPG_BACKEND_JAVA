@@ -32,12 +32,13 @@ public class TaskBusinessService implements ITaskBusinessService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Task createTask(Map in) throws Exception {
+    public void createTask(Map in) throws Exception {
         String token = in.get("token").toString();
         String detail = in.get("detail").toString();
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
+        Double price=(Double)in.get("price");
 
         User user = iUserService.getUserByToken(token);
         if (user == null) {
@@ -50,17 +51,18 @@ public class TaskBusinessService implements ITaskBusinessService {
         task.setCode(code);
         task.setDays(days);
         task.setTitle(title);
-        task = iTaskService.insertTask(task);
-        return task;
+        task.setPrice(price);
+        iTaskService.insertTask(task);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Task createSubTask(Map in) throws Exception {
+    public void createSubTask(Map in) throws Exception {
         String token = in.get("token").toString();
         String code = in.get("code").toString();
         Integer pid = (Integer) in.get("pid");
         String title = in.get("title").toString();
+        Double price=(Double)in.get("price");
 
         User user = iUserService.getUserByToken(token);
         if (user == null) {
@@ -72,8 +74,8 @@ public class TaskBusinessService implements ITaskBusinessService {
         task.setCode(code);
         task.setPid(pid);
         task.setTitle(title);
-        task = iTaskService.insertTask(task);
-        return task;
+        task.setPrice(price);
+        iTaskService.insertTask(task);
     }
 
     @Override

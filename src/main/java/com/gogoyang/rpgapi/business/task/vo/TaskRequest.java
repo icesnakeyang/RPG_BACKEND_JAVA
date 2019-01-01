@@ -16,7 +16,7 @@ public class TaskRequest {
     private Integer pageIndex;
     private Integer pageSize;
     private Integer taskId;
-
+    private Double price;
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public String getTitle() {
@@ -81,5 +81,13 @@ public class TaskRequest {
 
     public void setDetail(String detail) {
         this.detail = detail;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 }

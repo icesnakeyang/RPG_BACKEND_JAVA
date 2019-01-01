@@ -38,7 +38,7 @@ public class TaskService implements ITaskService {
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public Task insertTask(Task task) throws Exception {
+    public void insertTask(Task task) throws Exception {
         /**
          * 首先创建一个task
          * 然后创建一个task_detail
@@ -51,7 +51,6 @@ public class TaskService implements ITaskService {
         taskDetail.setTaskId(task.getTaskId());
         taskDetail.setDetail(task.getDetail());
         taskDetailDao.save(taskDetail);
-        return task;
     }
 
     /**

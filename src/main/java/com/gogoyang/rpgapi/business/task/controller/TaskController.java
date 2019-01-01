@@ -39,8 +39,8 @@ public class TaskController {
             in.put("code", request.getCode());
             in.put("days", request.getDays());
             in.put("pid", request.getPid());
-            Task task = iTaskBusinessService.createTask(in);
-            response.setData(task);
+            in.put("price", request.getPrice());
+            iTaskBusinessService.createTask(in);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
@@ -70,6 +70,7 @@ public class TaskController {
             in.put("pid", request.getPid());
             in.put("code", request.getCode());
             in.put("title", request.getTitle());
+            in.put("price", request.getPrice());
             iTaskBusinessService.createSubTask(in);
         }catch (Exception ex){
             try {
@@ -137,8 +138,8 @@ public class TaskController {
      * 根据userId，读取所有task
      */
     @ResponseBody
-    @PostMapping("/mytask")
-    public Response loadMyTasks(@RequestBody TaskRequest request,
+    @PostMapping("/listMyTask")
+    public Response listMyTasks(@RequestBody TaskRequest request,
                                 HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
@@ -292,6 +293,7 @@ public class TaskController {
         try {
             String token=httpServletRequest.getHeader("token");
             Map in=new HashMap();
+            in.put("token", token);
             in.put("taskId", request.getTaskId());
             Map out=iTaskBusinessService.listTaskBreadcrumb(in);
             response.setData(out);

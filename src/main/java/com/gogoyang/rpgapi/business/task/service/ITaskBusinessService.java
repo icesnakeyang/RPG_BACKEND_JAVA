@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import java.util.Map;
 
 public interface ITaskBusinessService {
-    Task createTask(Map in) throws Exception;
-    Task createSubTask(Map in) throws Exception;
+    void createTask(Map in) throws Exception;
+    void createSubTask(Map in) throws Exception;
     void updateTask(Map in) throws Exception;
     void deleteTask(Map in) throws Exception;
     Map getTaskDetailByTaskId(Map in) throws Exception;

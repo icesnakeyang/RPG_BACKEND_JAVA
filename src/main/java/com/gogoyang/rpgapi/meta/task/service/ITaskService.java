@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface ITaskService {
-    Task insertTask(Task task) throws Exception;
+    void insertTask(Task task) throws Exception;
 
     void updateTask(Task task) throws Exception;
 
