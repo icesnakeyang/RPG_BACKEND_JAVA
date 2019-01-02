@@ -66,12 +66,13 @@ public class UserLoginBusinessService implements IUserLoginBusinessService{
 
         out.put("userId", user.getUserId());
         out.put("token", user.getToken());
-        out.put("email", email.getEmail());
+        out.put("email", user.getEmail());
         if(user.getRealName()!=null){
             out.put("username", user.getRealName());
         }else{
             out.put("username", user.getEmail());
         }
+        out.put("phone", user.getPhone());
         out.put("roleType", RoleType.NORMAL);
 
         return out;
