@@ -206,7 +206,7 @@ class JobService implements IJobService {
         Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
 
         Page<Job> jobs=null;
-        if(type.equals("plaza")){
+        if(type.equals("publicJob")){
             jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
         }
         if(type.equals("jobtomatch")){

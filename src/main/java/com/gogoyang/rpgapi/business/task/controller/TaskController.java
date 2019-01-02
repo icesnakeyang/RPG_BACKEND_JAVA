@@ -308,5 +308,30 @@ public class TaskController {
         return response;
     }
 
+    @ResponseBody
+    @PostMapping("/publishNewJob")
+    public Response publishNewJob(@RequestBody TaskRequest request,
+                                  HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("code", request.getCode());
+            in.put("days", request.getDays());
+            in.put("detail", request.getDetail());
+            in.put("price", request.getPrice());
+            in.put("taskId", request.getTaskId());
+            in.put("title", request.getTitle());
+            iTaskBusinessService.publishNewJob(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10032);
+            }
+        }
+        return response;
+    }
 
 }

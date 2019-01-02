@@ -1,12 +1,16 @@
 package com.gogoyang.rpgapi.business.task.service;
 
-import com.gogoyang.rpgapi.business.job.common.service.IJobCommonBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.AccountType;
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.meta.account.entity.Account;
+import com.gogoyang.rpgapi.meta.account.service.IAccountService;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -22,14 +26,19 @@ public class TaskBusinessService implements ITaskBusinessService {
     private final ITaskService iTaskService;
     private final IUserService iUserService;
     private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
+    private final IJobService iJobService;
+    private final IAccountService iAccountService;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
                                IUserService iUserService,
-                               IMyJobCommonBusinessService iMyJobCommonBusinessService) {
+                               IMyJobCommonBusinessService iMyJobCommonBusinessService,
+                               IJobService iJobService, IAccountService iAccountService) {
         this.iTaskService = iTaskService;
         this.iUserService = iUserService;
         this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
+        this.iJobService = iJobService;
+        this.iAccountService = iAccountService;
     }
 
     @Override
@@ -40,7 +49,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
-        Double price=(Double)in.get("price");
+        Double price = (Double) in.get("price");
 
         User user = iUserService.getUserByToken(token);
         if (user == null) {
@@ -64,7 +73,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         String code = in.get("code").toString();
         Integer pid = (Integer) in.get("pid");
         String title = in.get("title").toString();
-        Double price=(Double)in.get("price");
+        Double price = (Double) in.get("price");
 
         User user = iUserService.getUserByToken(token);
         if (user == null) {
@@ -88,7 +97,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
-        Double price=(Double)in.get("price");
+        Double price = (Double) in.get("price");
 
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
         task.setCode(code);
@@ -135,9 +144,9 @@ public class TaskBusinessService implements ITaskBusinessService {
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
 
         User createUser = iUserService.getUserByUserId(task.getCreatedUserId());
-        if(createUser.getRealName()!=null){
+        if (createUser.getRealName() != null) {
             task.setCreatedUserName(createUser.getRealName());
-        }else {
+        } else {
             task.setCreatedUserName(createUser.getEmail());
         }
 
@@ -179,10 +188,10 @@ public class TaskBusinessService implements ITaskBusinessService {
         User user = iUserService.getUserByToken(token);
         Page<Task> tasks = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
         for (int i = 0; i < tasks.getContent().size(); i++) {
-            User createdUser=iUserService.getUserByUserId(tasks.getContent().get(i).getCreatedUserId());
-            if(createdUser.getRealName()!=null) {
+            User createdUser = iUserService.getUserByUserId(tasks.getContent().get(i).getCreatedUserId());
+            if (createdUser.getRealName() != null) {
                 tasks.getContent().get(i).setCreatedUserName(createdUser.getRealName());
-            }else{
+            } else {
                 tasks.getContent().get(i).setCreatedUserName(createdUser.getEmail());
             }
         }
@@ -239,5 +248,80 @@ public class TaskBusinessService implements ITaskBusinessService {
         Map out = new HashMap();
         out.put("breadList", list);
         return out;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void publishNewJob(Map in) throws Exception {
+        /**
+         *  1、根据token读取用户，检查用户
+         *  2、根据taskId读取job，检查job是否已经发布
+         *  3、创建job
+         *  4、创建甲方账户，更新甲方账户统计信息
+         */
+        String token = in.get("token").toString();
+        String code = in.get("code").toString();
+        Integer days = (Integer) in.get("days");
+        String detail = in.get("detail").toString();
+        Double price = (Double) in.get("price");
+        Integer taskId = (Integer) in.get("taskId");
+        String title = in.get("title").toString();
+
+        //读取当前用户
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
+            //当前用户不存在
+            throw new Exception("10004");
+        }
+
+        //根据taskId读取job
+        Job job = iJobService.getJobByTaskId(taskId);
+        if (job != null) {
+            //该task已经发布过了，且，发布的任务正在进行中
+            if (job.getStatus() == JobStatus.PROGRESS) {
+                throw new Exception("10092");
+            }
+            //该Task已经发布过了在，且，目前该任务正在匹配中
+            if (job.getStatus() == JobStatus.MATCHING) {
+                throw new Exception("10092");
+            }
+            //该Task已经发布过了，且，正在等待匹配中
+            if (job.getStatus() == JobStatus.PENDING) {
+                throw new Exception("10092");
+            }
+        }
+
+        //创建Job
+        job = new Job();
+        job.setPartyAId(user.getUserId());
+        job.setCreatedTime(new Date());
+        job.setCode(code);
+        job.setDays(days);
+        job.setPrice(price);
+        job.setStatus(JobStatus.PENDING);
+        job.setTaskId(taskId);
+        job.setTitle(title);
+        job.setDetail(detail);
+        job = iJobService.insertJob(job);
+
+        //新增account记录，publish任务时在甲方账户扣除对应的任务金额
+        Account account = new Account();
+        account.setUserId(job.getPartyAId());
+        account.setAmount(job.getPrice());
+        account.setCreatedTime(new Date());
+        account.setType(AccountType.PUBLISH);
+        iAccountService.insertNewAccount(account);
+
+        //计算甲方账户的balance余额
+        Map accountMap = iAccountService.loadAccountBalance(job.getPartyAId());
+        Double balance = (Double) accountMap.get("balance");
+        Double income = (Double) accountMap.get("income");
+        Double outgoing = (Double) accountMap.get("outgoing");
+
+        //更新甲方的账户统计信息
+        user.setAccount(balance);
+        user.setAccountIn(income);
+        user.setAccountOut(outgoing);
+        iUserService.update(user);
     }
 }

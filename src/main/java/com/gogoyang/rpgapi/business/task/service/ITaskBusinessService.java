@@ -16,4 +16,5 @@ public interface ITaskBusinessService {
     Map totalSubTask(Map in) throws Exception;
     Map listTaskByPid(Map in) throws Exception;
     Map listTaskBreadcrumb(Map in) throws Exception;
+    void publishNewJob(Map in) throws Exception;
 }
