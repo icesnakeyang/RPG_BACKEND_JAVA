@@ -56,7 +56,7 @@ public class TaskService implements ITaskService {
     /**
      * 保存Task
      * 如果用户发布任务时修改了Job，那同样也会保存对应的Task
-     * 为了节约存储开销，降低服务器和网络压力，task 和 job 的detail字段，只保存在taskDetail表里。
+     * 为了节约存储开销，降低服务器和网络压力，task 和 common 的detail字段，只保存在taskDetail表里。
      *
      * @param task
      * @throws Exception

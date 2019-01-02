@@ -73,7 +73,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         for(int i=0;i<jobApplies.getContent().size();i++){
             JobApply apply=jobApplies.getContent().get(i);
             /**
-             * output: job title, price, apply time, apply result, job status
+             * output: common title, price, apply time, apply result, common status
              */
             Map map=new HashMap();
             Job job=iJobService.getJobByJobIdTiny(apply.getJobId());
@@ -99,7 +99,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     @Override
     public Map listJobMatching(Map in) throws Exception {
         /**
-         * list job status=matching
+         * list common status=matching
          */
         String token=in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
@@ -169,7 +169,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
          * check authority
          * load apply
          * set to agree
-         * set job to progress
+         * set common to progress
          * transfer money to user
          * set all other apply to disable
          */

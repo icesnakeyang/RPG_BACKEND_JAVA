@@ -170,7 +170,7 @@ public class TaskController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/update")
+    @PostMapping("/updateTask")
     public Response updateTask(@RequestBody TaskRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
@@ -183,6 +183,7 @@ public class TaskController {
             in.put("code", request.getCode());
             in.put("detail", request.getDetail());
             in.put("days", request.getDays());
+            in.put("price", request.getPrice());
             iTaskBusinessService.updateTask(in);
         } catch (Exception ex) {
             try {

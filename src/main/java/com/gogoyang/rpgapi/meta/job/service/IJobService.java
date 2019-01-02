@@ -62,4 +62,6 @@ public interface IJobService {
     Page<Job> listJobByStausMap(Map qIn) throws Exception;
 
     void deleteJob(Integer jobId) throws Exception;
+
+    Page<Job> listPublicJob(Map qIn) throws Exception;
 }

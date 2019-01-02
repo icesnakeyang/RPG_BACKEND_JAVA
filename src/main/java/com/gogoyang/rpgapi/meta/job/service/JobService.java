@@ -9,6 +9,7 @@ import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
+import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -83,9 +84,6 @@ class JobService implements IJobService {
     @Override
     public Job getJobByJobId(Integer jobId) throws Exception {
         Job job = jobDao.findByJobId(jobId);
-
-        job.setPartyAName(iRealNameService.getRealNameByUserId(job.getPartyAId()).getRealName());
-        job.setPartyBName(iRealNameService.getRealNameByUserId(job.getPartyBId()).getRealName());
 
         JobDetail jobDetail = jobDetailDao.findByJobId(job.getJobId());
         job.setDetail(jobDetail.getDetail());
@@ -221,5 +219,15 @@ class JobService implements IJobService {
     @Transactional(rollbackOn = Exception.class)
     public void deleteJob(Integer jobId) throws Exception {
         jobDao.delete(jobId);
+    }
+
+    @Override
+    public Page<Job> listPublicJob(Map qIn) throws Exception {
+        Integer pageIndex=(Integer)qIn.get("pageIndex");
+        Integer pageSize=(Integer)qIn.get("pageSize");
+        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs=jobDao.findAllByStatusOrStatus(JobStatus.PENDING, JobStatus.MATCHING, pageable);
+        return jobs;
     }
 }

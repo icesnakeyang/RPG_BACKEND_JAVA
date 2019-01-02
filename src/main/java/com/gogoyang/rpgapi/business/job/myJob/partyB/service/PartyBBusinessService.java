@@ -1,8 +1,8 @@
 package com.gogoyang.rpgapi.business.job.myJob.partyB.service;
 
 import com.gogoyang.rpgapi.business.job.complete.service.ICompleteBusinessService;
-import com.gogoyang.rpgapi.business.job.jobLog.service.IJobLogBusinessService;
-import com.gogoyang.rpgapi.business.job.stop.service.IStopBusinessService;
+import com.gogoyang.rpgapi.business.job.myJob.myLog.service.IMyLogBusinessService;
+import com.gogoyang.rpgapi.business.job.myJob.myStop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
@@ -19,25 +19,25 @@ import java.util.Map;
 @Service
 public class PartyBBusinessService implements IPartyBBusinessService {
     private final IJobService iJobService;
-    private final IJobLogBusinessService iJobLogBusinessService;
     private final ICompleteBusinessService iCompleteBusinessService;
     private final IStopBusinessService iStopBusinessService;
     private final IUserService iUserService;
     private final IRealNameService iRealNameService;
+    private final IMyLogBusinessService iMyLogBusinessService;
 
     @Autowired
     public PartyBBusinessService(IJobService iJobService,
-                                 IJobLogBusinessService iJobLogBusinessService,
                                  ICompleteBusinessService iCompleteBusinessService,
                                  IStopBusinessService iStopBusinessService,
                                  IUserService iUserService,
-                                 IRealNameService iRealNameService) {
+                                 IRealNameService iRealNameService,
+                                 IMyLogBusinessService iMyLogBusinessService) {
         this.iJobService = iJobService;
-        this.iJobLogBusinessService = iJobLogBusinessService;
         this.iCompleteBusinessService = iCompleteBusinessService;
         this.iStopBusinessService = iStopBusinessService;
         this.iUserService = iUserService;
         this.iRealNameService = iRealNameService;
+        this.iMyLogBusinessService = iMyLogBusinessService;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
             Map in2=new HashMap();
             in2.put("userId", user.getUserId());
             in2.put("jobId", jobPage.getContent().get(i).getJobId());
-            unread=iJobLogBusinessService.countUnreadJobLog(in2);
+            unread=iMyLogBusinessService.countUnreadJobLog(in2);
             unread+=iCompleteBusinessService.countUnreadComplete(in2);
             unread+=iStopBusinessService.countUnreadStop(in2);
             jobPage.getContent().get(i).setUnRead(unread);

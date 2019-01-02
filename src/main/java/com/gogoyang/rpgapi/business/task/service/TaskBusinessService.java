@@ -1,10 +1,12 @@
 package com.gogoyang.rpgapi.business.task.service;
 
-import com.gogoyang.rpgapi.business.job.detail.service.IJobDetailBusinessService;
+import com.gogoyang.rpgapi.business.job.common.service.IJobCommonBusinessService;
+import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,16 @@ import java.util.Map;
 @Service
 public class TaskBusinessService implements ITaskBusinessService {
     private final ITaskService iTaskService;
-    private final IJobDetailBusinessService iJobDetailBusinessService;
     private final IUserService iUserService;
+    private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
-                               IJobDetailBusinessService iJobDetailBusinessService,
-                               IUserService iUserService) {
+                               IUserService iUserService,
+                               IMyJobCommonBusinessService iMyJobCommonBusinessService) {
         this.iTaskService = iTaskService;
-        this.iJobDetailBusinessService = iJobDetailBusinessService;
         this.iUserService = iUserService;
+        this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
     }
 
     @Override
@@ -86,12 +88,14 @@ public class TaskBusinessService implements ITaskBusinessService {
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
+        Double price=(Double)in.get("price");
 
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
         task.setCode(code);
         task.setTitle(title);
         task.setDetail(detail);
         task.setDays(days);
+        task.setPrice(price);
         iTaskService.updateTask(task);
     }
 
@@ -143,9 +147,9 @@ public class TaskBusinessService implements ITaskBusinessService {
         Map jobIn = new HashMap();
         jobIn.put("taskId", taskId);
 
-        Map jobOut = iJobDetailBusinessService.getJobTinyByTaskId(in);
+        Map jobOut = iMyJobCommonBusinessService.getJobTinyByTaskId(in);
         Map out = new HashMap();
-        out.put("job", jobOut.get("job"));
+        out.put("job", jobOut.get("common"));
         out.put("task", task);
         return out;
     }

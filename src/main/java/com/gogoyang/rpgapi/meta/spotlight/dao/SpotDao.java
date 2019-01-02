@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SpotDao extends JpaRepository<Spot, Integer> {
     /**
-     * Read all list of spotlight of one job
+     * Read all list of spotlight of one common
      * @param jobId
      * @param pageable
      * @return

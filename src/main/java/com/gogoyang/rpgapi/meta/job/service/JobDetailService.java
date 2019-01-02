@@ -28,25 +28,25 @@ public class JobDetailService implements IJobDetail {
         //todo
         /**
          * load data from IJobService, IUserInfoService, ITaskService
-        title: 任务标题——job
-        code: 项目代号——job
+        title: 任务标题——common
+        code: 项目代号——common
         party A: 甲方——userInfo
         party B: 乙方——userInfo
-        publish time: 发布时间——job
-        contract time: 签约时间——job
-        price：任务佣金——job
-        days：任务期限——job
+        publish time: 发布时间——common
+        contract time: 签约时间——common
+        price：任务佣金——common
+        days：任务期限——common
         days pass: 已进行天数——计算
         days left: 剩余天数——计算
         detail: 任务详情——task
-        applies: 申请人数——job
-        matches: 分配人数——job
-        views: 查看人数——job
+        applies: 申请人数——common
+        matches: 分配人数——common
+        views: 查看人数——common
          **/
 
         Map out=new HashMap();
         /**
-         * out.put("job", job)
+         * out.put("common", common)
          * out.put("partyA", userInfo)
          * out.put("partyB", userInfo)
          * out.put("detail",task)

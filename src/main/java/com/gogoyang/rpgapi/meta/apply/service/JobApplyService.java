@@ -105,14 +105,14 @@ public class JobApplyService implements IJobApplyService {
     public boolean isApplied(Integer userId, Integer jobId) throws Exception {
         JobApply jobApply = jobApplyDao.findByApplyUserIdAndJobIdAndProcessResultIsNull(userId, jobId);
         if (jobApply != null) {
-            //the job has applied by current user already.
+            //the common has applied by current user already.
             return true;
         }
         return false;
     }
 
     /**
-     * count how many users applied this job
+     * count how many users applied this common
      *
      * @param jobId
      * @return
@@ -156,7 +156,7 @@ public class JobApplyService implements IJobApplyService {
         JobApply updateJobApply = jobApplyDao.findByApplyUserIdAndJobIdAndProcessResultIsNull(
                 jobApply.getApplyUserId(), jobApply.getJobId());
         if (updateJobApply == null) {
-            throw new Exception("error safnnxcv9872934:" + "no such job jobApply record");
+            throw new Exception("error safnnxcv9872934:" + "no such common jobApply record");
         }
         updateJobApply.setProcessTime(new Date());
         updateJobApply.setProcessUserId(-1);
@@ -174,7 +174,7 @@ public class JobApplyService implements IJobApplyService {
     }
 
     /**
-     * read apply job by userId
+     * read apply common by userId
      * @param userId
      * @param pageIndex
      * @param pageSize

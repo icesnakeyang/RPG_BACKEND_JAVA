@@ -46,4 +46,35 @@ public class PartyAController {
 
         return response;
     }
+
+    /**
+     * 读取完整的任务信息，包括未读日志等
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/loadUnreadByJobId")
+    public Response loadUnreadByJobId(@RequestBody JobRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try
+        {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+//            Map out=iJobDetailBusinessService.loadUnreadByJobId(in);
+//            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+                return response;
+            }catch (Exception ex2){
+                response.setErrorCode(10026);
+                return response;
+            }
+        }
+        return response;
+    }
 }

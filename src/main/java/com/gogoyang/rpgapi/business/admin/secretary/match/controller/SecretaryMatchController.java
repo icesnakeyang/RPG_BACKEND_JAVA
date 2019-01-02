@@ -22,7 +22,7 @@ public class SecretaryMatchController {
     }
 
     /**
-     * Read new apply job by users
+     * Read new apply common by users
      * @param request
      * @param httpServletRequest
      * @return
@@ -112,7 +112,7 @@ public class SecretaryMatchController {
     }
 
     /**
-     * reject job apply
+     * reject common apply
      * @param request
      * @param httpServletRequest
      * @return
@@ -140,7 +140,7 @@ public class SecretaryMatchController {
     }
 
     /**
-     * Agree job apply
+     * Agree common apply
      * @param request
      * @param httpServletRequest
      * @return

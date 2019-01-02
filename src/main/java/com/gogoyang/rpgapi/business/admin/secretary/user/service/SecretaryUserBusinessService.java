@@ -35,10 +35,10 @@ public class SecretaryUserBusinessService implements ISecretaryUserBusinessServi
          * input: pageIndex, pageSize, userId
          * output:
          *      createdTime: if contracted then contractTime, else createdTime of jobApply
-         *      jobTitle: job.title
-         *      jobPrice: job.price
-         *      status: if contracted job status, else apply status
-         *      spotNum: job.spotnum
+         *      jobTitle: common.title
+         *      jobPrice: common.price
+         *      status: if contracted common status, else apply status
+         *      spotNum: common.spotnum
          */
         String token=in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");

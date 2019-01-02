@@ -80,7 +80,7 @@ public class ProfileBusinessService implements IProfileBusinessService {
     /**
      * save email
      * will handle set this email to default
-     * this function will not update the job
+     * this function will not update the common
      */
     @Transactional(rollbackOn = Exception.class)
     protected void saveEmail(String strEmail, User user) throws Exception {
