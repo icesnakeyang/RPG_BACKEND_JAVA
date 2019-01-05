@@ -11,6 +11,8 @@ public class ProfileRequest {
     private String email;
     private String phone;
     private String realName;
+    private String applyContent;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public String getEmail() {
         return email;
@@ -34,5 +36,13 @@ public class ProfileRequest {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public String getApplyContent() {
+        return applyContent;
+    }
+
+    public void setApplyContent(String applyContent) {
+        this.applyContent = applyContent;
     }
 }

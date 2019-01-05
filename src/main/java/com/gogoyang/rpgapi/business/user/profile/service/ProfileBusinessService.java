@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -77,6 +78,15 @@ public class ProfileBusinessService implements IProfileBusinessService {
         }
     }
 
+    @Override
+    public Map getUserInfo(Map in) throws Exception {
+        String token = in.get("token").toString();
+        User user = iUserService.getUserByToken(token);
+        Map out = new HashMap();
+        out.put("user", user);
+        return out;
+    }
+
     /**
      * save email
      * will handle set this email to default
@@ -98,28 +108,43 @@ public class ProfileBusinessService implements IProfileBusinessService {
          *  *       新增email
          *  *       把default=true
          */
+        //读取数据库里是否有该邮箱
         Email email = iEmailService.getEmailByEmail(strEmail);
         if (email != null) {
+            //数据库里有该邮箱
             if (email.getUserId() == user.getUserId()) {
+                //是当前用户
                 if (email.getDefault()) {
+                    //是默认邮箱，无需处理
                     return;
                 } else {
+                    //不是默认邮箱，读取该用户下所有邮箱
                     ArrayList<Email> myEmails = iEmailService.listEmailByUserId(user.getUserId());
                     for (int i = 0; i < myEmails.size(); i++) {
                         if (!myEmails.get(i).getEmail().equals(strEmail)) {
+                            //如果原邮箱不等于当前邮箱，设置为非默认
                             myEmails.get(i).setDefault(false);
                             iEmailService.updateEmail(myEmails.get(i));
                         } else {
+                            //是当前邮箱，设置为默认
                             myEmails.get(i).setDefault(true);
                             iEmailService.updateEmail(myEmails.get(i));
+
+                            //修改user的默认email
+                            if (!user.getEmail().equals(myEmails.get(i).getEmail())) {
+                                user.setEmail(myEmails.get(i).getEmail());
+                                iUserService.update(user);
+                            }
                         }
                     }
                     return;
                 }
             }
+            //不是当前用户，即该邮箱被其他用户使用了，报错
             throw new Exception("10044");
         }
 
+        //新的邮箱，先读取当前用户下的邮箱，设置默认为false，然后新增该邮箱，设置默认为true
         ArrayList<Email> myEmails = iEmailService.listEmailByUserId(user.getUserId());
         for (int i = 0; i < myEmails.size(); i++) {
             if (!myEmails.get(i).getEmail().equals(strEmail)) {
@@ -134,6 +159,8 @@ public class ProfileBusinessService implements IProfileBusinessService {
         email.setUserId(user.getUserId());
         email.setCreatedUserId(user.getUserId());
         iEmailService.insert(email);
+        user.setEmail(email.getEmail());
+        iUserService.update(user);
     }
 
     @Transactional(rollbackOn = Exception.class)
@@ -166,6 +193,8 @@ public class ProfileBusinessService implements IProfileBusinessService {
                         } else {
                             myPhones.get(i).setDefault(true);
                             iPhoneService.updatePhone(myPhones.get(i));
+                            user.setPhone(strPhone);
+                            iUserService.update(user);
                         }
                     }
                     return;
@@ -188,34 +217,42 @@ public class ProfileBusinessService implements IProfileBusinessService {
         phone.setUserId(user.getUserId());
         phone.setCreatedUserId(user.getUserId());
         iPhoneService.insert(phone);
+        user.setPhone(phone.getPhone());
+        iUserService.update(user);
     }
 
     @Transactional(rollbackOn = Exception.class)
-    protected void saveRealName(String strRealName, User userInfo) throws Exception {
+    protected void saveRealName(String strRealName, User user) throws Exception {
         /**
          * 查询用户是否已经有认证的实名，如果有就退出。
          * 如果没有就直接修改实名
          */
-        RealName realName = iRealNameService.getRealNameByUserId(userInfo.getUserId());
+        RealName realName = iRealNameService.getRealNameByUserId(user.getUserId());
         if (realName == null) {
             //如果为null，则说明用户当前没有实名，直接添加一个就行了
             realName = new RealName();
             realName.setCreatedTime(new Date());
             realName.setRealName(strRealName);
-            realName.setUserId(userInfo.getUserId());
+            realName.setUserId(user.getUserId());
             iRealNameService.insert(realName);
+            user.setRealName(realName.getRealName());
+            iUserService.update(user);
         } else {
             //如果不为空，则检查用户实名是否认证，若未认证则则直接修改
             if (realName.getRealName().equals(strRealName)) {
                 return;
             }
-            if(realName.getVerified()){
-                throw new Exception("10117");
+            if (realName.getVerified() != null) {
+                if (realName.getVerified()) {
+                    throw new Exception("10117");
+                }
             }
             realName.setCreatedTime(new Date());
             realName.setRealName(strRealName);
-            realName.setUserId(userInfo.getUserId());
+            realName.setUserId(user.getUserId());
             iRealNameService.update(realName);
+            user.setRealName(strRealName);
+            iUserService.update(user);
         }
     }
 }
