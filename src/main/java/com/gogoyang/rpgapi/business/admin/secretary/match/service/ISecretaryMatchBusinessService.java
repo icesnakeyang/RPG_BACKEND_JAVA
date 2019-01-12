@@ -18,4 +18,8 @@ public interface ISecretaryMatchBusinessService {
     void agreeApply(Map in) throws Exception;
 
     void rejectApply(Map in) throws Exception;
+
+    Map getApplyJobTiny(Map in) throws Exception;
+
+    Map getApplyJobDetail(Map in) throws Exception;
 }

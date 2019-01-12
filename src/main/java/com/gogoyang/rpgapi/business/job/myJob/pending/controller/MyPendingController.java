@@ -50,6 +50,28 @@ public class MyPendingController {
         return response;
     }
 
+    @ResponseBody
+    @PostMapping("/getMyPendingJob")
+    public Response getMyPendingJob(@RequestBody JobRequest request,
+                                    HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            Map out=iMyPendingBusinessService.getMyPendingJob(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10120);
+            }
+        }
+        return response;
+    }
+
     /**
      * Update the published but not matched common
      * 修改已经发布但未成交的任务

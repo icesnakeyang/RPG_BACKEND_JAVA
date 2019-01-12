@@ -6,10 +6,8 @@ import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
-import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
-import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +25,6 @@ class JobService implements IJobService {
     private final JobDao jobDao;
     private final ITaskService iTaskService;
     private final IJobApplyService iJobApplyService;
-    private final IJobMatchService iJobMatchService;
     private final JobDetailDao jobDetailDao;
     private final IRealNameService iRealNameService;
 
@@ -35,13 +32,11 @@ class JobService implements IJobService {
     public JobService(JobDao jobDao,
                       ITaskService iTaskService,
                       IJobApplyService iJobApplyService,
-                      IJobMatchService iJobMatchService,
                       JobDetailDao jobDetailDao,
                       IRealNameService iRealNameService) {
         this.jobDao = jobDao;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
-        this.iJobMatchService = iJobMatchService;
         this.jobDetailDao = jobDetailDao;
         this.iRealNameService = iRealNameService;
     }
@@ -188,11 +183,11 @@ class JobService implements IJobService {
     }
 
     @Override
-    public Page<Job> listMyPendingJob(Integer partyAId, JobStatus jobStatus,
+    public Page<Job> listMyPendingJob(Integer partyAId,
                                            Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByPartyAIdAndStatus(partyAId, jobStatus, pageable);
+        Page<Job> jobs = jobDao.findAllByPartyAIdAndStatusOrStatus(partyAId, JobStatus.PENDING, JobStatus.MATCHING, pageable);
         return jobs;
     }
 

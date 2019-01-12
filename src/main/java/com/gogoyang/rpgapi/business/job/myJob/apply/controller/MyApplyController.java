@@ -26,8 +26,9 @@ public class MyApplyController {
      * @return
      */
     @ResponseBody
-    @GetMapping("/loadMyApplyJob")
-    public Response loadMyApplyJob(HttpServletRequest httpServletRequest) {
+    @PostMapping("/listMyApplyJob")
+    public Response listMyApplyJob(@RequestBody JobRequest request,
+                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
             Map in=new HashMap();
@@ -35,7 +36,7 @@ public class MyApplyController {
             in.put("token", token);
 
             Map out=new HashMap();
-            out=iMyApplyBusinessService.loadJobByMyApply(in);
+            out=iMyApplyBusinessService.listJobByMyApply(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -44,6 +45,28 @@ public class MyApplyController {
             } catch (Exception ex2) {
                 response.setErrorCode(10026);
                 return response;
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getMyApplyJob")
+    public Response getMyApplyJob(@RequestBody JobRequest request,
+                                  HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            Map out=iMyApplyBusinessService.getMyApplyJob(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10121);
             }
         }
         return response;

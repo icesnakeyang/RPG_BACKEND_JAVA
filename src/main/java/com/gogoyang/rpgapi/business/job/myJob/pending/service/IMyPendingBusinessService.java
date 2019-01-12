@@ -8,4 +8,6 @@ public interface IMyPendingBusinessService {
     void updateJob(Map in) throws Exception;
 
     void deletePendingJob(Map in) throws Exception;
+
+    Map getMyPendingJob(Map in) throws Exception;
 }

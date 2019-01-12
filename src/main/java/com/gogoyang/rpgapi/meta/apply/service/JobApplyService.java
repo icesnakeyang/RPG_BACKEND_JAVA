@@ -139,7 +139,7 @@ public class JobApplyService implements IJobApplyService {
      * @throws Exception
      */
     @Override
-    public ArrayList<JobApply> loadMyApplies(Integer userId) throws Exception {
+    public ArrayList<JobApply> listMyApplies(Integer userId) throws Exception {
         ArrayList<JobApply> applies = jobApplyDao.findAllByApplyUserIdAndProcessResultIsNull(userId);
         return applies;
     }

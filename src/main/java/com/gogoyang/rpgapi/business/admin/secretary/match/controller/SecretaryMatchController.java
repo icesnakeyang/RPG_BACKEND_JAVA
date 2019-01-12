@@ -81,6 +81,50 @@ public class SecretaryMatchController {
         return response;
     }
 
+    @ResponseBody
+    @PostMapping("/getApplyJobTiny")
+    public Response getApplyJobTiny(@RequestBody AdminRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId",request.getJobId());
+            Map out=iSecretaryMatchBusinessService.getApplyJobTiny(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10122);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getApplyJobDetail")
+    public Response getApplyJobDetail(@RequestBody AdminRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId",request.getJobId());
+            Map out=iSecretaryMatchBusinessService.getApplyJobDetail(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10122);
+            }
+        }
+        return response;
+    }
+
     /**
      * Rpg secretary ead users history
      * @param request

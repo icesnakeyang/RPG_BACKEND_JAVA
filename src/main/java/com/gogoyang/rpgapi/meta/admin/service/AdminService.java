@@ -4,7 +4,6 @@ import com.gogoyang.rpgapi.meta.admin.dao.AdminDao;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
-import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +13,12 @@ import java.util.ArrayList;
 @Service
 public class AdminService implements IAdminService {
     private final AdminDao adminDao;
-    private final IJobMatchService iJobMatchService;
     private final IJobApplyService iJobApplyService;
 
     @Autowired
     public AdminService(AdminDao adminDao,
-                        IJobMatchService iJobMatchService,
                         IJobApplyService iJobApplyService) {
         this.adminDao = adminDao;
-        this.iJobMatchService = iJobMatchService;
         this.iJobApplyService=iJobApplyService;
 
     }

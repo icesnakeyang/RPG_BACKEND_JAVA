@@ -5,8 +5,6 @@ import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.match.entity.JobMatch;
-import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
@@ -23,19 +21,16 @@ import java.util.Map;
 public class MyApplyBusinessService implements IMyApplyBusinessService{
     private final IJobApplyService iJobApplyService;
     private final IJobService iJobService;
-    private final IJobMatchService iJobMatchService;
     private final IUserService iUserService;
     private final IRealNameService iRealNameService;
 
     @Autowired
     public MyApplyBusinessService(IJobApplyService iJobApplyService,
                                   IJobService iJobService,
-                                  IJobMatchService iJobMatchService,
                                   IUserService iUserService,
                                   IRealNameService iRealNameService) {
         this.iJobApplyService = iJobApplyService;
         this.iJobService = iJobService;
-        this.iJobMatchService = iJobMatchService;
         this.iUserService = iUserService;
         this.iRealNameService = iRealNameService;
     }
@@ -48,7 +43,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
      * @throws Exception
      */
     @Override
-    public Map loadJobByMyApply(Map in) throws Exception {
+    public Map listJobByMyApply(Map in) throws Exception {
         /**
          * 参数：token
          * 1. 根据token读取userInfo，获得用户的userId
@@ -60,19 +55,17 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
         if(user==null){
             throw new Exception("10004");
         }
-        ArrayList<JobApply> myApplyList = iJobApplyService.loadMyApplies(user.getUserId());
+        ArrayList<JobApply> myApplyList = iJobApplyService.listMyApplies(user.getUserId());
         ArrayList jobList = new ArrayList();
         for (int i = 0; i < myApplyList.size(); i++) {
             Job job = iJobService.getJobByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
                 job.setPartyAName(iRealNameService.getRealNameByUserId(job.getPartyAId()).getRealName());
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
-                Integer matchNum = iJobMatchService.countMatchingUsers(job.getJobId());
                 Map theMap = new HashMap();
                 theMap.put("job", job);
                 theMap.put("apply", myApplyList.get(i));
                 theMap.put("applyNum", applyNum);
-                theMap.put("matchNum", matchNum);
 
                 jobList.add(theMap);
             }
@@ -124,13 +117,6 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
             throw new Exception("10007");
         }
 
-        //检查用户是否已经分配了该任务
-        JobMatch jobMatch=iJobMatchService.loadJobMatchByUserIdAndJobId(user.getUserId(),jobId);
-        if(jobMatch!=null){
-            // the common has been assigned to this user already.
-            throw new Exception("10049");
-        }
-
         //保存任务申请日志
         jobApply = new JobApply();
         jobApply.setApplyTime(new Date());
@@ -148,5 +134,32 @@ public class MyApplyBusinessService implements IMyApplyBusinessService{
             job.setStatus(JobStatus.MATCHING);
         }
         iJobService.updateJob(job);
+    }
+
+    @Override
+    public Map getMyApplyJob(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Job job=iJobService.getJobByJobId(jobId);
+
+        if(job!=null){
+            User partyA=iUserService.getUserByUserId(job.getPartyAId());
+            if(partyA.getRealName()!=null) {
+                job.setPartyAName(partyA.getRealName());
+            }else{
+                job.setPartyAName(partyA.getEmail());
+            }
+        }
+
+        Map out=new HashMap();
+        out.put("job", job);
+
+        return out;
     }
 }

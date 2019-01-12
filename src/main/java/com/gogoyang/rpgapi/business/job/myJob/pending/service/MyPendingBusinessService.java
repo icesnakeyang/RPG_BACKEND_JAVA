@@ -37,7 +37,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         Integer partyAId = user.getUserId();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
-        Page<Job> jobs = iJobService.listMyPendingJob(partyAId, JobStatus.PENDING, pageIndex, pageSize);
+        Page<Job> jobs = iJobService.listMyPendingJob(partyAId, pageIndex, pageSize);
 //        ArrayList<Job> jobs=iJobService.listMyPendingJob(partyAId, JobStatus.PENDING, pageIndex, pageSize);
         Map out = new HashMap();
         out.put("jobs", jobs);
@@ -121,5 +121,22 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         }
         //delete
         iJobService.deleteJob(jobId);
+    }
+
+    @Override
+    public Map getMyPendingJob(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Job job=iJobService.getJobByJobId(jobId);
+
+        Map out=new HashMap();
+        out.put("job", job);
+        return out;
     }
 }

@@ -12,7 +12,6 @@ import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.match.service.IJobMatchService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,6 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     private final IAdminService iAdminService;
     private final IJobService iJobService;
     private final IJobApplyService iJobApplyService;
-    private final IJobMatchService iJobMatchService;
     private final IAccountService iAccountService;
     private final IUserService iUserService;
 
@@ -38,13 +36,11 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     public SecretaryMatchBusinessService(IAdminService iAdminService,
                                          IJobService iJobService,
                                          IJobApplyService iJobApplyService,
-                                         IJobMatchService iJobMatchService,
                                          IAccountService iAccountService,
                                          IUserService iUserService) {
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
-        this.iJobMatchService = iJobMatchService;
         this.iAccountService = iAccountService;
         this.iUserService = iUserService;
     }
@@ -273,5 +269,41 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         jobApply.setProcessRemark(remark);
 
         iJobApplyService.updateJobApply(jobApply);
+    }
+
+    @Override
+    public Map getApplyJobTiny(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Job job=iJobService.getJobByJobIdTiny(jobId);
+
+        Map out=new HashMap();
+        out.put("job", job);
+
+        return out;
+    }
+
+    @Override
+    public Map getApplyJobDetail(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Job job=iJobService.getJobByJobId(jobId);
+
+        Map out=new HashMap();
+        out.put("job", job);
+
+        return out;
     }
 }

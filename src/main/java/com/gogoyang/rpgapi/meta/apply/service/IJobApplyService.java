@@ -35,7 +35,7 @@ public interface IJobApplyService {
 
     Integer countApplyUsers(Integer jobId) throws Exception;
 
-    ArrayList<JobApply> loadMyApplies(Integer userId) throws Exception;
+    ArrayList<JobApply> listMyApplies(Integer userId) throws Exception;
 
     void matchJobApply(JobApply jobApply) throws Exception;
 

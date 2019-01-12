@@ -57,7 +57,7 @@ public interface IJobService {
      */
     Page<Job> listPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
-    Page<Job> listMyPendingJob(Integer partyAId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    Page<Job> listMyPendingJob(Integer partyAId, Integer pageIndex, Integer pageSize) throws Exception;
 
     Page<Job> listJobByStausMap(Map qIn) throws Exception;
 
