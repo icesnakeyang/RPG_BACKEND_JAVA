@@ -14,6 +14,7 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
+import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -45,46 +46,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         this.iUserService = iUserService;
     }
 
-    /**
-     * list users history
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public Map listApplyHistory(Map in) throws Exception {
-        String token=in.get("token").toString();
-        Integer pageIndex=(Integer)in.get("pageIndex");
-        Integer pageSize=(Integer)in.get("pageSize");
-        Integer userId=(Integer)in.get("userId");
 
-        Admin admin=iAdminService.loadAdminByToken(token);
-        if(admin==null){
-            throw new Exception("10004");
-        }
-
-        Page<JobApply> jobApplies=iJobApplyService.listJobapplybyUserId(userId, pageIndex, pageSize);
-
-        ArrayList<Map<String, Object>> applyHistoryList=new ArrayList<Map<String, Object>>();
-        for(int i=0;i<jobApplies.getContent().size();i++){
-            JobApply apply=jobApplies.getContent().get(i);
-            /**
-             * output: common title, price, apply time, apply result, common status
-             */
-            Map map=new HashMap();
-            Job job=iJobService.getJobByJobIdTiny(apply.getJobId());
-            map.put("title", job.getTitle());
-            map.put("price", job.getPrice());
-            map.put("result", apply.getProcessResult());
-            map.put("status", job.getStatus());
-            map.put("applyTime", apply.getApplyTime());
-            applyHistoryList.add(map);
-        }
-
-        Map out=new HashMap();
-        out.put("applyHistoryList", applyHistoryList);
-        return out;
-    }
 
     /**
      * list new applies
@@ -93,23 +55,37 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
      * @throws Exception
      */
     @Override
-    public Map listJobMatching(Map in) throws Exception {
+    public Map listAppliedJob(Map in) throws Exception {
         /**
-         * list common status=matching
+         * list job status=matching
          */
         String token=in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
 
-        Admin admin=iAdminService.loadAdminByToken(token);
+        Admin admin=iAdminService.getAdminByToken(token);
         if(admin==null){
             throw new Exception("10004");
         }
 
         Page<Job> jobs=iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
 
+        ArrayList<Map<String, Object>> list=new ArrayStack<Map<String, Object>>();
+        for(int i=0;i<jobs.getContent().size();i++){
+            Job job=jobs.getContent().get(i);
+            Map map=new HashMap();
+            map.put("title", job.getTitle());
+            map.put("code", job.getCode());
+            map.put("price", job.getPrice());
+            map.put("days", job.getDays());
+            map.put("createdTime", job.getCreatedTime());
+            map.put("jobApplyNum", job.getJobApplyNum());
+            map.put("partyAId", job.getPartyAId());
+            list.add(map);
+        }
+
         Map out=new HashMap();
-        out.put("newApplyList", jobs);
+        out.put("newApplyList", list);
         return out;
     }
 
@@ -123,7 +99,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         /**
          * 当前操作用户必须是RPG秘书权限
          */
-        Admin admin = iAdminService.loadAdminByToken(token);
+        Admin admin = iAdminService.getAdminByToken(token);
         if (admin == null) {
             throw new Exception("10004");
         }
@@ -173,7 +149,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         Integer applyId=(Integer)in.get("applyId");
 
         //检查用户权限，必须是秘书
-        Admin admin=iAdminService.loadAdminByToken(token);
+        Admin admin=iAdminService.getAdminByToken(token);
         if(admin==null){
             throw new Exception("10004");
         }
@@ -249,7 +225,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         Integer applyId=(Integer)in.get("applyId");
         String remark=(String)in.get("remark");
 
-        Admin admin=iAdminService.loadAdminByToken(token);
+        Admin admin=iAdminService.getAdminByToken(token);
         if(admin==null){
             throw new Exception("10004");
         }
@@ -276,8 +252,8 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         String token=in.get("token").toString();
         Integer jobId=(Integer)in.get("jobId");
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
+        Admin admin=iAdminService.getAdminByToken(token);
+        if(admin==null){
             throw new Exception("10004");
         }
 

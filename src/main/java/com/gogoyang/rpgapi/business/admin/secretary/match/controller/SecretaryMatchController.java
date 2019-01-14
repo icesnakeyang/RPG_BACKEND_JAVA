@@ -22,14 +22,14 @@ public class SecretaryMatchController {
     }
 
     /**
-     * Read new apply common by users
+     * Read new apply jobs by users
      * @param request
      * @param httpServletRequest
      * @return
      */
     @ResponseBody
-    @PostMapping("/listJobMatching")
-    public Response listJobMatching(@RequestBody AdminRequest request,
+    @PostMapping("/listAppliedJob")
+    public Response listAppliedJob(@RequestBody AdminRequest request,
                                  HttpServletRequest httpServletRequest){
         Response response=new Response();
         try {
@@ -38,7 +38,7 @@ public class SecretaryMatchController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Map out=iSecretaryMatchBusinessService.listJobMatching(in);
+            Map out=iSecretaryMatchBusinessService.listAppliedJob(in);
             response.setData(out);
         }catch (Exception ex){
             try {
@@ -120,36 +120,6 @@ public class SecretaryMatchController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10122);
-            }
-        }
-        return response;
-    }
-
-    /**
-     * Rpg secretary ead users history
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/listApplyHistory")
-    public Response listApplyHistory(@RequestBody AdminRequest request,
-                                HttpServletRequest httpServletRequest){
-        Response response=new Response();
-        try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
-            in.put("token", token);
-            in.put("pageIndex", request.getPageIndex());
-            in.put("pageSize", request.getPageSize());
-            in.put("userId", request.getUserId());
-            Map out=iSecretaryMatchBusinessService.listApplyHistory(in);
-            response.setData(out);
-        }catch (Exception ex){
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setErrorCode(10108);
             }
         }
         return response;

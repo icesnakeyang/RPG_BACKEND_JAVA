@@ -20,7 +20,7 @@ public class UserLoginController {
     }
 
     @ResponseBody
-    @PostMapping("/loginByEmail")
+    @PostMapping("/login")
     public Response login(@RequestBody LoginRequest request){
         Response response=new Response();
         try {

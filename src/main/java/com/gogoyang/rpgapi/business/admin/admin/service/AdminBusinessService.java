@@ -66,13 +66,13 @@ public class AdminBusinessService implements IAdminBusinessService {
         String password = in.get("password").toString();
 
         //whether the loginName duplicated
-        Admin admin = iAdminService.loadAdminByLoginName(loginName);
+        Admin admin = iAdminService.getAdminByLoginName(loginName);
         if (admin != null) {
             throw new Exception("10016");
         }
 
         //check current admin user permission, only rootAdmin can create superAdmin
-        Admin rootAdmin = iAdminService.loadAdminByToken(token);
+        Admin rootAdmin = iAdminService.getAdminByToken(token);
         if (rootAdmin == null) {
             throw new Exception("10004");
         }
@@ -109,13 +109,13 @@ public class AdminBusinessService implements IAdminBusinessService {
         String password = in.get("password").toString();
 
         //check whether the loginName duplicated
-        Admin admin = iAdminService.loadAdminByLoginName(loginName);
+        Admin admin = iAdminService.getAdminByLoginName(loginName);
         if (admin != null) {
             throw new Exception("10016");
         }
 
         //check current operator permission, only superAdmin can create administrator and secretary
-        Admin superAdmin = iAdminService.loadAdminByToken(token);
+        Admin superAdmin = iAdminService.getAdminByToken(token);
         if (superAdmin == null) {
             throw new Exception("10004");
         }
@@ -147,7 +147,7 @@ public class AdminBusinessService implements IAdminBusinessService {
     public Map login(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
         String password = in.get("password").toString();
-        Admin admin = iAdminService.loadAdminByLoginName(loginName);
+        Admin admin = iAdminService.getAdminByLoginName(loginName);
         if (admin == null) {
             throw new Exception("10024");
         }
@@ -171,14 +171,14 @@ public class AdminBusinessService implements IAdminBusinessService {
     public Map loadAdmin(Map in) throws Exception {
         String token = in.get("token").toString();
 
-        Admin admin = iAdminService.loadAdminByToken(token);
+        Admin admin = iAdminService.getAdminByToken(token);
         if (admin == null) {
             throw new Exception("10004");
         }
         ArrayList adminList = new ArrayList();
 
         if (admin.getRoleType().ordinal() < RoleType.SECRETARY.ordinal()) {
-            ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SECRETARY);
+            ArrayList<Admin> list = iAdminService.listAdminByRoleType(RoleType.SECRETARY);
             if (list.size() > 0) {
                 Map map = new HashMap();
                 map.put("role", RoleType.SECRETARY);
@@ -187,7 +187,7 @@ public class AdminBusinessService implements IAdminBusinessService {
             }
         }
         if (admin.getRoleType().ordinal() < RoleType.ADMINISTRATOR.ordinal()) {
-            ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.ADMINISTRATOR);
+            ArrayList<Admin> list = iAdminService.listAdminByRoleType(RoleType.ADMINISTRATOR);
             if (list.size() > 0) {
                 Map map = new HashMap();
                 map.put("role", RoleType.ADMINISTRATOR);
@@ -196,7 +196,7 @@ public class AdminBusinessService implements IAdminBusinessService {
             }
         }
         if (admin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal()) {
-            ArrayList<Admin> list = iAdminService.loadAdminByRoleType(RoleType.SUPER_ADMIN);
+            ArrayList<Admin> list = iAdminService.listAdminByRoleType(RoleType.SUPER_ADMIN);
             if (list.size() > 0) {
                 Map map = new HashMap();
                 map.put("role", RoleType.SUPER_ADMIN);

@@ -6,11 +6,11 @@ import com.gogoyang.rpgapi.framework.constant.RoleType;
 import java.util.ArrayList;
 
 public interface IAdminService {
-    Admin loadAdminByLoginName(String loginName) throws Exception;
+    Admin getAdminByLoginName(String loginName) throws Exception;
 
     Admin createAdmin(Admin admin) throws Exception;
 
-    Admin loadAdminByToken(String token) throws Exception;
+    Admin getAdminByToken(String token) throws Exception;
 
-    ArrayList<Admin> loadAdminByRoleType(RoleType roleType) throws Exception;
+    ArrayList<Admin> listAdminByRoleType(RoleType roleType) throws Exception;
 }

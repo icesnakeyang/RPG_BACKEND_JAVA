@@ -31,7 +31,7 @@ public class AdminService implements IAdminService {
      * @throws Exception
      */
     @Override
-    public Admin loadAdminByLoginName(String loginName) throws Exception {
+    public Admin getAdminByLoginName(String loginName) throws Exception {
         /**
          * adminDao.findByLoginName
          */
@@ -50,7 +50,7 @@ public class AdminService implements IAdminService {
     }
 
     @Override
-    public Admin loadAdminByToken(String token) throws Exception {
+    public Admin getAdminByToken(String token) throws Exception {
         Admin admin = adminDao.findByToken(token);
         return admin;
     }
@@ -65,7 +65,7 @@ public class AdminService implements IAdminService {
      * @throws Exception
      */
     @Override
-    public ArrayList<Admin> loadAdminByRoleType(RoleType roleType) throws Exception {
+    public ArrayList<Admin> listAdminByRoleType(RoleType roleType) throws Exception {
         ArrayList<Admin> admins = adminDao.findAllByRoleType(roleType);
         return admins;
     }
