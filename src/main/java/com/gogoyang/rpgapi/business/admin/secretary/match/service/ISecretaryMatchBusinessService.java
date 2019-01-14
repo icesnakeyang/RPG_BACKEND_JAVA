@@ -15,4 +15,8 @@ public interface ISecretaryMatchBusinessService {
     Map getApplyJobTiny(Map in) throws Exception;
 
     Map getApplyJobDetail(Map in) throws Exception;
+
+    Map listApplyHistory(Map in) throws Exception;
+
+    Map getApplyDetail(Map in) throws Exception;
 }

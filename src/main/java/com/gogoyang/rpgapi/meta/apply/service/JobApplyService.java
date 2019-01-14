@@ -41,6 +41,12 @@ public class JobApplyService implements IJobApplyService {
     }
 
     @Override
+    public JobApply getJobApplyByApplyId(Integer applyId) throws Exception {
+        JobApply jobApply=jobApplyDao.findByJobApplyId(applyId);
+        return jobApply;
+    }
+
+    @Override
     public JobApply getJobApplyByJobApplyId(Integer applyId) throws Exception {
         JobApply jobApply=jobApplyDao.findByJobApplyId(applyId);
         return jobApply;

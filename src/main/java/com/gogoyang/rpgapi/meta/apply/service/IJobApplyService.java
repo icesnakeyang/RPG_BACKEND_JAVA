@@ -15,6 +15,8 @@ public interface IJobApplyService {
 
     void insertJobApply(JobApply jobApply) throws Exception;
 
+    JobApply getJobApplyByApplyId(Integer applyId) throws Exception;
+
     /**
      * 读取指定任务的所有未处理的申请记录
      * @param jobId

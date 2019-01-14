@@ -282,4 +282,91 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
 
         return out;
     }
+
+    /**
+     * read one users apply history
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map listApplyHistory(Map in) throws Exception {
+        /**
+         * input: pageIndex, pageSize, userId
+         * output:
+         *      createdTime: if contracted then contractTime, else createdTime of jobApply
+         *      jobTitle: common.title
+         *      jobPrice: common.price
+         *      status: if contracted common status, else apply status
+         *      spotNum: common.spotnum
+         */
+        String token=in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+        Integer userId=(Integer)in.get("userId");
+
+        Admin admin=iAdminService.getAdminByToken(token);
+        if(admin==null){
+            throw new Exception("10004");
+        }
+
+        Page<JobApply> jobApplies=iJobApplyService.listJobapplybyUserId(userId, pageIndex, pageSize);
+
+        ArrayList<Map<String, Object>> list=new ArrayStack<Map<String, Object>>();
+        for(int i=0;i<jobApplies.getContent().size();i++){
+            JobApply jobApply=jobApplies.getContent().get(i);
+            Map map=new HashMap();
+            map.put("jobId", jobApply.getJobId());
+            map.put("applyId", jobApply.getJobApplyId());
+            map.put("applyUserId", jobApply.getApplyUserId());
+            User user=iUserService.getUserByUserId(jobApply.getApplyUserId());
+            if(user.getRealName()!=null) {
+                map.put("username", user.getRealName());
+            }else {
+                map.put("username", user.getEmail());
+            }
+            map.put("applyTime", jobApply.getApplyTime());
+            map.put("processUserId", jobApply.getProcessUserId());
+            map.put("processResult", jobApply.getProcessResult());
+            map.put("processTime", jobApply.getProcessTime());
+            Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+            map.put("title", job.getTitle());
+            map.put("price", job.getPrice());
+            map.put("jobStatus",job.getStatus());
+            list.add(map);
+        }
+
+
+        Map out=new HashMap();
+        out.put("jobApply", list);
+        return out;
+    }
+
+    @Override
+    public Map getApplyDetail(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer applyId=(Integer)in.get("applyId");
+
+        Admin admin=iAdminService.getAdminByToken(token);
+        if(admin==null){
+            throw new Exception("10004");
+        }
+
+        JobApply jobApply=iJobApplyService.getJobApplyByApplyId(applyId);
+
+        Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+        User user=iUserService.getUserByUserId(jobApply.getApplyUserId());
+
+        Map out=new HashMap();
+        out.put("title", job.getTitle());
+        out.put("applyTime", jobApply.getApplyTime());
+        out.put("applyUser", user.getRealName());
+        out.put("content", jobApply.getContent());
+        out.put("processResult", jobApply.getProcessResult());
+        out.put("processRemark", jobApply.getProcessRemark());
+        out.put("processUserId", jobApply.getProcessUserId());
+        out.put("processTime", jobApply.getProcessTime());
+
+        return out;
+    }
 }

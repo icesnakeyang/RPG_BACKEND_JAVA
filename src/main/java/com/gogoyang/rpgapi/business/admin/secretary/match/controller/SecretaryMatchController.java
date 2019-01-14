@@ -179,4 +179,56 @@ public class SecretaryMatchController {
         }
         return response;
     }
+
+    /**
+     * read history of user apply
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listApplyHistory")
+    public Response listApplyHistory(@RequestBody AdminRequest request,
+                                     HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try{
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("userId", request.getUserId());
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Map out=iSecretaryMatchBusinessService.listApplyHistory(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10108);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getApplyDetail")
+    public Response getApplyDetail(@RequestBody AdminRequest request,
+                                   HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("applyId", request.getApplyId());
+            Map out=iSecretaryMatchBusinessService.getApplyDetail(in);
+            response.setData(out);
+        }catch (Exception ex        ){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10123);
+            }
+        }
+        return response;
+    }
 }
