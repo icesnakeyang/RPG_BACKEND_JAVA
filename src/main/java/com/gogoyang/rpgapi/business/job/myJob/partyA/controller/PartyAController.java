@@ -86,8 +86,8 @@ public class PartyAController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/loadUnreadByJobId")
-    public Response loadUnreadByJobId(@RequestBody JobRequest request,
+    @PostMapping("/totalUnreadByJobId")
+    public Response totalUnreadByJobId(@RequestBody JobRequest request,
                                       HttpServletRequest httpServletRequest){
         Response response=new Response();
         try
@@ -96,8 +96,8 @@ public class PartyAController {
             Map in=new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
-//            Map out=iJobDetailBusinessService.loadUnreadByJobId(in);
-//            response.setData(out);
+            Map out=iPartyABusinessService.totalUnreadByJobId(in);
+            response.setData(out);
         }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

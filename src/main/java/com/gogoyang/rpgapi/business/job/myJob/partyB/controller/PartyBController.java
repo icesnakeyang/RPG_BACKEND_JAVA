@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,15 +24,15 @@ public class PartyBController {
     }
 
     @ResponseBody
-    @PostMapping("/loadMyPartyBJob")
-    public Response loadMyPartyBJob(@RequestBody JobRequest request,
+    @PostMapping("/listMyPartyBJob")
+    public Response listMyPartyBJob(@RequestBody JobRequest request,
                                     HttpServletRequest httpServletRequest){
     Response response =new Response();
     try {
         String token=httpServletRequest.getHeader("token");
         Map in =new HashMap();
         in.put("token", token);
-        Page<Job> jobPage=iPartyBBusinessService.loadMyPartyBJob(in);
+        Page<Job> jobPage=iPartyBBusinessService.listMyPartyBJob(in);
         response.setData(jobPage);
     }catch (Exception ex){
         try {
@@ -42,5 +43,27 @@ public class PartyBController {
         }
     }
     return  response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getPartyBJobDetail")
+    public Response getPartyBJobDetail(@RequestBody JobRequest request,
+                                       HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            Map out=iPartyBBusinessService.getPartyBJobDetail(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10122);
+            }
+        }
+        return response;
     }
 }

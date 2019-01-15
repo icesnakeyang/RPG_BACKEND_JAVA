@@ -99,4 +99,21 @@ public class PartyABusinessService implements IPartyABusinessService{
         out.put("detail", job.getDetail());
         return out;
     }
+
+    @Override
+    public Map totalUnreadByJobId(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Map out=new HashMap();
+        out.put("unReadJobLog",iMyLogBusinessService.countUnreadJobLog(in));
+        out.put("unReadComplete", iCompleteBusinessService.countUnreadComplete(in));
+        out.put("unReadStop", iStopBusinessService.countUnreadStop(in));
+        return out;
+    }
 }

@@ -41,7 +41,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
     }
 
     @Override
-    public Page<Job> loadMyPartyBJob(Map in) throws Exception {
+    public Page<Job> listMyPartyBJob(Map in) throws Exception {
         String token = in.get("token").toString();
 
         User user = iUserService.getUserByToken(token);
@@ -67,5 +67,38 @@ public class PartyBBusinessService implements IPartyBBusinessService {
         }
 
         return jobPage;
+    }
+
+    @Override
+    public Map getPartyBJobDetail(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer jobId=(Integer)in.get("jobId");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Job job=iJobService.getJobByJobId(jobId);
+
+        Map out=new HashMap();
+        out.put("jobId", job.getJobId());
+        out.put("title", job.getTitle());
+        out.put("code", job.getCode());
+        out.put("partyAId", job.getPartyAId());
+        out.put("partyBId", job.getPartyBId());
+        out.put("createdTime", job.getCreatedTime());
+        out.put("contractTime", job.getContractTime());
+        out.put("days", job.getDays());
+        out.put("price", job.getPrice());
+        out.put("detail", job.getDetail());
+
+        User userA=iUserService.getUserByUserId(job.getPartyAId());
+        User userB=iUserService.getUserByUserId(job.getPartyBId());
+        out.put("partyAName", userA.getRealName());
+        out.put("partyBName", userB.getRealName());
+
+        return out;
+
     }
 }

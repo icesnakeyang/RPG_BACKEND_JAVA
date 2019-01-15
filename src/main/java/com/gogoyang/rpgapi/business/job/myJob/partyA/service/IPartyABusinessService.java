@@ -9,4 +9,6 @@ public interface IPartyABusinessService {
     Page<Job> listMyPartyAJob(Map in) throws Exception;
 
     Map getPartyAJob(Map in) throws Exception;
+
+    Map totalUnreadByJobId(Map in) throws Exception;
 }
