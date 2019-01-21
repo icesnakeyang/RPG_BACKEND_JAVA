@@ -71,4 +71,46 @@ public class ProfileController {
         }
         return response;
     }
+
+    @ResponseBody
+    @PostMapping("/listPhoneOfUser")
+    public Response listPhoneOfUser(@RequestBody ProfileRequest request,
+                                     HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            Map out=iProfileBusinessService.listPhoneOfUser(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10124);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/listEmailOfUser")
+    public Response listEmailOfUser(@RequestBody ProfileRequest request,
+                                     HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            Map out=iProfileBusinessService.listEmailOfUser(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10124);
+            }
+        }
+        return response;
+    }
 }

@@ -87,6 +87,35 @@ public class ProfileBusinessService implements IProfileBusinessService {
         return out;
     }
 
+    @Override
+    public Map listPhoneOfUser(Map in) throws Exception {
+        String token = in.get("token").toString();
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
+            throw new Exception("10004");
+        }
+        ArrayList<Phone> phones = iPhoneService.listPhoneByUserId(user.getUserId());
+
+        Map out = new HashMap();
+        out.put("phones", phones);
+        return out;
+    }
+
+    @Override
+    public Map listEmailOfUser(Map in) throws Exception {
+        String token = in.get("token").toString();
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
+            throw new Exception("10004");
+        }
+
+        ArrayList<Email> emails=iEmailService.listEmailByUserId(user.getUserId());
+
+        Map out = new HashMap();
+        out.put("emails", emails);
+        return out;
+    }
+
     /**
      * save email
      * will handle set this email to default
