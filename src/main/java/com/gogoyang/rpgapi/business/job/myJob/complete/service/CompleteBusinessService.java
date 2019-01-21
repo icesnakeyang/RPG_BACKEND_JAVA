@@ -65,7 +65,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    public Page<JobComplete> loadCompleteList(Map in) throws Exception {
+    public Page<JobComplete> listMyComplete(Map in) throws Exception {
         Integer jobId = (Integer) in.get("jobId");
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");

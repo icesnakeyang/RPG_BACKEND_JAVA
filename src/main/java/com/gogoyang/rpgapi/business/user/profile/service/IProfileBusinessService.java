@@ -11,4 +11,8 @@ public interface IProfileBusinessService {
     Map listPhoneOfUser(Map in) throws Exception;
 
     Map listEmailOfUser(Map in) throws Exception;
+
+    Map getUserProfile(Map in) throws Exception;
+
+    void saveRealName(Map in) throws Exception;
 }

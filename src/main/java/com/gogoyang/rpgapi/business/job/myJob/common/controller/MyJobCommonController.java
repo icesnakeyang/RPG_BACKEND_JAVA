@@ -58,4 +58,24 @@ public class MyJobCommonController {
         return response;
     }
 
+    @ResponseBody
+    @PostMapping("/getJobTinyByJobId")
+    public Response getJobTinyByJobId(@RequestBody JobRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            Map in=new HashMap();
+            in.put("jobId", request.getJobId());
+            Map out=iMyJobCommonBusinessService.getJobTinyByJobId(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10119);
+            }
+        }
+        return response;
+    }
+
 }

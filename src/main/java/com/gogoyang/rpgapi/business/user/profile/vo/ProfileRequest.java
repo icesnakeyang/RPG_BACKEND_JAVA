@@ -12,6 +12,8 @@ public class ProfileRequest {
     private String phone;
     private String realName;
     private String applyContent;
+    private String idcardNo;
+    private Boolean sex;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public String getEmail() {
@@ -44,5 +46,21 @@ public class ProfileRequest {
 
     public void setApplyContent(String applyContent) {
         this.applyContent = applyContent;
+    }
+
+    public String getIdcardNo() {
+        return idcardNo;
+    }
+
+    public void setIdcardNo(String idcardNo) {
+        this.idcardNo = idcardNo;
+    }
+
+    public Boolean getSex() {
+        return sex;
+    }
+
+    public void setSex(Boolean sex) {
+        this.sex = sex;
     }
 }

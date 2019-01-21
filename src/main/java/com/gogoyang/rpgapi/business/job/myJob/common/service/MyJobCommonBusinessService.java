@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class MyJobCommonBusinessService implements IMyJobCommonBusinessService{
+public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
     private final IMyLogBusinessService iMyLogBusinessService;
     private final ICompleteBusinessService iCompleteBusinessService;
     private final IStopBusinessService iStopBusinessService;
@@ -31,16 +31,17 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService{
 
     /**
      * 读取任务的各种状态，未读事件
+     *
      * @param in
      * @return
      * @throws Exception
      */
     @Override
     public Map loadUnreadByJobId(Map in) throws Exception {
-        String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
-        Map out=new HashMap();
-        out.put("unReadJobLog",iMyLogBusinessService.countUnreadJobLog(in));
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+        Map out = new HashMap();
+        out.put("unReadJobLog", iMyLogBusinessService.countUnreadJobLog(in));
         out.put("unReadComplete", iCompleteBusinessService.countUnreadComplete(in));
         out.put("unReadStop", iStopBusinessService.countUnreadStop(in));
         return out;
@@ -48,15 +49,25 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService{
 
     /**
      * 根据taskId获取job
+     *
      * @param in
      * @return
      * @throws Exception
      */
     @Override
     public Map getJobTinyByTaskId(Map in) throws Exception {
-        Integer taskId=(Integer)in.get("taskId");
-        Job job=iJobService.getJobByTaskId(taskId);
-        Map out=new HashMap();
+        Integer taskId = (Integer) in.get("taskId");
+        Job job = iJobService.getJobByTaskId(taskId);
+        Map out = new HashMap();
+        out.put("job", job);
+        return out;
+    }
+
+    @Override
+    public Map getJobTinyByJobId(Map in) throws Exception {
+        Integer jobId = (Integer) in.get("jobId");
+        Job job = iJobService.getJobByJobIdTiny(jobId);
+        Map out = new HashMap();
         out.put("job", job);
         return out;
     }

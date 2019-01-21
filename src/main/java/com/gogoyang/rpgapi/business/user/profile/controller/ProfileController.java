@@ -5,6 +5,7 @@ import com.gogoyang.rpgapi.business.user.profile.vo.ProfileRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sun.java2d.cmm.Profile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -109,6 +110,50 @@ public class ProfileController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10124);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getUserProfile")
+    public Response getUserProfile(@RequestBody ProfileRequest request,
+                                   HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            Map out=iProfileBusinessService.getUserProfile(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10125);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/saveRealName")
+    public Response saveRealName(@RequestBody ProfileRequest request,
+                                 HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("realname", request.getRealName());
+            in.put("idcardNo", request.getIdcardNo());
+            in.put("sex", request.getSex());
+            iProfileBusinessService.saveRealName(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10126);
             }
         }
         return response;

@@ -9,7 +9,7 @@ public interface ICompleteBusinessService {
 
     void createJobComplete(Map in) throws Exception;
 
-    Page<JobComplete> loadCompleteList(Map in) throws Exception;
+    Page<JobComplete> listMyComplete(Map in) throws Exception;
 
     void setCompleteReadTime(Map in) throws Exception;
 

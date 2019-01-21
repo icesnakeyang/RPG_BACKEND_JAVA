@@ -116,6 +116,58 @@ public class ProfileBusinessService implements IProfileBusinessService {
         return out;
     }
 
+    @Override
+    public Map getUserProfile(Map in) throws Exception {
+        String token=in.get("token").toString();
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        RealName realName=iRealNameService.getRealNameByUserId(user.getUserId());
+
+        Map out=new HashMap();
+        out.put("realname", realName);
+        return out;
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void saveRealName(Map in) throws Exception {
+        String token=in.get("token").toString();
+        String realname=in.get("realname").toString();
+        String idcardNo=(String)in.get("idcardNo");
+        Boolean sex=(Boolean)in.get("sex");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        RealName realName=iRealNameService.getRealNameByUserId(user.getUserId());
+        if(realName==null){
+            //insert
+            realName=new RealName();
+            realName.setCreatedTime(new Date());
+            realName.setUserId(user.getUserId());
+            realName.setRealName(realname);
+            realName.setIdcardNo(idcardNo);
+            realName.setSex(sex);
+            iRealNameService.insert(realName);
+        }else{
+            //update
+            realName.setRealName(realname);
+            realName.setIdcardNo(idcardNo);
+            realName.setSex(sex);
+            iRealNameService.update(realName);
+        }
+
+        //update user
+        user.setRealName(realname);
+        iUserService.update(user);
+    }
+
     /**
      * save email
      * will handle set this email to default

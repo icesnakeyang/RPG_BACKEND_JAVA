@@ -62,8 +62,8 @@ public class CompleteController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/loadCompleteList")
-    public Response loadCompleteList(@RequestBody JobRequest request,
+    @PostMapping("/listMyComplete")
+    public Response listMyComplete(@RequestBody JobRequest request,
                                      HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
@@ -73,7 +73,7 @@ public class CompleteController {
             in.put("jobId", request.getJobId());
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Page<JobComplete> out = iCompleteBusinessService.loadCompleteList(in);
+            Page<JobComplete> out = iCompleteBusinessService.listMyComplete(in);
             response.setData(out);
         } catch (Exception ex) {
             try {

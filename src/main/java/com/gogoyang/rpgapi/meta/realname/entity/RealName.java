@@ -24,6 +24,12 @@ public class RealName {
 
     @Column(name = "is_verified")
     private Boolean isVerified;
+
+    @Column(name = "idcard_no")
+    private String idcardNo;
+
+    @Column(name = "sex")
+    private Boolean sex;
     //////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getRealNameId() {
@@ -64,5 +70,21 @@ public class RealName {
 
     public void setVerified(Boolean verified) {
         isVerified = verified;
+    }
+
+    public String getIdcardNo() {
+        return idcardNo;
+    }
+
+    public void setIdcardNo(String idcardNo) {
+        this.idcardNo = idcardNo;
+    }
+
+    public Boolean getSex() {
+        return sex;
+    }
+
+    public void setSex(Boolean sex) {
+        this.sex = sex;
     }
 }
