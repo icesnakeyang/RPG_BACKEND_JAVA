@@ -88,7 +88,7 @@ public class JobCompleteService implements IJobCompleteService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateJobComplete(JobComplete jobComplete) throws Exception {
-        if(jobComplete.getCompleteId()==null){
+        if(jobComplete.getCompleteId()==null) {
             throw new Exception("10059");
         }
         jobCompleteDao.save(jobComplete);
@@ -101,8 +101,8 @@ public class JobCompleteService implements IJobCompleteService {
      * @throws Exception
      */
     @Override
-    public ArrayList<JobComplete> loadUnprocessComplete(Integer jobId) throws Exception {
-        ArrayList<JobComplete> completes=jobCompleteDao.findAllByJobIdAndResultIsNull(jobId);
-        return completes;
+    public JobComplete getUnprocessComplete(Integer jobId) throws Exception {
+        JobComplete complete=jobCompleteDao.findByJobIdAndResultIsNull(jobId);
+        return complete;
     }
 }

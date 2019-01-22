@@ -44,12 +44,30 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         Integer jobId = (Integer) in.get("jobId");
         String content = in.get("content").toString();
 
+        //job必须是progress状态
+        Job job=iJobService.getJobByJobIdTiny(jobId);
+        if(job.getStatus()!=JobStatus.PROGRESS){
+            throw new Exception("10130");
+        }
+
         User user = iUserService.getUserByToken(token);
         if (user == null) {
             throw new Exception("10004");
         }
+        if(user.getUserId()!=job.getPartyBId()){
+            throw new Exception("10131");
+        }
 
-        JobComplete jobComplete = new JobComplete();
+
+        /**
+         * 用户只能创建一次验收申请，如果当前有未处理的申请，则不能再次创建
+         */
+        JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
+        if (jobComplete != null) {
+            throw new Exception("10129");
+        }
+
+        jobComplete = new JobComplete();
         jobComplete.setContent(content);
         jobComplete.setCreatedTime(new Date());
         jobComplete.setCreatedUserId(user.getUserId());
@@ -100,35 +118,44 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * 拒绝验收
      * 读取所有未处理验收申请
      * 设置成reject
+     *
      * @param in
      * @throws Exception
      */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void rejectComplete(Map in) throws Exception {
-        Integer jobId=(Integer)in.get("jobId");
-        Job job=iJobService.getJobByJobIdTiny(jobId);
-        if(job.getStatus()!=JobStatus.PROGRESS){
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+        String processRemark = (String) in.get("processRemark");
+
+        //job status must be progress
+        Job job = iJobService.getJobByJobIdTiny(jobId);
+        if (job.getStatus() != JobStatus.PROGRESS) {
             throw new Exception("10063");
         }
-        String token=in.get("token").toString();
-        User user=iUserService.getUserByToken(token);
-        String processRemark=null;
-        if(in.get("processRemark")!=null){
-            processRemark=in.get("processRemark").toString();
+
+        //user must login
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
+            throw new Exception("10004");
         }
-        ArrayList<JobComplete> jobCompletes=iJobCompleteService.loadUnprocessComplete(jobId);
-        for(int i=0;i<jobCompletes.size();i++){
-            jobCompletes.get(i).setResult(LogStatus.REJECT);
-            jobCompletes.get(i).setProcessRemark(processRemark);
-            jobCompletes.get(i).setProcessTime(new Date());
-            jobCompletes.get(i).setProcessUserId(user.getUserId());
-            iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+        //user must be party A
+        if (user.getUserId() != job.getPartyAId()) {
+            throw new Exception("10127");
         }
+
+        JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
+        jobComplete.setResult(LogStatus.REJECT);
+        jobComplete.setProcessRemark(processRemark);
+        jobComplete.setProcessTime(new Date());
+        jobComplete.setProcessUserId(user.getUserId());
+        iJobCompleteService.updateJobComplete(jobComplete);
     }
 
     /**
      * 通过任务验收
+     *
      * @param in
      * @throws Exception
      */
@@ -136,45 +163,53 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackOn = Exception.class)
     public void acceptComplete(Map in) throws Exception {
         /**
-         * 1、查询所有未处理的Complete，修改结果为Accept
+         * 1、查询未处理的Complete，修改结果为Accept
          * 2、把job的Status修改为Accept
          * 3、给甲方增加honor
          * 4、给乙方增加honor
          * 5、刷新甲方和乙方的userinfo的honor值
          */
+        String token = in.get("token").toString();
+        Integer jobId = (Integer) in.get("jobId");
+        String processRemark = (String) in.get("processRemark");
+
         //首先判断任务是否已经验收
-        Integer jobId=(Integer)in.get("jobId");
-        Job job=iJobService.getJobByJobIdTiny(jobId);
-        if(job.getStatus()!= JobStatus.PROGRESS){
+        Job job = iJobService.getJobByJobIdTiny(jobId);
+        if (job.getStatus() != JobStatus.PROGRESS) {
             throw new Exception("10063");
         }
 
-        String token=in.get("token").toString();
-        User user=iUserService.getUserByToken(token);
-        String processRemark="";
-        if(in.get("processRemark")!=null){
-            processRemark=in.get("processRemark").toString();
+        //读取当前用户
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
+            throw new Exception("10004");
         }
-        ArrayList<JobComplete> jobCompletes=iJobCompleteService.loadUnprocessComplete(jobId);
-        if(jobCompletes.size()==0){
-            JobComplete jobComplete=new JobComplete();
+
+        //当前用户必须是甲方
+        if (user.getUserId() != job.getPartyAId()) {
+            throw new Exception("10128");
+        }
+        //读取完成申请
+        JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
+        if (jobComplete == null) {
+            //如果没有申请，则为甲方直接通过验收，需创建一个申请
+            jobComplete = new JobComplete();
+            jobComplete.setCreatedUserId(user.getUserId());
+            jobComplete.setCreatedTime(new Date());
+            jobComplete.setJobId(jobId);
+            jobComplete.setReadTime(new Date());
             jobComplete.setProcessUserId(user.getUserId());
             jobComplete.setProcessTime(new Date());
             jobComplete.setProcessRemark(processRemark);
             jobComplete.setResult(LogStatus.ACCEPT);
-            jobComplete.setCreatedTime(new Date());
-            jobComplete.setCreatedUserId(user.getUserId());
-            jobComplete.setJobId(jobId);
-            jobComplete.setReadTime(new Date());
             iJobCompleteService.insertJobComplete(jobComplete);
-        }else {
-            for(int i=0;i<jobCompletes.size();i++){
-                jobCompletes.get(i).setResult(LogStatus.ACCEPT);
-                jobCompletes.get(i).setProcessRemark(processRemark);
-                jobCompletes.get(i).setProcessTime(new Date());
-                jobCompletes.get(i).setProcessUserId(user.getUserId());
-                iJobCompleteService.updateJobComplete(jobCompletes.get(i));
-            }
+        } else {
+            //乙方已经申请，直接处理
+            jobComplete.setResult(LogStatus.ACCEPT);
+            jobComplete.setProcessRemark(processRemark);
+            jobComplete.setProcessTime(new Date());
+            jobComplete.setProcessUserId(user.getUserId());
+            iJobCompleteService.updateJobComplete(jobComplete);
         }
 
         //把job设置为accept
@@ -182,23 +217,23 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iJobService.updateJob(job);
 
         //给甲方增加honor
-        User userA=iUserService.getUserByUserId(job.getPartyAId());
-        Double ha=0.0;
-        if(userA!=null){
-            ha=userA.getHonor();
+        User userA = iUserService.getUserByUserId(job.getPartyAId());
+        Double ha = 0.0;
+        if (userA != null) {
+            ha = userA.getHonor();
         }
-        ha+=job.getPrice();
+        ha += job.getPrice();
         userA.setHonor(ha);
         userA.setHonorIn(ha);
         iUserService.update(userA);
 
         //给乙方增加honor
-        User userB=iUserService.getUserByUserId(job.getPartyBId());
-        Double hb=0.0;
-        if(userB.getHonor()!=null){
-            hb=userB.getHonor();
+        User userB = iUserService.getUserByUserId(job.getPartyBId());
+        Double hb = 0.0;
+        if (userB.getHonor() != null) {
+            hb = userB.getHonor();
         }
-        hb+=job.getPrice();
+        hb += job.getPrice();
         userB.setHonor(hb);
         userB.setHonorIn(hb);
         iUserService.update(userB);
@@ -208,15 +243,15 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Override
     public Integer countUnreadComplete(Map in) throws Exception {
         Integer userId;
-        if(in.get("userId")==null){
-            String token=in.get("token").toString();
-            User user= iUserService.getUserByToken(token);
-            userId=user.getUserId();
-        }else {
-            userId=(Integer)in.get("userId");
+        if (in.get("userId") == null) {
+            String token = in.get("token").toString();
+            User user = iUserService.getUserByToken(token);
+            userId = user.getUserId();
+        } else {
+            userId = (Integer) in.get("userId");
         }
-        Integer jobId=(Integer)in.get("jobId");
-        ArrayList<JobComplete> jobCompletes=iJobCompleteService.loadMyUnReadComplete(jobId, userId);
+        Integer jobId = (Integer) in.get("jobId");
+        ArrayList<JobComplete> jobCompletes = iJobCompleteService.loadMyUnReadComplete(jobId, userId);
         return jobCompletes.size();
     }
 }

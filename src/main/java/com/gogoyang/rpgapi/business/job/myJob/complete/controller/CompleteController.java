@@ -169,6 +169,7 @@ public class CompleteController {
             Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
+            in.put("processRemark", request.getProcessRemark());
             iCompleteBusinessService.acceptComplete(in);
         } catch (Exception ex) {
             try {

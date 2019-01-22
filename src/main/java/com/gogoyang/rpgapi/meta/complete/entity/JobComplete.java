@@ -39,6 +39,9 @@ public class JobComplete {
     @Column(name = "process_user_id")
     private Integer processUserId;
 
+    @Column(name = "process_read_time")
+    private Date processReadTime;
+
     @Transient
     private String createdUserName;
 
@@ -129,5 +132,13 @@ public class JobComplete {
 
     public void setCreatedUserName(String createdUserName) {
         this.createdUserName = createdUserName;
+    }
+
+    public Date getProcessReadTime() {
+        return processReadTime;
+    }
+
+    public void setProcessReadTime(Date processReadTime) {
+        this.processReadTime = processReadTime;
     }
 }

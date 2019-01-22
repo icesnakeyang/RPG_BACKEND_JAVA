@@ -45,5 +45,5 @@ public interface IJobCompleteService {
      * @return
      * @throws Exception
      */
-    ArrayList<JobComplete> loadUnprocessComplete(Integer jobId) throws Exception;
+    JobComplete getUnprocessComplete(Integer jobId) throws Exception;
 }

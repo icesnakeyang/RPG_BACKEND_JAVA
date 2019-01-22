@@ -16,10 +16,11 @@ public interface JobCompleteDao extends JpaRepository<JobComplete, Integer>{
     /**
      * 读取所有我未阅读的验收日志
      */
-    ArrayList<JobComplete> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndJobId(Integer userId, Integer jobId);
+//    ArrayList<JobComplete> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndJobId(Integer userId, Integer jobId);
+    ArrayList<JobComplete> findAllByProcessReadTimeIsNullAndCreatedUserIdIsNotAndJobId(Integer userId, Integer jobId);
 
     /**
-     * 读取一个任务的所有没有验收处理的申请日志
+     * 读取一个任务的没有验收处理的申请日志
      */
-    ArrayList<JobComplete> findAllByJobIdAndResultIsNull(Integer jobId);
+    JobComplete findByJobIdAndResultIsNull(Integer jobId);
 }
