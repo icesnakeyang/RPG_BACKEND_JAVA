@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.meta.apply.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.dao.JobApplyDao;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
@@ -193,5 +194,17 @@ public class JobApplyService implements IJobApplyService {
         Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
         Page<JobApply> jobApplies=jobApplyDao.findAllByApplyUserId(userId, pageable);
         return jobApplies;
+    }
+
+    /**
+     * read and return all party b un-read new job
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public ArrayList<JobApply> listPartyBNewJob(Integer userId) throws Exception {
+        ArrayList<JobApply> applies=jobApplyDao.findAllByProcessResultReadTimeIsNullAndApplyUserIdAndProcessResult(userId, LogStatus.ACCEPT);
+        return applies;
     }
 }

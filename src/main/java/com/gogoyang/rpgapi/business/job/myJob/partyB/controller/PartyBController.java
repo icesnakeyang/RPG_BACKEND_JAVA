@@ -66,4 +66,28 @@ public class PartyBController {
         }
         return response;
     }
+
+    @ResponseBody
+    @PostMapping("/totalUnreadNewJob")
+    public Response totalUnreadNewJob(@RequestBody JobRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            int unreadNewJob=0;
+            unreadNewJob=iPartyBBusinessService.totalUnreadNewJob(in);
+            Map out=new HashMap();
+            out.put("unreadNewJob", unreadNewJob);
+            response.setData(out);
+        }catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(10133);
+            }
+        }
+        return response;
+    }
 }

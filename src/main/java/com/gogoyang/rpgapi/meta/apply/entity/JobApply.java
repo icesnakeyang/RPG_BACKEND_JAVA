@@ -42,6 +42,9 @@ public class JobApply {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "process_result_read_time")
+    private Date processResultReadTime;
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public Integer getJobApplyId() {
         return jobApplyId;
@@ -121,5 +124,13 @@ public class JobApply {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Date getProcessResultReadTime() {
+        return processResultReadTime;
+    }
+
+    public void setProcessResultReadTime(Date processResultReadTime) {
+        this.processResultReadTime = processResultReadTime;
     }
 }

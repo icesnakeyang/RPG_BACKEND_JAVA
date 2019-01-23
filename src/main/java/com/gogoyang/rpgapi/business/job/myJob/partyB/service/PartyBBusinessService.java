@@ -4,6 +4,8 @@ import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusiness
 import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
+import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +27,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
     private final IUserService iUserService;
     private final IRealNameService iRealNameService;
     private final IMyLogBusinessService iMyLogBusinessService;
+    private final IJobApplyService iJobApplyService;
 
     @Autowired
     public PartyBBusinessService(IJobService iJobService,
@@ -31,13 +35,15 @@ public class PartyBBusinessService implements IPartyBBusinessService {
                                  IStopBusinessService iStopBusinessService,
                                  IUserService iUserService,
                                  IRealNameService iRealNameService,
-                                 IMyLogBusinessService iMyLogBusinessService) {
+                                 IMyLogBusinessService iMyLogBusinessService,
+                                 IJobApplyService iJobApplyService) {
         this.iJobService = iJobService;
         this.iCompleteBusinessService = iCompleteBusinessService;
         this.iStopBusinessService = iStopBusinessService;
         this.iUserService = iUserService;
         this.iRealNameService = iRealNameService;
         this.iMyLogBusinessService = iMyLogBusinessService;
+        this.iJobApplyService = iJobApplyService;
     }
 
     @Override
@@ -100,5 +106,19 @@ public class PartyBBusinessService implements IPartyBBusinessService {
 
         return out;
 
+    }
+
+    @Override
+    public Integer totalUnreadNewJob(Map in) throws Exception {
+        String token=in.get("token").toString();
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        int totalNewJob=0;
+        ArrayList<JobApply> jobApplies=iJobApplyService.listPartyBNewJob(user.getUserId());
+        totalNewJob=jobApplies.size();
+        return totalNewJob;
     }
 }

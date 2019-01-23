@@ -44,4 +44,6 @@ public interface IJobApplyService {
     void updateJobApply(JobApply jobApply) throws Exception;
 
     Page<JobApply> listJobapplybyUserId(Integer userId, Integer pageIndex, Integer pageSize) throws Exception;
+
+    ArrayList<JobApply> listPartyBNewJob(Integer userId) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.meta.apply.dao;
 
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,5 +42,7 @@ public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
     ArrayList<JobApply> findAllByApplyUserIdAndProcessResultIsNull(Integer userId);
 
     Page<JobApply> findAllByApplyUserId(Integer userId, Pageable pageable);
+
+    ArrayList<JobApply> findAllByProcessResultReadTimeIsNullAndApplyUserIdAndProcessResult(Integer userId, LogStatus logStatus);
 
 }
