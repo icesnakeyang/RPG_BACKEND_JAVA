@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.meta.complete.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import org.springframework.data.domain.Page;
 
@@ -55,4 +57,12 @@ public interface IJobCompleteService {
      * @throws Exception
      */
     JobComplete getUnprocessComplete(Integer jobId) throws Exception;
+
+    /**
+     * 读取验收成功的验收日志
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    JobComplete getCompleteByStatus(Integer jobId, LogStatus logStatus) throws Exception;
 }

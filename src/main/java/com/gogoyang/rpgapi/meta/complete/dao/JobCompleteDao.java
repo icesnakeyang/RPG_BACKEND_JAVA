@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.meta.complete.dao;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,4 +29,6 @@ public interface JobCompleteDao extends JpaRepository<JobComplete, Integer>{
      * 读取一个任务的没有验收处理的申请日志
      */
     JobComplete findByJobIdAndResultIsNull(Integer jobId);
+
+    JobComplete findByJobIdAndResult(Integer jobId, LogStatus logStatus);
 }

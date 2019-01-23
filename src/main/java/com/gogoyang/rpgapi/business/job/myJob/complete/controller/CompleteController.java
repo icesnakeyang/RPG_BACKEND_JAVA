@@ -183,4 +183,50 @@ public class CompleteController {
         }
         return response;
     }
+
+    @ResponseBody
+    @PostMapping("/listMyPartyAAcceptJob")
+    public Response listMyPartyAAcceptJob(@RequestBody JobCompleteRequest request,
+                                    HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Map out=iCompleteBusinessService.listMyPartyAAcceptJob(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10132);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/listMyPartyBAcceptJob")
+    public Response listMyPartyBAcceptJob(@RequestBody JobCompleteRequest request,
+                                    HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
+            Map out=iCompleteBusinessService.listMyPartyBAcceptJob(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10132);
+            }
+        }
+        return response;
+    }
 }

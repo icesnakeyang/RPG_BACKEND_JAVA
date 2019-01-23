@@ -4,7 +4,6 @@ import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import org.springframework.data.domain.Page;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public interface IJobService {
@@ -64,4 +63,8 @@ public interface IJobService {
     void deleteJob(Integer jobId) throws Exception;
 
     Page<Job> listPublicJob(Map qIn) throws Exception;
+
+    Page<Job> listMyPartyAAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception;
+
+    Page<Job> listMyPartyBAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception;
 }

@@ -323,6 +323,7 @@ public class TaskController {
             in.put("price", request.getPrice());
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
+            in.put("detail", request.getDetail());
             iTaskBusinessService.publishNewJob(in);
         }catch (Exception ex){
             try {

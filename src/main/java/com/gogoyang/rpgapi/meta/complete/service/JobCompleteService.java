@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.meta.complete.service;
 
+import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.user.entity.User;
@@ -111,5 +113,11 @@ public class JobCompleteService implements IJobCompleteService {
     public JobComplete getUnprocessComplete(Integer jobId) throws Exception {
         JobComplete complete=jobCompleteDao.findByJobIdAndResultIsNull(jobId);
         return complete;
+    }
+
+    @Override
+    public JobComplete getCompleteByStatus(Integer jobId, LogStatus logStatus) throws Exception {
+        JobComplete jobComplete=jobCompleteDao.findByJobIdAndResult(jobId, logStatus);
+        return jobComplete;
     }
 }

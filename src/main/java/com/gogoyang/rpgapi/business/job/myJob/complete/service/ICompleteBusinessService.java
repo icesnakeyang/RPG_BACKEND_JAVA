@@ -29,4 +29,8 @@ public interface ICompleteBusinessService {
      * @throws Exception
      */
     Integer countUnreadComplete(Map in) throws Exception;
+
+    Map listMyPartyAAcceptJob(Map in) throws Exception;
+
+    Map listMyPartyBAcceptJob(Map in) throws Exception;
 }

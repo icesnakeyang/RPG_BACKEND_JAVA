@@ -225,4 +225,20 @@ class JobService implements IJobService {
         Page<Job> jobs=jobDao.findAllByStatusOrStatus(JobStatus.PENDING, JobStatus.MATCHING, pageable);
         return jobs;
     }
+
+    @Override
+    public Page<Job> listMyPartyAAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs=jobDao.findAllByStatusAndPartyAId(JobStatus.ACCEPTANCE, userId, pageable);
+        return jobs;
+    }
+
+    @Override
+    public Page<Job> listMyPartyBAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
+        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs=jobDao.findAllByStatusAndPartyBId(JobStatus.ACCEPTANCE, userId, pageable);
+        return jobs;
+    }
 }

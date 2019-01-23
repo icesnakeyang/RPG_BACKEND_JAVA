@@ -1,9 +1,12 @@
 package com.gogoyang.rpgapi.business.job.myJob.complete.service;
 
+import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.complete.service.IJobCompleteService;
+import com.gogoyang.rpgapi.meta.honor.entity.Honor;
+import com.gogoyang.rpgapi.meta.honor.service.IHonorService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -22,13 +26,17 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     private final IJobCompleteService iJobCompleteService;
     private final IJobService iJobService;
     private final IUserService iUserService;
+    private final IHonorService iHonorService;
 
     @Autowired
     public CompleteBusinessService(IJobCompleteService iJobCompleteService,
-                                   IJobService iJobService, IUserService iUserService) {
+                                   IJobService iJobService,
+                                   IUserService iUserService,
+                                   IHonorService iHonorService) {
         this.iJobCompleteService = iJobCompleteService;
         this.iJobService = iJobService;
         this.iUserService = iUserService;
+        this.iHonorService = iHonorService;
     }
 
     /**
@@ -93,7 +101,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
     /**
      * 把我未读的验收任务日志设置为当前阅读
-     *
+     * 包括：创建的新日志，和已处理但未阅读处理结果的日志
      * @param in
      * @throws Exception
      */
@@ -106,11 +114,22 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         if (user == null) {
             throw new Exception("10004");
         }
+
+        //首先处理创建的新日志
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.loadMyUnReadComplete(jobId, user.getUserId());
 
         for (int i = 0; i < jobCompletes.size(); i++) {
             jobCompletes.get(i).setReadTime(new Date());
             iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+        }
+
+        //已处理，但未阅读处理结果的日志
+        jobCompletes=iJobCompleteService.listMyUnReadCompleteProcess(jobId, user.getUserId());
+        for(int i=0;i<jobCompletes.size();i++){
+            if(jobCompletes.get(i).getResult()!=null) {
+                jobCompletes.get(i).setProcessReadTime(new Date());
+                iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+            }
         }
     }
 
@@ -217,10 +236,21 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iJobService.updateJob(job);
 
         //给甲方增加honor
+        Honor honor=new Honor();
+        honor.setCreatedTime(new Date());
+        honor.setCreatedUserId(user.getUserId());
+        honor.setJobId(job.getJobId());
+        honor.setPoint(job.getPrice());
+        honor.setType(HonorType.JOB_ACCEPTED);
+        honor.setUserId(job.getPartyAId());
+        iHonorService.insertHonor(honor);
+        //刷新甲方honor
         User userA = iUserService.getUserByUserId(job.getPartyAId());
         Double ha = 0.0;
         if (userA != null) {
-            ha = userA.getHonor();
+            if(userA.getHonor()!=null) {
+                ha = userA.getHonor();
+            }
         }
         ha += job.getPrice();
         userA.setHonor(ha);
@@ -228,16 +258,26 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iUserService.update(userA);
 
         //给乙方增加honor
+        honor=new Honor();
+        honor.setUserId(job.getPartyBId());
+        honor.setPoint(job.getPrice());
+        honor.setType(HonorType.JOB_ACCEPTED);
+        honor.setJobId(job.getJobId());
+        honor.setCreatedTime(new Date());
+        honor.setUserId(user.getUserId());
+        iHonorService.insertHonor(honor);
+        //刷新乙方Honor
         User userB = iUserService.getUserByUserId(job.getPartyBId());
         Double hb = 0.0;
         if (userB.getHonor() != null) {
-            hb = userB.getHonor();
+            if(userB.getHonor()!=null) {
+                hb = userB.getHonor();
+            }
         }
         hb += job.getPrice();
         userB.setHonor(hb);
         userB.setHonorIn(hb);
         iUserService.update(userB);
-
     }
 
     @Override
@@ -256,5 +296,83 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         jobCompletes=iJobCompleteService.listMyUnReadCompleteProcess(jobId, userId);
         unread+=jobCompletes.size();
         return unread;
+    }
+
+    /**
+     *  read all my acceptance jobs
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map listMyPartyAAcceptJob(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Page<Job> jobs=iJobService.listMyPartyAAcceptJob(user.getUserId(), pageIndex, pageSize);
+
+        ArrayList list=new ArrayList();
+        for(int i=0;i<jobs.getContent().size();i++){
+            Map map=fillAcceptJobMap(jobs.getContent().get(i));
+            list.add(map);
+        }
+        Map out=new HashMap();
+        out.put("jobs", list);
+        return out;
+    }
+
+    @Override
+    public Map listMyPartyBAcceptJob(Map in) throws Exception {
+        String token=in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
+
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+
+        Page<Job> jobs=iJobService.listMyPartyBAcceptJob(user.getUserId(), pageIndex, pageSize);
+        ArrayList list=new ArrayList();
+        for(int i=0;i<jobs.getContent().size();i++){
+            Map map=fillAcceptJobMap(jobs.getContent().get(i));
+            list.add(map);
+        }
+        Map out=new HashMap();
+        out.put("jobs", list);
+        return out;
+    }
+
+    private Map fillAcceptJobMap(Job job)throws Exception{
+        Map map=new HashMap();
+        map.put("title", job.getTitle());
+        map.put("jobId", job.getJobId());
+        map.put("code", job.getCode());
+        map.put("partyAId", job.getPartyAId());
+        User userA=iUserService.getUserByUserId(job.getPartyAId());
+        if(userA.getRealName()!=null){
+            map.put("partyAName", userA.getRealName());
+        }else{
+            map.put("partyAName", userA.getEmail());
+        }
+        map.put("partyBId", job.getPartyBId());
+        User userB=iUserService.getUserByUserId(job.getPartyBId());
+        if(userB.getRealName()!=null){
+            map.put("partyBName", userB.getRealName());
+        }else{
+            map.put("partyBName", userB.getEmail());
+        }
+        map.put("contractTime", job.getContractTime());
+        map.put("price", job.getPrice());
+        map.put("days", job.getDays());
+        JobComplete jobComplete=iJobCompleteService.getCompleteByStatus(job.getJobId(), LogStatus.ACCEPT);
+        map.put("acceptedTime", jobComplete.getProcessTime());
+        return map;
     }
 }

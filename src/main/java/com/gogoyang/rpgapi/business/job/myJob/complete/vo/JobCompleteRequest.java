@@ -13,7 +13,8 @@ public class JobCompleteRequest {
     private String content;
     private LogStatus result;
     private String processRemark;
-
+    private Integer pageIndex;
+    private Integer pageSize;
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getJobId() {
@@ -46,5 +47,21 @@ public class JobCompleteRequest {
 
     public void setProcessRemark(String processRemark) {
         this.processRemark = processRemark;
+    }
+
+    public Integer getPageIndex() {
+        return pageIndex;
+    }
+
+    public void setPageIndex(Integer pageIndex) {
+        this.pageIndex = pageIndex;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }
