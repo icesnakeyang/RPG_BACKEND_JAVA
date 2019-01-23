@@ -33,6 +33,15 @@ public interface IJobCompleteService {
     ArrayList<JobComplete> loadMyUnReadComplete(Integer jobId, Integer userId) throws Exception;
 
     /**
+     * read all un read complete process by me
+     * @param jobId
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    ArrayList<JobComplete> listMyUnReadCompleteProcess(Integer jobId, Integer userId) throws Exception;
+
+    /**
      * 修改验收日志/处理验收日志申请
      * @param jobComplete
      * @throws Exception

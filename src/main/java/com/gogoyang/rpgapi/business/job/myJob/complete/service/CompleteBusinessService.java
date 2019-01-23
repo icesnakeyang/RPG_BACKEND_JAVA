@@ -252,6 +252,9 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
         Integer jobId = (Integer) in.get("jobId");
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.loadMyUnReadComplete(jobId, userId);
-        return jobCompletes.size();
+        int unread=jobCompletes.size();
+        jobCompletes=iJobCompleteService.listMyUnReadCompleteProcess(jobId, userId);
+        unread+=jobCompletes.size();
+        return unread;
     }
 }

@@ -80,6 +80,13 @@ public class JobCompleteService implements IJobCompleteService {
         return jobCompletes;
     }
 
+    @Override
+    public ArrayList<JobComplete> listMyUnReadCompleteProcess(Integer jobId, Integer userId) throws Exception {
+        ArrayList<JobComplete> jobCompleteArrayList=jobCompleteDao.findAllByProcessReadTimeIsNullAndCreatedUserIdAndJobId(userId, jobId);
+        return jobCompleteArrayList;
+    }
+
+
     /**
      * 修改一个验收日志
      * @param jobComplete
