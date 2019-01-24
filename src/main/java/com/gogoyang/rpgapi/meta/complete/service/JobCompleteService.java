@@ -86,11 +86,20 @@ public class JobCompleteService implements IJobCompleteService {
     }
 
     /**
-     * 读取乙方未阅读的，甲方已处理的验收日志
+     * 读取乙方未阅读的，甲方已拒绝的验收日志
      */
     @Override
     public ArrayList<JobComplete> listPartyBUnread(Integer userId) throws Exception {
-        ArrayList<JobComplete> jobCompletes=jobCompleteDao.findAllByResultIsNotNullAndProcessReadTimeIsNullAndCreatedUserId(userId);
+        ArrayList<JobComplete> jobCompletes=jobCompleteDao.findAllByResultAndProcessReadTimeIsNullAndCreatedUserId(LogStatus.REJECT, userId);
+        return jobCompletes;
+    }
+
+    /**
+     * 读取乙方未阅读的，甲方已通过验收的日志
+     */
+    @Override
+    public ArrayList<JobComplete> listPartyBUnreadAccept(Integer userId) throws Exception {
+        ArrayList<JobComplete> jobCompletes=jobCompleteDao.findAllByResultAndProcessReadTimeIsNullAndCreatedUserId(LogStatus.ACCEPT, userId);
         return jobCompletes;
     }
 

@@ -329,6 +329,22 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         return out;
     }
 
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void setAcceptReadTime(Map in) throws Exception {
+        String token = in.get("token").toString();
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
+            throw new Exception("10004");
+        }
+
+        ArrayList<JobComplete> jobCompletes=iJobCompleteService.listPartyBUnreadAccept(user.getUserId());
+        for(int i=0;i<jobCompletes.size();i++){
+            jobCompletes.get(i).setProcessReadTime(new Date());
+            iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+        }
+    }
+
     private Map fillAcceptJobMap(Job job)throws Exception{
         Map map=new HashMap();
         map.put("title", job.getTitle());

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -225,6 +226,26 @@ public class CompleteController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10132);
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/setAcceptReadTime")
+    public Response setAcceptReadTime(@RequestBody JobCompleteRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            iCompleteBusinessService.setAcceptReadTime(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10058);
             }
         }
         return response;

@@ -39,6 +39,8 @@ public interface IJobCompleteService {
      */
     ArrayList<JobComplete> listPartyBUnread(Integer userId) throws Exception;
 
+    ArrayList<JobComplete> listPartyBUnreadAccept(Integer userId) throws Exception;
+
     ArrayList<JobComplete> listPartyBUnreadJobId(Integer userId, Integer jobId) throws Exception;
 
     /**

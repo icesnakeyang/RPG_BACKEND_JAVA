@@ -35,9 +35,9 @@ public interface JobCompleteDao extends JpaRepository<JobComplete, Integer>{
     ArrayList<JobComplete> findAllByReadTimeIsNullAndProcessUserIdAndJobId(Integer partyAId, Integer jobId);
 
     /**
-     * 读取乙方未阅读的甲方已处理的验收申请
+     * 读取乙方未阅读的甲方已验收申请
      */
-    ArrayList<JobComplete> findAllByResultIsNotNullAndProcessReadTimeIsNullAndCreatedUserId(Integer partyBId);
+    ArrayList<JobComplete> findAllByResultAndProcessReadTimeIsNullAndCreatedUserId(LogStatus logStatus, Integer partyBId);
 
     /**
      * 读取一个任务乙方未阅读的甲方已处理的验收申请

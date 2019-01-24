@@ -36,6 +36,7 @@ public class MyJobCommonController {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
+                System.out.println(ex.getMessage());
                 response.setErrorCode(10119);
             }
         }

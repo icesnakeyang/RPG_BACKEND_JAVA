@@ -55,9 +55,16 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
     @Override
     public Map totalMyUnread(Map in) throws Exception {
         /**
-         * 1、所有我未阅读的jobApply
-         * 2、所有我未阅读的jobLog
-         * 3、所有我未阅读的jobComplete
+         * 1、所有我是甲方的未读
+         * 2、所有我是乙方的未读
+         * 3、所有我是乙方的未读的验收通过日志
+         */
+        /**
+         * 返回：
+         * totalUnread
+         * totalPartyAUnread
+         * totalPartyBUnread
+         * totalUnreadAccept
          */
         String token = in.get("token").toString();
         Integer jobId=(Integer)in.get("jobId");
@@ -68,12 +75,21 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         Map out = new HashMap();
 
         if(jobId==null) {
-            out.put("unReadJobLog", countUnreadJobLog(user.getUserId()));
-            out.put("unReadComplete", countUnreadComplete(user.getUserId()));
-            out.put("unReadStop", countUnreadStop(in));
+            Integer totalUnread=0;
+            Integer totalPartyAUnread=0;
+            Integer totalPartyBUnread=0;
+            Integer totalUnreadAccept=0;
+            totalPartyAUnread=totalPartyAUnread(user.getUserId());
+            totalPartyBUnread+=totalPartyBUnread(user.getUserId());
+            totalUnreadAccept=totalUnreadAccept(user.getUserId());
+            totalUnread=totalPartyAUnread+totalPartyBUnread+totalUnreadAccept;
+            out.put("totalUnread", totalUnread);
+            out.put("totalPartyAUnread", totalPartyAUnread);
+            out.put("totalPartyBUnread", totalPartyBUnread);
+            out.put("totalUnreadAccept", totalUnreadAccept);
         }else {
             out.put("unReadJobLog", countUnreadJobLogJobId(user.getUserId(), jobId));
-            out.put("unReadComplete", countUnreadCompleteJobId(user.getUserId(), jobId));
+//            out.put("unReadComplete", countUnreadCompleteJobId(user.getUserId(), jobId));
         }
         return out;
     }
@@ -120,16 +136,6 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         return out;
     }
 
-    /**
-     * 统计userId未读的JobId的日志
-     */
-    private Integer countUnreadJobLog(Integer userId) throws Exception {
-        ArrayList<JobLog> jobLogsA=iJobLogService.listPartyAUnreadJobLog(userId);
-        ArrayList<JobLog> jobLogsB=iJobLogService.listPartyBUnreadJobLog(userId);
-        int unRead=jobLogsA.size()+jobLogsB.size();
-        return unRead;
-    }
-
     private Integer countUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
         ArrayList<JobLog> jobLogsA=iJobLogService.listPartyAUnreadJobLog(userId);
         ArrayList<JobLog> jobLogsB=iJobLogService.listPartyBUnreadJobLog(userId);
@@ -138,35 +144,46 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
     }
 
     /**
-     * 统计userId未读的complete日志
+     * 统计甲方未读日志
      */
-    private Integer countUnreadComplete(Integer userId) throws Exception {
+    private Integer totalPartyAUnread(Integer userId) throws Exception {
         /**
-         * 如果当前用户是甲方
-         * 查询是否有未阅读的验收日志
-         * 如果当前用户是乙方
-         * 查询是否有未阅读的处理验收日志
+         * party a unread log
+         * party a unread complete
          */
-
+        int unread=0;
+        ArrayList<JobLog> jobLogs=iJobLogService.listPartyAUnreadJobLog(userId);
+        unread+=jobLogs.size();
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyAUnread(userId);
-        int unread=jobCompletes.size();
-        jobCompletes=iJobCompleteService.listPartyBUnread(userId);
         unread+=jobCompletes.size();
         return unread;
     }
 
-    private Integer countUnreadCompleteJobId(Integer userId, Integer jobId) throws Exception {
+    /**
+     * 统计乙方未读日志
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    private Integer totalPartyBUnread(Integer userId) throws Exception{
         /**
-         * 如果当前用户是甲方
-         * 查询是否有未阅读的验收日志
-         * 如果当前用户是乙方
-         * 查询是否有未阅读的处理验收日志
+         * party b unread complete
+         * party b unread job log
          */
-
-        ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyAUnreadJobId(userId, jobId);
-        int unread=jobCompletes.size();
-        jobCompletes=iJobCompleteService.listPartyBUnreadJobId(userId,jobId);
+        int unread=0;
+        ArrayList<JobComplete> jobCompletes=iJobCompleteService.listPartyBUnread(userId);
         unread+=jobCompletes.size();
+        ArrayList<JobLog> jobLogs=iJobLogService.listPartyBUnreadJobLog(userId);
+        unread+=jobLogs.size();
+        return unread;
+    }
+
+    private Integer totalUnreadAccept(Integer userId) throws Exception {
+        /**
+         * 只有乙方才有未读的验收日志
+         */
+        ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyBUnreadAccept(userId);
+        int unread=jobCompletes.size();
         return unread;
     }
 

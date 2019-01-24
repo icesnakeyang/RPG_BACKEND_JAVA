@@ -25,4 +25,6 @@ public interface ICompleteBusinessService {
     Map listMyPartyAAcceptJob(Map in) throws Exception;
 
     Map listMyPartyBAcceptJob(Map in) throws Exception;
+
+    void setAcceptReadTime(Map in) throws Exception;
 }
