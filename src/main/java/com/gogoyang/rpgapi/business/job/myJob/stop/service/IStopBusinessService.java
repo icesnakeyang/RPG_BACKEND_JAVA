@@ -26,12 +26,4 @@ public interface IStopBusinessService {
      * @throws Exception
      */
     void acceptStop(Map in) throws Exception;
-
-    /**
-     * 统计未阅读的终止日志数量
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Integer countUnreadStop(Map in) throws Exception;
 }

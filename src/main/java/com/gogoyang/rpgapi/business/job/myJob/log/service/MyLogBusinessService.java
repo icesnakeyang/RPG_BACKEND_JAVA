@@ -85,32 +85,16 @@ public class MyLogBusinessService implements IMyLogBusinessService{
         if(user==null){
             throw new Exception("10004");
         }
-        ArrayList<JobLog> jobLogs=iJobLogService.loadMyUnreadJobLog(jobId, user.getUserId());
 
-        for(int i=0;i<jobLogs.size();i++){
-            jobLogs.get(i).setReadTime(new Date());
-            iJobLogService.updateJobLog(jobLogs.get(i));
+        ArrayList<JobLog> jobLogsA=iJobLogService.listPartyAUnreadJobLogJobId(jobId, user.getUserId());
+        for(int i=0;i<jobLogsA.size();i++){
+            jobLogsA.get(i).setReadTime(new Date());
+            iJobLogService.updateJobLog(jobLogsA.get(i));
         }
-    }
-
-    /**
-     * 统计userId未读的JobId的日志
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    @Override
-    public Integer countUnreadJobLog(Map in) throws Exception {
-        Integer userId;
-        if(in.get("userId")==null){
-            String token=in.get("token").toString();
-            User user = iUserService.getUserByToken(token);
-            userId=user.getUserId();
-        }else {
-            userId=(Integer)in.get("userId");
+        ArrayList<JobLog> jobLogsB=iJobLogService.listPartyBUnreadJobLogJobId(jobId, user.getUserId());
+        for(int i=0;i<jobLogsB.size();i++){
+            jobLogsB.get(i).setReadTime(new Date());
+            iJobLogService.updateJobLog(jobLogsB.get(i));
         }
-        Integer jobId=(Integer)in.get("jobId");
-        ArrayList<JobLog> jobLogs=iJobLogService.loadMyUnreadJobLog(jobId, userId);
-        return jobLogs.size();
     }
 }

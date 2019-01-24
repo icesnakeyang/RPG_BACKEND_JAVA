@@ -21,13 +21,16 @@ public class MyJobCommonController {
     }
 
     @ResponseBody
-    @PostMapping("/loadUnreadByJobId")
-    public Response loadUnreadByJobId(@RequestBody JobRequest request,
+    @PostMapping("/totalMyUnread")
+    public Response totalMyUnread(@RequestBody JobRequest request,
                                       HttpServletRequest httpServletRequest){
         Response response=new Response();
         try {
+            String token=httpServletRequest.getHeader("token");
             Map in=new HashMap();
-            Map out=iMyJobCommonBusinessService.loadUnreadByJobId(in);
+            in.put("token", token);
+            in.put("jobId", request.getJobId());
+            Map out=iMyJobCommonBusinessService.totalMyUnread(in);
             response.setData(out);
         }catch (Exception ex){
             try {

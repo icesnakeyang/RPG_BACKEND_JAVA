@@ -244,19 +244,4 @@ public class StopBusinessService implements IStopBusinessService {
         iUserService.update(userA);
         iUserService.update(userB);
     }
-
-    @Override
-    public Integer countUnreadStop(Map in) throws Exception {
-        Integer userId;
-        if(in.get("userId")==null){
-            String token=in.get("token").toString();
-            User user = iUserService.getUserByToken(token);
-            userId=user.getUserId();
-        }else {
-            userId=(Integer)in.get("userId");
-        }
-        Integer jobId=(Integer)in.get("jobId");
-        ArrayList<JobStop> stops=iJobStopService.loadMyUnReadStop(jobId, userId);
-        return stops.size();
-    }
 }

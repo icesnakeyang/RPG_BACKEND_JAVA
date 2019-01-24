@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.meta.complete.service;
 
-import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import org.springframework.data.domain.Page;
@@ -26,22 +25,21 @@ public interface IJobCompleteService {
     Page<JobComplete> loadJobCompleteByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
-     * 获取一个任务，一个用户的所有未读验收日志
-     * @param jobId
-     * @param userId
-     * @return
-     * @throws Exception
+     * 甲方读取未阅读的验收日志
      */
-    ArrayList<JobComplete> loadMyUnReadComplete(Integer jobId, Integer userId) throws Exception;
+    ArrayList<JobComplete> listPartyAUnread(Integer userId) throws Exception;
+
+    /**
+     * 甲方读取某个任务的未阅读的验收日志
+     */
+    ArrayList<JobComplete> listPartyAUnreadJobId(Integer userId, Integer jobId) throws Exception;
 
     /**
      * read all un read complete process by me
-     * @param jobId
-     * @param userId
-     * @return
-     * @throws Exception
      */
-    ArrayList<JobComplete> listMyUnReadCompleteProcess(Integer jobId, Integer userId) throws Exception;
+    ArrayList<JobComplete> listPartyBUnread(Integer userId) throws Exception;
+
+    ArrayList<JobComplete> listPartyBUnreadJobId(Integer userId, Integer jobId) throws Exception;
 
     /**
      * 修改验收日志/处理验收日志申请

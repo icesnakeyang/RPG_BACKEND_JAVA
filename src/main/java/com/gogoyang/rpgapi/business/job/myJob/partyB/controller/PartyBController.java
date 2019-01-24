@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,30 +61,6 @@ public class PartyBController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10122);
-            }
-        }
-        return response;
-    }
-
-    @ResponseBody
-    @PostMapping("/totalUnreadNewJob")
-    public Response totalUnreadNewJob(@RequestBody JobRequest request,
-                                      HttpServletRequest httpServletRequest){
-        Response response=new Response();
-        try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
-            in.put("token", token);
-            int unreadNewJob=0;
-            unreadNewJob=iPartyBBusinessService.totalUnreadNewJob(in);
-            Map out=new HashMap();
-            out.put("unreadNewJob", unreadNewJob);
-            response.setData(out);
-        }catch (Exception ex) {
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setErrorCode(10133);
             }
         }
         return response;

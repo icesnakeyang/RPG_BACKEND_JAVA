@@ -115,20 +115,18 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             throw new Exception("10004");
         }
 
-        //首先处理创建的新日志
-        ArrayList<JobComplete> jobCompletes = iJobCompleteService.loadMyUnReadComplete(jobId, user.getUserId());
-
-        for (int i = 0; i < jobCompletes.size(); i++) {
-            jobCompletes.get(i).setReadTime(new Date());
-            iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+        //首先处理我是甲方时未阅读的新日志
+        ArrayList<JobComplete> jobCompletesA = iJobCompleteService.listPartyAUnreadJobId(jobId, user.getUserId());
+        for (int i = 0; i < jobCompletesA.size(); i++) {
+            jobCompletesA.get(i).setReadTime(new Date());
+            iJobCompleteService.updateJobComplete(jobCompletesA.get(i));
         }
-
-        //已处理，但未阅读处理结果的日志
-        jobCompletes=iJobCompleteService.listMyUnReadCompleteProcess(jobId, user.getUserId());
-        for(int i=0;i<jobCompletes.size();i++){
-            if(jobCompletes.get(i).getResult()!=null) {
-                jobCompletes.get(i).setProcessReadTime(new Date());
-                iJobCompleteService.updateJobComplete(jobCompletes.get(i));
+        //然后处理我是乙方时未阅读的新日志
+        ArrayList<JobComplete> jobCompletesB = iJobCompleteService.listPartyBUnreadJobId(jobId, user.getUserId());
+        for(int i=0;i<jobCompletesB.size();i++){
+            if(jobCompletesB.get(i).getResult()!=null) {
+                jobCompletesB.get(i).setProcessReadTime(new Date());
+                iJobCompleteService.updateJobComplete(jobCompletesB.get(i));
             }
         }
     }
@@ -278,24 +276,6 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         userB.setHonor(hb);
         userB.setHonorIn(hb);
         iUserService.update(userB);
-    }
-
-    @Override
-    public Integer countUnreadComplete(Map in) throws Exception {
-        Integer userId;
-        if (in.get("userId") == null) {
-            String token = in.get("token").toString();
-            User user = iUserService.getUserByToken(token);
-            userId = user.getUserId();
-        } else {
-            userId = (Integer) in.get("userId");
-        }
-        Integer jobId = (Integer) in.get("jobId");
-        ArrayList<JobComplete> jobCompletes = iJobCompleteService.loadMyUnReadComplete(jobId, userId);
-        int unread=jobCompletes.size();
-        jobCompletes=iJobCompleteService.listMyUnReadCompleteProcess(jobId, userId);
-        unread+=jobCompletes.size();
-        return unread;
     }
 
     /**

@@ -10,5 +10,8 @@ public interface IJobLogService {
     void createJobLog(JobLog jobLog) throws Exception;
     Page<JobLog> loadJobLogByJobId(Integer jobLogId, Integer pageIndex, Integer pageSize) throws Exception;
     void updateJobLog(JobLog jobLog) throws Exception;
-    ArrayList<JobLog> loadMyUnreadJobLog(Integer jobId, Integer userId) throws Exception;
+    ArrayList<JobLog> listPartyAUnreadJobLog(Integer userId) throws Exception;
+    ArrayList<JobLog> listPartyAUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception;
+    ArrayList<JobLog> listPartyBUnreadJobLog(Integer userId) throws Exception;
+    ArrayList<JobLog> listPartyBUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception;
 }

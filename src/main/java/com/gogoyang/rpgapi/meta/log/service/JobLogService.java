@@ -77,15 +77,32 @@ public class JobLogService implements IJobLogService{
     }
 
     /**
-     * 读取一个任务里所有我未阅读的日志
-     * @param jobId
-     * @param userId
-     * @return
-     * @throws Exception
+     * 读取一个任务里所有甲方未阅读的日志
      */
     @Override
-    public ArrayList<JobLog> loadMyUnreadJobLog(Integer jobId, Integer userId) throws Exception {
-        ArrayList<JobLog> jobLogs=jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndJobId(userId, jobId);
+    public ArrayList<JobLog> listPartyAUnreadJobLog(Integer userId) throws Exception {
+        ArrayList<JobLog> jobLogs=jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyAId(userId, userId);
+        return jobLogs;
+    }
+
+    @Override
+    public ArrayList<JobLog> listPartyAUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
+        ArrayList<JobLog> jobLogs=jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyAIdAndJobId(userId, userId, jobId);
+        return jobLogs;
+    }
+
+    /**
+     * 读取一个任务里所有乙方未阅读的日志
+     */
+    @Override
+    public ArrayList<JobLog> listPartyBUnreadJobLog(Integer userId) throws Exception {
+        ArrayList<JobLog> jobLogs=jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyBId(userId, userId);
+        return jobLogs;
+    }
+
+    @Override
+    public ArrayList<JobLog> listPartyBUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
+        ArrayList<JobLog> jobLogs=jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyBIdAndJobId(userId, userId, jobId);
         return jobLogs;
     }
 }

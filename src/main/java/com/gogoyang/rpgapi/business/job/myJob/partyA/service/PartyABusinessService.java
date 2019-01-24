@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myJob.partyA.service;
 
+import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
@@ -24,6 +25,7 @@ public class PartyABusinessService implements IPartyABusinessService{
     private final IUserService iUserService;
     private final IRealNameService iRealNameService;
     private final IMyLogBusinessService iMyLogBusinessService;
+    private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
 
     @Autowired
     public PartyABusinessService(IJobService iJobService,
@@ -31,13 +33,15 @@ public class PartyABusinessService implements IPartyABusinessService{
                                  IStopBusinessService iStopBusinessService,
                                  IUserService iUserService,
                                  IRealNameService iRealNameService,
-                                 IMyLogBusinessService iMyLogBusinessService) {
+                                 IMyLogBusinessService iMyLogBusinessService,
+                                 IMyJobCommonBusinessService iMyJobCommonBusinessService) {
         this.iJobService = iJobService;
         this.iCompleteBusinessService = iCompleteBusinessService;
         this.iStopBusinessService = iStopBusinessService;
         this.iUserService = iUserService;
         this.iRealNameService = iRealNameService;
         this.iMyLogBusinessService = iMyLogBusinessService;
+        this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
     }
 
     @Override
@@ -58,12 +62,7 @@ public class PartyABusinessService implements IPartyABusinessService{
                 jobPage.getContent().get(i).setPartyBName(iRealNameService.getRealNameByUserId(
                         jobPage.getContent().get(i).getPartyBId()).getRealName());
                 Integer unread=0;
-                Map in2=new HashMap();
-                in2.put("userId", user.getUserId());
-                in2.put("jobId", jobPage.getContent().get(i).getJobId());
-                unread=iMyLogBusinessService.countUnreadJobLog(in2);
-                unread+=iCompleteBusinessService.countUnreadComplete(in2);
-                unread+=iStopBusinessService.countUnreadStop(in2);
+                unread=iMyJobCommonBusinessService.totalUnreadOneJob(token, jobPage.getContent().get(i).getJobId());
                 jobPage.getContent().get(i).setUnRead(unread);
             }
         }
@@ -102,18 +101,7 @@ public class PartyABusinessService implements IPartyABusinessService{
 
     @Override
     public Map totalUnreadByJobId(Map in) throws Exception {
-        String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
-
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
-        }
-
-        Map out=new HashMap();
-        out.put("unReadJobLog",iMyLogBusinessService.countUnreadJobLog(in));
-        out.put("unReadComplete", iCompleteBusinessService.countUnreadComplete(in));
-        out.put("unReadStop", iStopBusinessService.countUnreadStop(in));
+        Map out=iMyJobCommonBusinessService.totalMyUnread(in);
         return out;
     }
 }

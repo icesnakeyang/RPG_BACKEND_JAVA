@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myJob.partyB.service;
 
+import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
@@ -28,6 +29,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
     private final IRealNameService iRealNameService;
     private final IMyLogBusinessService iMyLogBusinessService;
     private final IJobApplyService iJobApplyService;
+    private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
 
     @Autowired
     public PartyBBusinessService(IJobService iJobService,
@@ -36,7 +38,8 @@ public class PartyBBusinessService implements IPartyBBusinessService {
                                  IUserService iUserService,
                                  IRealNameService iRealNameService,
                                  IMyLogBusinessService iMyLogBusinessService,
-                                 IJobApplyService iJobApplyService) {
+                                 IJobApplyService iJobApplyService,
+                                 IMyJobCommonBusinessService iMyJobCommonBusinessService) {
         this.iJobService = iJobService;
         this.iCompleteBusinessService = iCompleteBusinessService;
         this.iStopBusinessService = iStopBusinessService;
@@ -44,6 +47,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
         this.iRealNameService = iRealNameService;
         this.iMyLogBusinessService = iMyLogBusinessService;
         this.iJobApplyService = iJobApplyService;
+        this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
     }
 
     @Override
@@ -63,12 +67,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
             jobPage.getContent().get(i).setPartyBName(iRealNameService.getRealNameByUserId(
                     jobPage.getContent().get(i).getPartyBId()).getRealName());
             Integer unread=0;
-            Map in2=new HashMap();
-            in2.put("userId", user.getUserId());
-            in2.put("jobId", jobPage.getContent().get(i).getJobId());
-            unread=iMyLogBusinessService.countUnreadJobLog(in2);
-            unread+=iCompleteBusinessService.countUnreadComplete(in2);
-            unread+=iStopBusinessService.countUnreadStop(in2);
+            unread=iMyJobCommonBusinessService.totalUnreadOneJob(token, jobPage.getContent().get(i).getJobId());
             jobPage.getContent().get(i).setUnRead(unread);
         }
 

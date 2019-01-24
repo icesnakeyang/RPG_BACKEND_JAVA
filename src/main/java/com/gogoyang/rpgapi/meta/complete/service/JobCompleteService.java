@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.meta.complete.service;
 
-import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
@@ -69,23 +68,39 @@ public class JobCompleteService implements IJobCompleteService {
     }
 
     /**
-     * 读取一个任务里所有我未阅读的验收日志
-     *
-     * @param jobId
-     * @param userId
-     * @return
-     * @throws Exception
+     * 读取甲方未阅读的验收日志
      */
     @Override
-    public ArrayList<JobComplete> loadMyUnReadComplete(Integer jobId, Integer userId) throws Exception {
-        ArrayList<JobComplete> jobCompletes = jobCompleteDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndJobId(userId, jobId);
+    public ArrayList<JobComplete> listPartyAUnread(Integer userId) throws Exception {
+        ArrayList<JobComplete> jobCompletes = jobCompleteDao.findAllByReadTimeIsNullAndProcessUserId(userId);
         return jobCompletes;
     }
 
+    /**
+     * read the jobid unread complete log by party a
+     */
     @Override
-    public ArrayList<JobComplete> listMyUnReadCompleteProcess(Integer jobId, Integer userId) throws Exception {
-        ArrayList<JobComplete> jobCompleteArrayList=jobCompleteDao.findAllByProcessReadTimeIsNullAndCreatedUserIdAndJobId(userId, jobId);
-        return jobCompleteArrayList;
+    public ArrayList<JobComplete> listPartyAUnreadJobId(Integer userId, Integer jobId) throws Exception {
+        ArrayList<JobComplete> jobCompletes=jobCompleteDao.findAllByReadTimeIsNullAndProcessUserIdAndJobId(userId, jobId);
+        return jobCompletes;
+    }
+
+    /**
+     * 读取乙方未阅读的，甲方已处理的验收日志
+     */
+    @Override
+    public ArrayList<JobComplete> listPartyBUnread(Integer userId) throws Exception {
+        ArrayList<JobComplete> jobCompletes=jobCompleteDao.findAllByResultIsNotNullAndProcessReadTimeIsNullAndCreatedUserId(userId);
+        return jobCompletes;
+    }
+
+    /**
+     * read jobId unread processed complete by party b
+     */
+    @Override
+    public ArrayList<JobComplete> listPartyBUnreadJobId(Integer userId, Integer jobId) throws Exception {
+        ArrayList<JobComplete> jobCompletes=jobCompleteDao.findAllByResultIsNotNullAndProcessReadTimeIsNullAndCreatedUserIdAndJobId(userId, jobId);
+        return jobCompletes;
     }
 
 

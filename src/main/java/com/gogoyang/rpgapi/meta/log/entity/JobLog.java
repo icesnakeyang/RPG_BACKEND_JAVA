@@ -25,6 +25,18 @@ public class JobLog {
     @Column(name = "read_time")
     private Date readTime;
 
+    @Column(name = "partya_id")
+    private Integer partyAId;
+
+    @Column(name = "partyb_id")
+    private Integer partyBId;
+
+    @Transient
+    private String partyAName;
+
+    @Transient
+    private String partyBName;
+
     @Transient
     private String createdUserName;
 
@@ -83,5 +95,37 @@ public class JobLog {
 
     public void setCreatedUserName(String createdUserName) {
         this.createdUserName = createdUserName;
+    }
+
+    public Integer getPartyAId() {
+        return partyAId;
+    }
+
+    public void setPartyAId(Integer partyAId) {
+        this.partyAId = partyAId;
+    }
+
+    public Integer getPartyBId() {
+        return partyBId;
+    }
+
+    public void setPartyBId(Integer partyBId) {
+        this.partyBId = partyBId;
+    }
+
+    public String getPartyAName() {
+        return partyAName;
+    }
+
+    public void setPartyAName(String partyAName) {
+        this.partyAName = partyAName;
+    }
+
+    public String getPartyBName() {
+        return partyBName;
+    }
+
+    public void setPartyBName(String partyBName) {
+        this.partyBName = partyBName;
     }
 }

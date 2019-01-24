@@ -22,14 +22,6 @@ public interface ICompleteBusinessService {
 
     void acceptComplete(Map in) throws Exception;
 
-    /**
-     * 统计未阅读的验收日志数量
-     * @param in
-     * @return
-     * @throws Exception
-     */
-    Integer countUnreadComplete(Map in) throws Exception;
-
     Map listMyPartyAAcceptJob(Map in) throws Exception;
 
     Map listMyPartyBAcceptJob(Map in) throws Exception;

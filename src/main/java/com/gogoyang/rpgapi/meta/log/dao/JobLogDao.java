@@ -9,12 +9,24 @@ import java.util.ArrayList;
 
 public interface JobLogDao extends JpaRepository<JobLog, Integer> {
     /**
-     * 查找所有userId未读的JobLog
-     *
-     * @param userId
-     * @return
+     * if user is party a，createdUser!=user，partyAid==user
      */
-    ArrayList<JobLog> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndJobId(Integer userId, Integer jobId);
+    ArrayList<JobLog> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyAId(Integer createdUserId, Integer partyAId);
+
+    /**
+     * read all unread log by party a of job id
+     */
+    ArrayList<JobLog> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyAIdAndJobId(Integer createdUserId, Integer partyAId, Integer jobId);
+
+    /**
+     * if user is party b，createdUser!=user, partyBid==user
+     */
+    ArrayList<JobLog> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyBId(Integer createdUserId, Integer partyBId);
+
+    /**
+     * read all unread log by party b of job id
+     */
+    ArrayList<JobLog> findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyBIdAndJobId(Integer createdUserId, Integer partyBId, Integer jobId);
 
     Page<JobLog> findAllByJobId(Integer jobId, Pageable pageable);
 }
