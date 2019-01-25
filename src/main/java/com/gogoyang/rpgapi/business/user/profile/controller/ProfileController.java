@@ -5,7 +5,6 @@ import com.gogoyang.rpgapi.business.user.profile.vo.ProfileRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.java2d.cmm.Profile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
