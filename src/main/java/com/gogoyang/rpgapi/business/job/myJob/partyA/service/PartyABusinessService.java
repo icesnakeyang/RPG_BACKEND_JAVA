@@ -94,7 +94,9 @@ public class PartyABusinessService implements IPartyABusinessService{
         out.put("partyBId", job.getPartyBId());
         out.put("partyAName", user.getRealName());
         User userB=iUserService.getUserByUserId(job.getPartyBId());
-        out.put("partyBName", userB.getRealName());
+        if(userB!=null) {
+            out.put("partyBName", userB.getRealName());
+        }
         out.put("detail", job.getDetail());
         return out;
     }
