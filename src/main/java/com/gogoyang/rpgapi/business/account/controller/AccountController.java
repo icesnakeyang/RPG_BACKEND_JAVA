@@ -50,4 +50,25 @@ public class AccountController {
         }
         return response;
     }
+
+    @ResponseBody
+    @PostMapping("/loadAccountBalance")
+    public Response getMyTotalAccount(@RequestBody AccountRequest request,
+                                      HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            Map in=new HashMap();
+            in.put("token", token);
+            Map out=iAccountBusinessService.loadAccountBalance(in);
+            response.setData(out);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(10106);
+            }
+        }
+        return response;
+    }
 }

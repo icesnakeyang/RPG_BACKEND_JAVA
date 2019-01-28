@@ -47,4 +47,16 @@ public class AccountBusinessService implements IAccountBusinessService {
         }
         return accounts;
     }
+
+    @Override
+    public Map loadAccountBalance(Map in) throws Exception {
+        String token=in.get("token").toString();
+        in.put("token", token);
+        User user=iUserService.getUserByToken(token);
+        if(user==null){
+            throw new Exception("10004");
+        }
+        Map out=iAccountService.loadAccountBalance(user.getUserId());
+        return out;
+    }
 }

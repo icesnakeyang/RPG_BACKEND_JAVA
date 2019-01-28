@@ -65,7 +65,7 @@ public class AccountService implements IAccountService {
             if (account.getType() == AccountType.PUBLISH ||
                     account.getType() == AccountType.WITHDRAW ||
                     account.getType() == AccountType.REFUND_OUT) {
-                outgoing -= account.getAmount();
+                outgoing += account.getAmount();
             }
             //收入，充值，接受任务，收到任务退款
             if (account.getType() == AccountType.TOP_UP ||
@@ -73,8 +73,6 @@ public class AccountService implements IAccountService {
                     account.getType() == AccountType.REFUND_IN) {
                 income += account.getAmount();
             }
-            Double amount = accounts.get(i).getAmount();
-            balance += amount;
         }
         //余额
         balance = income - outgoing;

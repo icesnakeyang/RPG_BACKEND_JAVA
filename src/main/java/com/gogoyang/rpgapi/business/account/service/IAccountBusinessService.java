@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface IAccountBusinessService {
     Page<Account> listMyAccount(Map in) throws Exception;
+
+    Map loadAccountBalance(Map in) throws Exception;
 }
