@@ -47,6 +47,7 @@ public class HonorBusinessService implements IHonorBusinessService{
                 map.put("userName", user.getEmail());
             }
             map.put("point", honor.getPoint());
+            map.put("type", honor.getType());
             map.put("jobId", honor.getJobId());
             map.put("createdTime", honor.getCreatedTime());
             map.put("reamrk", honor.getRemark());
@@ -67,13 +68,13 @@ public class HonorBusinessService implements IHonorBusinessService{
      * @throws Exception
      */
     @Override
-    public Map loadMyHonorBalance(Map in) throws Exception {
+    public Map loadUserHonorBalance(Map in) throws Exception {
         String token=in.get("token").toString();
         User user=iUserService.getUserByToken(token);
         if(user==null){
             throw new Exception("10004");
         }
-
-        return null;
+        Map out=iHonorService.loadUserHonorBalance(user.getUserId());
+        return out;
     }
 }

@@ -30,6 +30,8 @@ public class HonorController {
             String token=httpServletRequest.getHeader("token");
             Map in=new HashMap();
             in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
             Map out=iHonorBusinessService.listMyHonor(in);
             response.setData(out);
         }catch (Exception ex){
@@ -43,7 +45,7 @@ public class HonorController {
     }
 
     @ResponseBody
-    @PostMapping("/loadMyHonorBalance")
+    @PostMapping("/loadUserHonorBalance")
     public Response loadMyHonorBalance(@RequestBody HonorRequest request,
                                        HttpServletRequest httpServletRequest){
         Response response=new Response();
@@ -51,7 +53,7 @@ public class HonorController {
             String token=httpServletRequest.getHeader("token");
             Map in=new HashMap();
             in.put("token", token);
-            Map out=iHonorBusinessService.loadMyHonorBalance(in);
+            Map out=iHonorBusinessService.loadUserHonorBalance(in);
             response.setData(out);
         }catch (Exception ex){
             try {

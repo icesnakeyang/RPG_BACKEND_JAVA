@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.meta.honor.service;
 
+import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.meta.honor.dao.HonorDao;
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
@@ -10,9 +11,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+
+import javax.persistence.*;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
+
+import java.lang.management.LockInfo;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -58,18 +63,26 @@ public class HonorService implements IHonorService {
      * @throws Exception
      */
     @Transactional(rollbackOn = Exception.class)
-    public Map refreshUserHonorPoint(Integer userId) throws Exception {
+    public Map loadUserHonorBalance(Integer userId) throws Exception {
         /**
          * 读取userId的所有HonorLog记录
          * 逐条计算point
          * 返回point
          */
 
-        //todo
+        //honor obtained by accept job( party a and party b)
+        Long totalAcceptance=honorDao.loadSumPoint(userId, HonorType.JOB_ACCEPTED.ordinal());
+        Long totalSpotlight=honorDao.loadSumPoint(userId, HonorType.CREATE_SPOTLIGHT.ordinal());
 
-        Integer honor=0;
-        Integer honorIn=0;
-        Integer honorOut=0;
+        if(totalAcceptance==null){
+            totalAcceptance=0l;
+        }
+        if(totalSpotlight==null){
+            totalSpotlight=0l;
+        }
+        Long honorIn=totalAcceptance;
+        Long honorOut=totalSpotlight;
+        Long honor=honorIn-honorOut;
 
         Map out = new HashMap();
         out.put("honor", honor);

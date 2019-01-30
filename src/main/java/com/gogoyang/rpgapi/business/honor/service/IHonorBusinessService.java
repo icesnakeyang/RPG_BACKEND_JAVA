@@ -5,5 +5,5 @@ import java.util.Map;
 public interface IHonorBusinessService {
     Map listMyHonor(Map in) throws Exception;
 
-    Map loadMyHonorBalance(Map in) throws Exception;
+    Map loadUserHonorBalance(Map in) throws Exception;
 }

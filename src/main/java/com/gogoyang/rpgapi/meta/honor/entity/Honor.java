@@ -2,13 +2,11 @@ package com.gogoyang.rpgapi.meta.honor.entity;
 
 import com.gogoyang.rpgapi.framework.constant.HonorType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "honor")
 public class Honor {
     @Id
     @GeneratedValue
