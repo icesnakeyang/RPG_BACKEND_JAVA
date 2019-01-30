@@ -4,9 +4,14 @@ import com.gogoyang.rpgapi.meta.honor.dao.HonorDao;
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +41,13 @@ public class HonorService implements IHonorService {
         honorDao.save(honor);
     }
 
+    @Override
+    public Page<Honor> listMyHonor(Integer userId, Integer pageIndex, Integer pageSize) {
+        Sort sort=new Sort(Sort.Direction.DESC, "honorId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Honor> honors = honorDao.findAllByUserId(userId, pageable);
+        return honors;
+    }
 
 
     /**
