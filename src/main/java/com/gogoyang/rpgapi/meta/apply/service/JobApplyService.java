@@ -119,7 +119,7 @@ public class JobApplyService implements IJobApplyService {
     }
 
     /**
-     * count how many users applied this common
+     * count how many users are applying this job
      *
      * @param jobId
      * @return
@@ -128,7 +128,7 @@ public class JobApplyService implements IJobApplyService {
     @Override
     public Integer countApplyUsers(Integer jobId) throws Exception {
         /**
-         * 统计有多少用户申请了这个任务
+         * 统计有多少用户当前正在申请这个任务
          *
          */
         ArrayList<JobApply> jobApplyList = jobApplyDao.findAllByJobIdAndProcessResultIsNull(jobId);

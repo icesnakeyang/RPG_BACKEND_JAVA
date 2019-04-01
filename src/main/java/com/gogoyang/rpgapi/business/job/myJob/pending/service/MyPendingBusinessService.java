@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.job.myJob.pending.service;
 
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.job.service.IJobDetail;
@@ -20,14 +21,17 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     private final IJobService iJobService;
     private final IJobDetail iJobDetail;
     private final IUserService iUserService;
+    private final IJobApplyService iJobApplyService;
 
     @Autowired
     public MyPendingBusinessService(IJobService iJobService,
                                     IJobDetail iJobDetail,
-                                    IUserService iUserService) {
+                                    IUserService iUserService,
+                                    IJobApplyService iJobApplyService) {
         this.iJobService = iJobService;
         this.iJobDetail = iJobDetail;
         this.iUserService = iUserService;
+        this.iJobApplyService = iJobApplyService;
     }
 
     @Override
@@ -134,6 +138,15 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         }
 
         Job job=iJobService.getJobByJobId(jobId);
+
+        User userA=iUserService.getUserByUserId(job.getPartyAId());
+        if(userA.getRealName()!=null) {
+            job.setPartyAName(userA.getRealName());
+        }else{
+            job.setPartyAName(userA.getEmail());
+        }
+
+        job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
 
         Map out=new HashMap();
         out.put("job", job);
