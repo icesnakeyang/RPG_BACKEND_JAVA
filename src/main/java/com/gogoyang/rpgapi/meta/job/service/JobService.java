@@ -3,6 +3,7 @@ package com.gogoyang.rpgapi.meta.job.service;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.dao.JobDao;
 import com.gogoyang.rpgapi.meta.job.dao.JobDetailDao;
+import com.gogoyang.rpgapi.meta.job.dao.JobMapper;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -28,18 +30,21 @@ class JobService implements IJobService {
     private final IJobApplyService iJobApplyService;
     private final JobDetailDao jobDetailDao;
     private final IRealNameService iRealNameService;
+    private final JobMapper jobMapper;
 
     @Autowired
     public JobService(JobDao jobDao,
                       ITaskService iTaskService,
                       IJobApplyService iJobApplyService,
                       JobDetailDao jobDetailDao,
-                      IRealNameService iRealNameService) {
+                      IRealNameService iRealNameService,
+                      JobMapper jobMapper) {
         this.jobDao = jobDao;
         this.iTaskService = iTaskService;
         this.iJobApplyService = iJobApplyService;
         this.jobDetailDao = jobDetailDao;
         this.iRealNameService = iRealNameService;
+        this.jobMapper = jobMapper;
     }
 
     /**
@@ -188,25 +193,32 @@ class JobService implements IJobService {
                                            Integer pageIndex, Integer pageSize) throws Exception {
         Sort sort = new Sort(Sort.Direction.DESC, "jobId");
         Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs = jobDao.findAllByPartyAIdAndStatusOrStatus(partyAId, JobStatus.PENDING, JobStatus.MATCHING, pageable);
+        Page<Job> jobs = jobDao.findAllByPartyAIdAndStatusOrPartyAIdAndStatus(partyAId, JobStatus.PENDING, partyAId, JobStatus.MATCHING, pageable);
+
+//        Map qIn=new HashMap();
+//        qIn.put("partyAId", partyAId);
+//        Integer offset=pageIndex* pageSize;
+//        qIn.put("offset", offset);
+//        qIn.put("size", pageSize);
+//        ArrayList<Job> jobs=jobMapper.listMyPendingJob(qIn);
         return jobs;
     }
 
     @Override
     public Page<Job> listJobByStausMap(Map qIn) throws Exception {
-        Integer pageIndex=(Integer)qIn.get("pageIndex");
-        Integer pageSize=(Integer)qIn.get("pageSize");
-        String type=qIn.get("type").toString();
+        Integer pageIndex = (Integer) qIn.get("pageIndex");
+        Integer pageSize = (Integer) qIn.get("pageSize");
+        String type = qIn.get("type").toString();
 
-        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
-        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
 
-        Page<Job> jobs=null;
-        if(type.equals("publicJob")){
-            jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
+        Page<Job> jobs = null;
+        if (type.equals("publicJob")) {
+            jobs = jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
         }
-        if(type.equals("jobtomatch")){
-            jobs=jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
+        if (type.equals("jobtomatch")) {
+            jobs = jobDao.findAllByStatusOrStatus(JobStatus.MATCHING, JobStatus.PENDING, pageable);
         }
         return jobs;
     }
@@ -219,27 +231,27 @@ class JobService implements IJobService {
 
     @Override
     public Page<Job> listPublicJob(Map qIn) throws Exception {
-        Integer pageIndex=(Integer)qIn.get("pageIndex");
-        Integer pageSize=(Integer)qIn.get("pageSize");
-        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
-        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs=jobDao.findAllByStatusOrStatus(JobStatus.PENDING, JobStatus.MATCHING, pageable);
+        Integer pageIndex = (Integer) qIn.get("pageIndex");
+        Integer pageSize = (Integer) qIn.get("pageSize");
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByStatusOrStatus(JobStatus.PENDING, JobStatus.MATCHING, pageable);
         return jobs;
     }
 
     @Override
     public Page<Job> listMyPartyAAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
-        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
-        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs=jobDao.findAllByStatusAndPartyAId(JobStatus.ACCEPTANCE, userId, pageable);
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByStatusAndPartyAId(JobStatus.ACCEPTANCE, userId, pageable);
         return jobs;
     }
 
     @Override
     public Page<Job> listMyPartyBAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
-        Sort sort=new Sort(Sort.Direction.DESC, "jobId");
-        Pageable pageable=new PageRequest(pageIndex, pageSize, sort);
-        Page<Job> jobs=jobDao.findAllByStatusAndPartyBId(JobStatus.ACCEPTANCE, userId, pageable);
+        Sort sort = new Sort(Sort.Direction.DESC, "jobId");
+        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
+        Page<Job> jobs = jobDao.findAllByStatusAndPartyBId(JobStatus.ACCEPTANCE, userId, pageable);
         return jobs;
     }
 }

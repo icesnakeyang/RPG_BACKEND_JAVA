@@ -26,7 +26,7 @@ public interface JobDao extends JpaRepository<Job, Integer>{
 
     Page<Job> findAllByStatusOrStatus(JobStatus jobStatus1, JobStatus jobStatus2, Pageable pageable);
 
-    Page<Job> findAllByPartyAIdAndStatusOrStatus(Integer userId, JobStatus jobStatus1, JobStatus jobStatus2, Pageable pageable);
+    Page<Job> findAllByPartyAIdAndStatusOrPartyAIdAndStatus(Integer userId, JobStatus jobStatus1, Integer userId2, JobStatus jobStatus2, Pageable pageable);
 
     /**
      * read party a accepted job

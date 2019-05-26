@@ -5,7 +5,8 @@ spring:
     url: jdbc:mysql://rm-wz9v8xc42t1go7ptc0o.mysql.rds.aliyuncs.com:3306/gogorpg?useSSL=true
     username: root
     password: 112233ccddEE
-
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
 server:
   port: 9527
 logging:

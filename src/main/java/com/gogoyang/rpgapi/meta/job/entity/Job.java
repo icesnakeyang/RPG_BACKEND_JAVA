@@ -1,11 +1,13 @@
 package com.gogoyang.rpgapi.meta.job.entity;
 
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Data
 public class Job {
     @Id
     @GeneratedValue
@@ -90,157 +92,7 @@ public class Job {
     @Transient
     private Integer unRead;
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @Column(name="spot_num")
+    private Integer spotNum;
 
-    public Integer getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Integer getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(Integer taskId) {
-        this.taskId = taskId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Integer getDays() {
-        return days;
-    }
-
-    public void setDays(Integer days) {
-        this.days = days;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getPartyAName() {
-        return partyAName;
-    }
-
-    public void setPartyAName(String partyAName) {
-        this.partyAName = partyAName;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public Integer getJobApplyNum() {
-        return jobApplyNum;
-    }
-
-    public void setJobApplyNum(Integer jobApplyNum) {
-        this.jobApplyNum = jobApplyNum;
-    }
-
-    public Integer getJobMatchNum() {
-        return jobMatchNum;
-    }
-
-    public void setJobMatchNum(Integer jobMatchNum) {
-        this.jobMatchNum = jobMatchNum;
-    }
-
-    public Date getContractTime() {
-        return contractTime;
-    }
-
-    public void setContractTime(Date contractTime) {
-        this.contractTime = contractTime;
-    }
-
-    public Integer getPartyBId() {
-        return partyBId;
-    }
-
-    public void setPartyBId(Integer partyBId) {
-        this.partyBId = partyBId;
-    }
-
-    public JobStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(JobStatus status) {
-        this.status = status;
-    }
-
-    public String getPartyBName() {
-        return partyBName;
-    }
-
-    public void setPartyBName(String partyBName) {
-        this.partyBName = partyBName;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getPartyAId() {
-        return partyAId;
-    }
-
-    public void setPartyAId(Integer partyAId) {
-        this.partyAId = partyAId;
-    }
-
-    public Integer getMatchId() {
-        return matchId;
-    }
-
-    public void setMatchId(Integer matchId) {
-        this.matchId = matchId;
-    }
-
-    public Integer getUnRead() {
-        return unRead;
-    }
-
-    public void setUnRead(Integer unRead) {
-        this.unRead = unRead;
-    }
 }

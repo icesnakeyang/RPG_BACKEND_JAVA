@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.job.dao.JobMapper">
+
+    <!--配置job表和Job对象的字段映射 -->
+    <resultMap id="jobMap" type="com.gogoyang.rpgapi.meta.job.entity.Job">
+        <result property="jobId" column="job_id"/>
+        <result property="taskId" column="task_id"/>
+        <result property="partyAId" column="partya_id"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="matchId" column="match_id"/>
+        <result property="partyBId" column="partyb_id"/>
+        <result property="contractTime" column="contract_time"/>
+        <result property="jobApplyNum" column="job_apply_num"/>
+        <result property="jobMatchNum" column="job_match_num"/>
+        <result property="spotNum" column="spot_num"/>
+    </resultMap>
+
+    <select id="listMyPendingJob" parameterType="map"
+            resultMap="jobMap">
+        select * from job
+        where partya_id=#{partyAId}
+        and status=0
+        or status=1
+        limit #{offset}, #{size}
+    </select>
+
+</mapper>

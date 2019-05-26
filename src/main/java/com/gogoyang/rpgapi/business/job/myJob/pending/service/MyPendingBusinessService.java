@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.job.myJob.pending.service;
 
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -117,7 +119,14 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         }
         //check the common status must be PENDING
         if (job.getStatus() != JobStatus.PENDING) {
-            throw new Exception("10104");
+            if(job.getStatus()==JobStatus.MATCHING){
+                ArrayList<JobApply> jobApplies=iJobApplyService.listJobApplyByNotProcesJobId(job.getJobId());
+                if(jobApplies.size()>0){
+                    throw new Exception("10104");
+                }
+            }else {
+                throw new Exception("10104");
+            }
         }
         //check the party a of this common must be current user
         if (job.getPartyAId().intValue() != user.getUserId().intValue()) {
