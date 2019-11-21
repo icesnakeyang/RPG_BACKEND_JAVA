@@ -5,6 +5,8 @@ import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,8 @@ import java.util.*;
 public class AdminController {
     private final IRPGFunction irpgFunction;
     private final IAdminBusinessService iAdminBusinessService;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public AdminController(IRPGFunction irpgFunction,
@@ -34,7 +38,7 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/create/root")
     public Response createRoot(@RequestBody AdminRequest request,
-                        HttpServletRequest httpServletRequest) {
+                               HttpServletRequest httpServletRequest) {
 
         Response response = new Response();
         try {
@@ -67,7 +71,7 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/create/super")
     public Response createSuperAdmin(@RequestBody AdminRequest request,
-                         HttpServletRequest httpServletRequest) {
+                                     HttpServletRequest httpServletRequest) {
 
         Response response = new Response();
 
@@ -112,6 +116,7 @@ public class AdminController {
     /**
      * 创建一个Administrator用户
      * create an Administrator
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -119,20 +124,20 @@ public class AdminController {
     @ResponseBody
     @PostMapping("/create/administrator")
     public Response createAdministrator(@RequestBody AdminRequest request,
-                                 HttpServletRequest httpServletRequest){
-        Response response=new Response();
-        try{
-            Map in=new HashMap();
+                                        HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        try {
+            Map in = new HashMap();
             in.put("loginName", request.getLoginName());
             in.put("password", request.getPassword());
-            Map out=new HashMap();
-            out=iAdminBusinessService.createAdministrator(in);
+            Map out = new HashMap();
+            out = iAdminBusinessService.createAdministrator(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
                 return response;
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10017);
             }
         }
@@ -155,10 +160,10 @@ public class AdminController {
          * set response.data=admin
          */
         try {
-            Map in=new HashMap();
+            Map in = new HashMap();
             in.put("loginName", request.getLoginName());
             in.put("password", request.getPassword());
-            Map out=iAdminBusinessService.login(in);
+            Map out = iAdminBusinessService.login(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -182,9 +187,9 @@ public class AdminController {
     public Response loadAdmins(HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            Map in=new HashMap();
+            Map in = new HashMap();
             in.put("token", httpServletRequest.getHeader("token"));
-            Map out=iAdminBusinessService.loadAdmin(in);
+            Map out = iAdminBusinessService.loadAdmin(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -208,7 +213,7 @@ public class AdminController {
         Response response = new Response();
         try {
 //            ArrayList roles = irpgService.loadRoleTypes();
-            Map out=iAdminBusinessService.listRoleTypes();
+            Map out = iAdminBusinessService.listRoleTypes();
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -217,6 +222,25 @@ public class AdminController {
             } catch (Exception ex2) {
                 response.setErrorCode(10039);
                 return response;
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getPhoneVerifyCode")
+    public Response getPhoneVerifyCode(@RequestBody AdminRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            in.put("phone", request.getPhone());
+            iAdminBusinessService.getPhoneVerifyCode(in);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(10106);
+                logger.error(ex.getMessage());
             }
         }
         return response;

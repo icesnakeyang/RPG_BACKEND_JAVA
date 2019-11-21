@@ -10,4 +10,6 @@ public interface IAdminBusinessService {
     Map loadAdmin(Map in) throws Exception;
 
     Map listRoleTypes() throws Exception;
+
+    void getPhoneVerifyCode(Map in) throws Exception;
 }

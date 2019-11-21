@@ -213,4 +213,13 @@ public class AdminBusinessService implements IAdminBusinessService {
     public Map listRoleTypes() throws Exception {
         return null;
     }
+
+    @Override
+    public void getPhoneVerifyCode(Map in) throws Exception {
+        String phone = (String) in.get("phone");
+        if (phone == null) {
+            throw new Exception("10105");
+        }
+        irpgFunction.sendMSM(phone);
+    }
 }
