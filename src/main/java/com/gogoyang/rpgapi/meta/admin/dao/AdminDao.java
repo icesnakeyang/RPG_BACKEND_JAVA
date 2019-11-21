@@ -8,10 +8,12 @@ import java.util.ArrayList;
 
 public interface AdminDao extends JpaRepository<Admin, Integer> {
     Admin findByLoginName(String loginName);
+
     Admin findByToken(String token);
 
-    ArrayList<Admin> findAllByRoleType(RoleType roleType);
+    Admin findAdminByPhone(String phone);
 
+    ArrayList<Admin> findAllByRoleType(RoleType roleType);
 
 
 }

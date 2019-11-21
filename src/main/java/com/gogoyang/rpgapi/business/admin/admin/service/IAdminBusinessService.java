@@ -11,5 +11,5 @@ public interface IAdminBusinessService {
 
     Map listRoleTypes() throws Exception;
 
-    void getPhoneVerifyCode(Map in) throws Exception;
+    void resetPassword(Map in) throws Exception;
 }

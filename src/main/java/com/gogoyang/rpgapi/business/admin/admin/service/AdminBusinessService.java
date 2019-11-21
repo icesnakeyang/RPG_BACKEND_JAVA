@@ -1,9 +1,12 @@
 package com.gogoyang.rpgapi.business.admin.admin.service;
 
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
+import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
+import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +18,15 @@ import java.util.*;
 public class AdminBusinessService implements IAdminBusinessService {
     private final IRPGFunction irpgFunction;
     private final IAdminService iAdminService;
+    private final ISMSLogService ismsLogService;
 
     @Autowired
-    public AdminBusinessService(IRPGFunction irpgFunction, IAdminService iAdminService) {
+    public AdminBusinessService(IRPGFunction irpgFunction,
+                                IAdminService iAdminService,
+                                ISMSLogService ismsLogService) {
         this.irpgFunction = irpgFunction;
         this.iAdminService = iAdminService;
+        this.ismsLogService = ismsLogService;
     }
 
     /**
@@ -214,12 +221,27 @@ public class AdminBusinessService implements IAdminBusinessService {
         return null;
     }
 
+    @Transactional(rollbackOn = Exception.class)
     @Override
-    public void getPhoneVerifyCode(Map in) throws Exception {
-        String phone = (String) in.get("phone");
-        if (phone == null) {
-            throw new Exception("10105");
-        }
-        irpgFunction.sendMSM(phone);
+    public void resetPassword(Map in) throws Exception {
+        String code = in.get("code").toString();
+        String phone = in.get("phone").toString();
+        String newPassword = in.get("newPassword").toString();
+
+        irpgFunction.verifyMSMCode(phone, code);
+
+        /**
+         * 修改密码
+         */
+        Admin admin = iAdminService.getAdminByPhone(phone);
+        admin.setPassword(irpgFunction.encoderByMd5(newPassword));
+        iAdminService.updateAdmin(admin);
+
+        /**
+         * 把smslog设置失效
+         */
+        SMSLog smsLog=ismsLogService.getSMSLog(phone,code);
+        smsLog.setStatus(LogStatus.OVERDUE.toString());
+        ismsLogService.updateSMSLog(smsLog);
     }
 }

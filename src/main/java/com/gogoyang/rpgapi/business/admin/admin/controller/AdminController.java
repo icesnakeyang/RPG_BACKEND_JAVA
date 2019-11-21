@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.business.admin.admin.controller;
 
 import com.gogoyang.rpgapi.business.admin.admin.service.IAdminBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
+import com.gogoyang.rpgapi.business.sms.vo.SMSRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
@@ -228,18 +229,20 @@ public class AdminController {
     }
 
     @ResponseBody
-    @PostMapping("/getPhoneVerifyCode")
-    public Response getPhoneVerifyCode(@RequestBody AdminRequest request) {
-        Response response = new Response();
-        Map in = new HashMap();
+    @PostMapping("resetPassword")
+    public Response resetPassword(@RequestBody SMSRequest request){
+        Response response=new Response();
+        Map in=new HashMap();
         try {
+            in.put("code", request.getCode());
             in.put("phone", request.getPhone());
-            iAdminBusinessService.getPhoneVerifyCode(in);
-        } catch (Exception ex) {
+            in.put("newPassword", request.getNewPass());
+            iAdminBusinessService.resetPassword(in);
+        }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            } catch (Exception ex2) {
-                response.setErrorCode(10106);
+            }catch (Exception ex2){
+                response.setErrorCode(10107);
                 logger.error(ex.getMessage());
             }
         }

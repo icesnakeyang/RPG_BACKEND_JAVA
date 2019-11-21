@@ -19,7 +19,7 @@ public class AdminService implements IAdminService {
     public AdminService(AdminDao adminDao,
                         IJobApplyService iJobApplyService) {
         this.adminDao = adminDao;
-        this.iJobApplyService=iJobApplyService;
+        this.iJobApplyService = iJobApplyService;
 
     }
 
@@ -56,7 +56,6 @@ public class AdminService implements IAdminService {
     }
 
 
-
     /**
      * 根据用户类型读取所有管理员用户
      *
@@ -70,5 +69,14 @@ public class AdminService implements IAdminService {
         return admins;
     }
 
+    @Override
+    public Admin getAdminByPhone(String phone) throws Exception {
+        return adminDao.findAdminByPhone(phone);
+    }
+
+    @Override
+    public void updateAdmin(Admin admin) throws Exception {
+        adminDao.save(admin);
+    }
 
 }

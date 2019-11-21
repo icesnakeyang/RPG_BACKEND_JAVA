@@ -13,4 +13,8 @@ public interface IAdminService {
     Admin getAdminByToken(String token) throws Exception;
 
     ArrayList<Admin> listAdminByRoleType(RoleType roleType) throws Exception;
+
+    Admin getAdminByPhone(String phone) throws Exception;
+
+    void updateAdmin(Admin admin) throws Exception;
 }

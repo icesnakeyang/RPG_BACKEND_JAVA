@@ -52,6 +52,9 @@ public class Admin {
     @Column(name = "created_admin_id")
     private Integer createdAdminId;
 
+    @Column(name = "phone")
+    private String phone;
+
     //////////////////////////////////////////////////////////////////////////////////////////
 
     public Integer getAdminId() {
@@ -108,5 +111,14 @@ public class Admin {
 
     public void setCreatedAdminId(Integer createdAdminId) {
         this.createdAdminId = createdAdminId;
+    }
+
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

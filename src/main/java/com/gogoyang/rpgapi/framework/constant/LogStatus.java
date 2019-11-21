@@ -5,5 +5,6 @@ public enum LogStatus {
     REJECT,
     ACCEPT_BY_OTHERS,
     OVERDUE,
-    MATCHED
+    MATCHED,
+    WAITING
 }

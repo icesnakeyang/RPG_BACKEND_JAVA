@@ -6,6 +6,8 @@ public interface IRPGFunction {
 
     String encoderByMd5(String string) throws Exception;
 
-    void sendMSM(String phone) throws Exception;
+    void sendMSM(String phone, String codeStr) throws Exception;
+
+    void verifyMSMCode(String phone, String code) throws Exception;
 
 }
