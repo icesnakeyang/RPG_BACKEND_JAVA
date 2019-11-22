@@ -68,6 +68,9 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
             throw new Exception("10004");
         }
 
+        /**
+         * 查询出正在等待匹配的任务
+         */
         Page<Job> jobs=iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
 
         ArrayList<Map<String, Object>> list=new ArrayStack<Map<String, Object>>();
