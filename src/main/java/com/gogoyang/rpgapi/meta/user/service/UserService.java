@@ -46,4 +46,10 @@ public class UserService implements IUserService{
         }
         userDao.save(user);
     }
+
+    @Override
+    public User getUserByPhone(String phone) throws Exception {
+        User user=userDao.findByPhone(phone);
+        return user;
+    }
 }

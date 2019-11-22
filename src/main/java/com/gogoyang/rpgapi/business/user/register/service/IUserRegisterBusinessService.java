@@ -7,4 +7,8 @@ public interface IUserRegisterBusinessService {
     Map registerByEmail(Map in) throws Exception;
 
     Map getEmailByEmail(Map in) throws Exception;
+
+    Map getPhone(Map in) throws Exception;
+
+    Map registerByPhone(Map in) throws Exception;
 }

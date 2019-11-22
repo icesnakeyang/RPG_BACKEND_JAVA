@@ -10,4 +10,6 @@ public interface IUserService {
     User getUserByToken(String token) throws Exception;
 
     void update(User user) throws Exception;
+
+    User getUserByPhone(String phoneNumber) throws Exception;
 }
