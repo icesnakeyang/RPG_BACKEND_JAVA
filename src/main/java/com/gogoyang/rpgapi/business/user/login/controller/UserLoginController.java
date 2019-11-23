@@ -26,8 +26,9 @@ public class UserLoginController {
         try {
             Map in=new HashMap();
             in.put("email", request.getEmail());
+            in.put("phone", request.getPhone());
             in.put("password", request.getPassword());
-            Map out=iUserLoginBusinessService.loginByEmail(in);
+            Map out=iUserLoginBusinessService.login(in);
             response.setData(out);
         }catch (Exception ex){
             try {

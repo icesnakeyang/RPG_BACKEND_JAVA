@@ -41,8 +41,20 @@ public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
      */
     ArrayList<JobApply> findAllByApplyUserIdAndProcessResultIsNull(Integer userId);
 
+    /**
+     * 查询一个用户的所有任务申请
+     * @param userId
+     * @param pageable
+     * @return
+     */
     Page<JobApply> findAllByApplyUserId(Integer userId, Pageable pageable);
 
+    /**
+     * 查询一个用户的所有已处理未阅读，指定处理结果状态
+     * @param userId
+     * @param logStatus
+     * @return
+     */
     ArrayList<JobApply> findAllByProcessResultReadTimeIsNullAndApplyUserIdAndProcessResult(Integer userId, LogStatus logStatus);
 
 }

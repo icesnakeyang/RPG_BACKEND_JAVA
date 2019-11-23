@@ -22,6 +22,7 @@ public class MyApplyController {
 
     /**
      * 读取所有我申请的任务，且未处理的。
+     *
      * @param httpServletRequest
      * @return
      */
@@ -31,12 +32,14 @@ public class MyApplyController {
                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            Map in=new HashMap();
-            String token=httpServletRequest.getHeader("token");
+            Map in = new HashMap();
+            String token = httpServletRequest.getHeader("token");
             in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
 
-            Map out=new HashMap();
-            out=iMyApplyBusinessService.listJobByMyApply(in);
+            Map out = new HashMap();
+            out = iMyApplyBusinessService.listJobByMyApply(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -53,19 +56,19 @@ public class MyApplyController {
     @ResponseBody
     @PostMapping("/getMyApplyJob")
     public Response getMyApplyJob(@RequestBody JobRequest request,
-                                  HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                  HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
-            Map out=iMyApplyBusinessService.getMyApplyJob(in);
+            Map out = iMyApplyBusinessService.getMyApplyJob(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10121);
             }
         }
@@ -86,11 +89,11 @@ public class MyApplyController {
                              HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
-            in.put("content",request.getContent());
+            in.put("content", request.getContent());
             iMyApplyBusinessService.applyJob(in);
         } catch (Exception ex) {
             try {

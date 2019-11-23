@@ -1,11 +1,14 @@
 package com.gogoyang.rpgapi.business.user.register.service;
 
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import com.gogoyang.rpgapi.meta.email.entity.Email;
 import com.gogoyang.rpgapi.meta.email.service.IEmailService;
 import com.gogoyang.rpgapi.meta.phone.entity.Phone;
 import com.gogoyang.rpgapi.meta.phone.service.IPhoneService;
+import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
+import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +26,19 @@ public class UserRegisterBusinessService implements IUserRegisterBusinessService
     private final IUserService iUserService;
     private final IRPGFunction irpgFunction;
     private final IPhoneService iPhoneService;
+    private final ISMSLogService ismsLogService;
 
     @Autowired
     public UserRegisterBusinessService(IEmailService iEmailService,
                                        IUserService iUserService,
                                        IRPGFunction irpgFunction,
-                                       IPhoneService iPhoneService) {
+                                       IPhoneService iPhoneService,
+                                       ISMSLogService ismsLogService) {
         this.iEmailService = iEmailService;
         this.iUserService = iUserService;
         this.irpgFunction = irpgFunction;
         this.iPhoneService = iPhoneService;
+        this.ismsLogService = ismsLogService;
     }
 
     /**
@@ -152,6 +158,13 @@ public class UserRegisterBusinessService implements IUserRegisterBusinessService
         phone.setVerifyTime(new Date());
 
         iPhoneService.insert(phone);
+
+        /**
+         * 把smslog设置失效
+         */
+        SMSLog smsLog=ismsLogService.getSMSLog(phoneStr,code);
+        smsLog.setStatus(LogStatus.OVERDUE.toString());
+        ismsLogService.updateSMSLog(smsLog);
 
         Map out = new HashMap();
         out.put("userId", user.getUserId());
