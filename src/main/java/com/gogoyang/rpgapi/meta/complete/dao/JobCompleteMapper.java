@@ -19,4 +19,10 @@ public interface JobCompleteMapper {
      * @param qIn
      */
     void setJobCompleteReadTime(Map qIn);
+
+    /**
+     * 设置甲方对处理结果的阅读时间
+     * @param qIn
+     */
+    void setJobCompleteProcessReadTime(Map qIn);
 }

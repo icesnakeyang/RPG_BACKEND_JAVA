@@ -122,7 +122,13 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         qIn.put("userId", user.getUserId());
         qIn.put("jobId", jobId);
         qIn.put("readTime", new Date());
+        //设置完成日志的阅读时间
         iJobCompleteService.setJobCompleteReadTime(qIn);
+
+        //设置处理结果的阅读时间
+        qIn.put("processReadTime", new Date());
+        iJobCompleteService.setJobCompleteProcessReadTime(qIn);
+
     }
 
     /**

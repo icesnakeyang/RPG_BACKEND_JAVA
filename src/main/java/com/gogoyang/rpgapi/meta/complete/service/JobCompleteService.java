@@ -160,4 +160,9 @@ public class JobCompleteService implements IJobCompleteService {
     public void setJobCompleteReadTime(Map qIn) throws Exception {
         jobCompleteMapper.setJobCompleteReadTime(qIn);
     }
+
+    @Override
+    public void setJobCompleteProcessReadTime(Map qIn) throws Exception {
+        jobCompleteMapper.setJobCompleteProcessReadTime(qIn);
+    }
 }

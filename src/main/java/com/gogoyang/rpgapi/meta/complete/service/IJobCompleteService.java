@@ -70,4 +70,6 @@ public interface IJobCompleteService {
     Integer totalUnreadComplete(Map in) throws Exception;
 
     void setJobCompleteReadTime(Map qIn) throws Exception;
+
+    void setJobCompleteProcessReadTime(Map qIn) throws Exception;
 }

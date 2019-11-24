@@ -18,10 +18,18 @@
         select count(*) as total_unread_complete
         from job_complete
         where 1 = 1
-        and read_time is null
+        and (
+        (
+        read_time is null
         <![CDATA[
         and created_user_id <> #{userId}
         ]]>
+        )
+        or (
+        process_read_time is null
+        and created_user_id = #{userId}
+        )
+        )
         <choose>
             <when test="jobId!=null">
                 and job_id = #{jobId}
@@ -41,6 +49,20 @@
         <choose>
             <when test="jobId!=null">
                 and job_id = #{jobId}
+            </when>
+        </choose>
+    </update>
+
+    <!--设置处理结果的阅读时间-->
+    <update id="setJobCompleteProcessReadTime" parameterType="map">
+        update job_complete set
+        process_read_time=#{processReadTime}
+        where 1=1
+        and process_read_time is null
+        and created_user_id=#{userId}
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
             </when>
         </choose>
     </update>
