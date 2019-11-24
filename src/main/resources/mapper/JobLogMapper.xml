@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.log.dao.JobLogMapper">
+
+    <!--配置job_log表和JobLog对象的字段映射 -->
+    <resultMap id="jobLogMap" type="com.gogoyang.rpgapi.meta.log.entity.JobLog">
+        <result property="jobLogId" column="job_log_id"/>
+        <result property="jobId" column="job_id"/>
+        <result property="createdUserId" column="created_user_id"/>
+        <result property="createdUserName" column="real_name"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="readTime" column="read_time"/>
+    </resultMap>
+
+    <!--统计所有未阅读的任务日志-->
+    <select id="totalUnreadLog" parameterType="map"
+            resultType="java.lang.Integer">
+        select count(*) as total_unread_log
+        from job_log
+        left join user on created_user_id = user_id
+        where 1 = 1
+        <choose>
+            <when test="jobId!=null">
+                and job_id = #{jobId}
+            </when>
+        </choose>
+        and read_time is null
+        <![CDATA[
+        and created_user_id<>#{userId}
+        ]]>
+    </select>
+
+    <update id="setJobLogReadTime" parameterType="map">
+        update job_log set
+        read_time=#{readTime}
+        where 1=1
+        and read_time is null
+        <![CDATA[
+        and created_user_id<>#{userId}
+        ]]>
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+    </update>
+
+</mapper>

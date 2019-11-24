@@ -100,10 +100,4 @@ public class PartyABusinessService implements IPartyABusinessService{
         out.put("detail", job.getDetail());
         return out;
     }
-
-    @Override
-    public Map totalUnreadByJobId(Map in) throws Exception {
-        Map out=iMyJobCommonBusinessService.totalMyUnread(in);
-        return out;
-    }
 }

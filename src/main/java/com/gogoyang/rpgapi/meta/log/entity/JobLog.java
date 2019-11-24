@@ -1,8 +1,11 @@
 package com.gogoyang.rpgapi.meta.log.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @Entity
 public class JobLog {
     @Id

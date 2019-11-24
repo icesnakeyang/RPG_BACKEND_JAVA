@@ -4,6 +4,8 @@ import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.log.vo.LogRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import java.util.Map;
 public class MyLogController {
     private final IMyLogBusinessService iMyLogBusinessService;
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     public MyLogController(IMyLogBusinessService iMyLogBusinessService) {
         this.iMyLogBusinessService = iMyLogBusinessService;
@@ -24,6 +28,7 @@ public class MyLogController {
 
     /**
      * 创建一个任务日志
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -31,22 +36,22 @@ public class MyLogController {
     @ResponseBody
     @PostMapping("/createLog")
     public Response createLog(@RequestBody LogRequest request,
-                              HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                              HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in =new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("content", request.getContent());
 
             iMyLogBusinessService.createLog(in);
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
                 return response;
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10052);
                 return response;
             }
@@ -56,6 +61,7 @@ public class MyLogController {
 
     /**
      * 读取一个任务的所有日志
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -63,22 +69,22 @@ public class MyLogController {
     @ResponseBody
     @PostMapping("/jobLog")
     public Response loadJobLog(@RequestBody LogRequest request,
-                               HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                               HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Page<JobLog> jobLogs=iMyLogBusinessService.loadJobLog(in);
+            Page<JobLog> jobLogs = iMyLogBusinessService.loadJobLog(in);
             response.setData(jobLogs);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
                 return response;
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10054);
                 return response;
             }
@@ -88,6 +94,7 @@ public class MyLogController {
 
     /**
      * 设置所有我未阅读的任务的阅读时间
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -95,23 +102,22 @@ public class MyLogController {
     @ResponseBody
     @PostMapping("/setJobLogReadTime")
     public Response setJobLogReadTime(@RequestBody LogRequest request,
-                                      HttpServletRequest httpServletRequest){
+                                      HttpServletRequest httpServletRequest) {
 
-        Response response=new Response();
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Integer jobId=request.getJobId();
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Integer jobId = request.getJobId();
+            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", jobId);
             iMyLogBusinessService.setJobLogReadTime(in);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10055);
-                return response;
+                logger.error(ex.getMessage());
             }
         }
         return response;

@@ -67,27 +67,27 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
          * totalUnreadAccept
          */
         String token = in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
+        Integer jobId = (Integer) in.get("jobId");
+        User user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
         Map out = new HashMap();
 
-        if(jobId==null) {
-            Integer totalUnread=0;
-            Integer totalPartyAUnread=0;
-            Integer totalPartyBUnread=0;
-            Integer totalUnreadAccept=0;
-            totalPartyAUnread=totalPartyAUnread(user.getUserId());
-            totalPartyBUnread+=totalPartyBUnread(user.getUserId());
-            totalUnreadAccept=totalUnreadAccept(user.getUserId());
-            totalUnread=totalPartyAUnread+totalPartyBUnread+totalUnreadAccept;
+        if (jobId == null) {
+            Integer totalUnread = 0;
+            Integer totalPartyAUnread = 0;
+            Integer totalPartyBUnread = 0;
+            Integer totalUnreadAccept = 0;
+            totalPartyAUnread = totalPartyAUnread(user.getUserId());
+            totalPartyBUnread += totalPartyBUnread(user.getUserId());
+            totalUnreadAccept = totalUnreadAccept(user.getUserId());
+            totalUnread = totalPartyAUnread + totalPartyBUnread + totalUnreadAccept;
             out.put("totalUnread", totalUnread);
             out.put("totalPartyAUnread", totalPartyAUnread);
             out.put("totalPartyBUnread", totalPartyBUnread);
             out.put("totalUnreadAccept", totalUnreadAccept);
-        }else {
+        } else {
             out.put("unReadJobLog", countUnreadJobLogJobId(user.getUserId(), jobId));
 //            out.put("unReadComplete", countUnreadCompleteJobId(user.getUserId(), jobId));
         }
@@ -103,10 +103,16 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         qIn.put("jobId", jobId);
 
         Map unreadMap = totalMyUnread(qIn);
-        int unread = 0;
-        int unReadJobLog = (Integer) unreadMap.get("unReadJobLog");
+        Integer unread = 0;
+        Integer unReadJobLog = (Integer) unreadMap.get("unReadJobLog");
+        if (unReadJobLog == null) {
+            unReadJobLog = 0;
+        }
         unread += unReadJobLog;
-        int unReadComplete = (Integer) unreadMap.get("unReadComplete");
+        Integer unReadComplete = (Integer) unreadMap.get("unReadComplete");
+        if (unReadComplete == null) {
+            unReadComplete = 0;
+        }
         unread += unReadComplete;
         return unread;
     }
@@ -136,11 +142,30 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         return out;
     }
 
+    @Override
+    public Map totalUnreadByJobId(Map in) throws Exception {
+        Map out = totalMyUnread(in);
+        return out;
+    }
+
     private Integer countUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
-        ArrayList<JobLog> jobLogsA=iJobLogService.listPartyAUnreadJobLog(userId);
-        ArrayList<JobLog> jobLogsB=iJobLogService.listPartyBUnreadJobLog(userId);
-        int unRead=jobLogsA.size()+jobLogsB.size();
+        ArrayList<JobLog> jobLogsA = iJobLogService.listPartyAUnreadJobLog(userId);
+        ArrayList<JobLog> jobLogsB = iJobLogService.listPartyBUnreadJobLog(userId);
+        int unRead = jobLogsA.size() + jobLogsB.size();
+        Integer totalUnreadJobLog = totalUnreadJobLog(userId, jobId);
+        if (totalUnreadJobLog == null) {
+            totalUnreadJobLog = 0;
+        }
+        unRead += totalUnreadJobLog;
         return unRead;
+    }
+
+    private Integer totalUnreadJobLog(Integer userId, Integer jobId) throws Exception {
+        Map qIn = new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("userId", userId);
+        Integer totalUnreadJobLog = iJobLogService.totalUnreadLog(qIn);
+        return totalUnreadJobLog;
     }
 
     /**
@@ -151,30 +176,31 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
          * party a unread log
          * party a unread complete
          */
-        int unread=0;
-        ArrayList<JobLog> jobLogs=iJobLogService.listPartyAUnreadJobLog(userId);
-        unread+=jobLogs.size();
+        int unread = 0;
+        ArrayList<JobLog> jobLogs = iJobLogService.listPartyAUnreadJobLog(userId);
+        unread += jobLogs.size();
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyAUnread(userId);
-        unread+=jobCompletes.size();
+        unread += jobCompletes.size();
         return unread;
     }
 
     /**
      * 统计乙方未读日志
+     *
      * @param userId
      * @return
      * @throws Exception
      */
-    private Integer totalPartyBUnread(Integer userId) throws Exception{
+    private Integer totalPartyBUnread(Integer userId) throws Exception {
         /**
          * party b unread complete
          * party b unread job log
          */
-        int unread=0;
-        ArrayList<JobComplete> jobCompletes=iJobCompleteService.listPartyBUnread(userId);
-        unread+=jobCompletes.size();
-        ArrayList<JobLog> jobLogs=iJobLogService.listPartyBUnreadJobLog(userId);
-        unread+=jobLogs.size();
+        int unread = 0;
+        ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyBUnread(userId);
+        unread += jobCompletes.size();
+        ArrayList<JobLog> jobLogs = iJobLogService.listPartyBUnreadJobLog(userId);
+        unread += jobLogs.size();
         return unread;
     }
 
@@ -183,7 +209,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
          * 只有乙方才有未读的验收日志
          */
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyBUnreadAccept(userId);
-        int unread=jobCompletes.size();
+        int unread = jobCompletes.size();
         return unread;
     }
 

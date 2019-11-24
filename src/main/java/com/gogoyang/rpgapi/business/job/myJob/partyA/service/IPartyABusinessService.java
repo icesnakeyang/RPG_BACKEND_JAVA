@@ -10,5 +10,5 @@ public interface IPartyABusinessService {
 
     Map getPartyAJob(Map in) throws Exception;
 
-    Map totalUnreadByJobId(Map in) throws Exception;
+
 }
