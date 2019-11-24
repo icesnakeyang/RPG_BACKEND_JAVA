@@ -89,9 +89,17 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
             out.put("totalUnreadAccept", totalUnreadAccept);
         } else {
             out.put("unReadJobLog", countUnreadJobLogJobId(user.getUserId(), jobId));
-//            out.put("unReadComplete", countUnreadCompleteJobId(user.getUserId(), jobId));
+            out.put("unReadComplete", countUnreadCompleteJobId(user.getUserId(), jobId));
         }
         return out;
+    }
+
+    private Object countUnreadCompleteJobId(Integer userId, Integer jobId) throws Exception{
+        Map qIn = new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("userId", userId);
+        Integer totalUnreadJobLog = iJobCompleteService.totalUnreadComplete(qIn);
+        return totalUnreadJobLog;
     }
 
     /**

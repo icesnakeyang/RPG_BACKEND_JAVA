@@ -5,6 +5,8 @@ import com.gogoyang.rpgapi.business.job.myJob.complete.vo.JobCompleteRequest;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.business.vo.Response;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ import java.util.Map;
 @RequestMapping("/job/complete")
 public class CompleteController {
     private final ICompleteBusinessService iCompleteBusinessService;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public CompleteController(ICompleteBusinessService iCompleteBusinessService) {
@@ -65,7 +69,7 @@ public class CompleteController {
     @ResponseBody
     @PostMapping("/listMyComplete")
     public Response listMyComplete(@RequestBody JobRequest request,
-                                     HttpServletRequest httpServletRequest) {
+                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
@@ -111,10 +115,9 @@ public class CompleteController {
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
                 response.setErrorCode(10058);
-                return response;
+                logger.error(ex.getMessage());
             }
         }
         return response;
@@ -188,20 +191,20 @@ public class CompleteController {
     @ResponseBody
     @PostMapping("/listMyPartyAAcceptJob")
     public Response listMyPartyAAcceptJob(@RequestBody JobCompleteRequest request,
-                                    HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                          HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Map out=iCompleteBusinessService.listMyPartyAAcceptJob(in);
+            Map out = iCompleteBusinessService.listMyPartyAAcceptJob(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10132);
             }
         }
@@ -211,20 +214,20 @@ public class CompleteController {
     @ResponseBody
     @PostMapping("/listMyPartyBAcceptJob")
     public Response listMyPartyBAcceptJob(@RequestBody JobCompleteRequest request,
-                                    HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                          HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Map out=iCompleteBusinessService.listMyPartyBAcceptJob(in);
+            Map out = iCompleteBusinessService.listMyPartyBAcceptJob(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10132);
             }
         }
@@ -234,17 +237,17 @@ public class CompleteController {
     @ResponseBody
     @PostMapping("/setAcceptReadTime")
     public Response setAcceptReadTime(@RequestBody JobCompleteRequest request,
-                                      HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                      HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             iCompleteBusinessService.setAcceptReadTime(in);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10058);
             }
         }

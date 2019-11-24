@@ -5,6 +5,7 @@ import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface IJobCompleteService {
     /**
@@ -65,4 +66,8 @@ public interface IJobCompleteService {
      * @throws Exception
      */
     JobComplete getCompleteByStatus(Integer jobId, LogStatus logStatus) throws Exception;
+
+    Integer totalUnreadComplete(Map in) throws Exception;
+
+    void setJobCompleteReadTime(Map qIn) throws Exception;
 }

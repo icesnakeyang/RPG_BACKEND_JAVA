@@ -132,4 +132,10 @@ public class JobLogService implements IJobLogService {
     public void setJobLogReadTime(Map qIn) throws Exception {
         jobLogMapper.setJobLogReadTime(qIn);
     }
+
+    @Override
+    public Integer totalUnreadComplete(Map qIn) throws Exception {
+        Integer totalUnreadComplete = jobLogMapper.totalUnreadLog(qIn);
+        return totalUnreadComplete;
+    }
 }

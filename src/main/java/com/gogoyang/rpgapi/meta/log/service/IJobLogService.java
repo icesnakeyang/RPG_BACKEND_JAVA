@@ -19,4 +19,6 @@ public interface IJobLogService {
     Integer totalUnreadLog(Map qIn) throws Exception;
 
     void setJobLogReadTime(Map qIn) throws Exception;
+
+    Integer totalUnreadComplete(Map qIn) throws Exception;
 }

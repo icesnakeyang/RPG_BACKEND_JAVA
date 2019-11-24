@@ -1,10 +1,12 @@
 package com.gogoyang.rpgapi.meta.complete.entity;
 
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 
+@Data
 @Entity
 public class JobComplete {
     @Id
