@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 import sun.misc.BASE64Encoder;
 
 import java.security.MessageDigest;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class RPGFunction implements IRPGFunction {
@@ -79,26 +76,44 @@ public class RPGFunction implements IRPGFunction {
 
     @Override
     public void verifyMSMCode(String phone, String code) throws Exception {
-        SMSLog smsLog=ismsLogService.getSMSLog(phone, code);
-        if(smsLog==null){
+        SMSLog smsLog = ismsLogService.getSMSLog(phone, code);
+        if (smsLog == null) {
             throw new Exception("10108");
         }
 
-        if(!smsLog.getStatus().equals(LogStatus.WAITING.toString())){
+        if (!smsLog.getStatus().equals(LogStatus.WAITING.toString())) {
             throw new Exception("10109");
         }
 
         /**
          * 计算当前时间是否已经超过15分钟
          */
-        Date now=new Date();
-        long currentTime=now.getTime();
-        long theTime=smsLog.getCreateTime().getTime();
+        Date now = new Date();
+        long currentTime = now.getTime();
+        long theTime = smsLog.getCreateTime().getTime();
 
-        long diff=(currentTime-theTime)/1000/60;
+        long diff = (currentTime - theTime) / 1000 / 60;
 
-        if(diff>15){
+        if (diff > 15) {
             throw new Exception("10109");
         }
+    }
+
+    public String convertMapToString(HashMap map) throws Exception {
+        Iterator iter = map.entrySet().iterator();
+        String outStr = "";
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Object key = entry.getKey();
+            outStr += key.toString() + ":";
+            Object val = entry.getValue();
+            outStr += val.toString() + "/";
+        }
+        return outStr;
+    }
+
+    public UUID UUID() throws Exception {
+        UUID uuid = UUID.randomUUID();
+        return uuid;
     }
 }

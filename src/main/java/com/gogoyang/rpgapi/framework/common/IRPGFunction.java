@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.framework.common;
 
-import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 
 public interface IRPGFunction {
 
@@ -10,4 +11,7 @@ public interface IRPGFunction {
 
     void verifyMSMCode(String phone, String code) throws Exception;
 
+    String convertMapToString(HashMap map) throws Exception;
+
+    UUID UUID() throws Exception;
 }
