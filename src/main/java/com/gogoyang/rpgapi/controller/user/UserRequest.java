@@ -9,4 +9,5 @@ public class UserRequest {
     private String password;
     private String loginName;
     private String realName;
+    private String code;
 }
