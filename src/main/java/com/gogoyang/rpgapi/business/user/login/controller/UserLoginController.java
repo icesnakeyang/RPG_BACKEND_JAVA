@@ -28,37 +28,5 @@ public class UserLoginController {
         this.iCommonBusinessService = iCommonBusinessService;
     }
 
-    @ResponseBody
-    @PostMapping("/login")
-    public Response login(@RequestBody LoginRequest request){
-        Response response=new Response();
-        Map in=new HashMap();
-        Map logMap=new HashMap();
-        Map memoMap=new HashMap();
-        try {
-            in.put("email", request.getEmail());
-            in.put("phone", request.getPhone());
-            in.put("password", request.getPassword());
-            Map out=iUserLoginBusinessService.login(in);
-            response.setData(out);
-            logMap.put("GogoActType", GogoActType.LOGIN);
-            memoMap.put("email", request.getEmail());
-            memoMap.put("phone", request.getPhone());
-        }catch (Exception ex){
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
-                response.setErrorCode(10024);
-                logger.error(ex.getMessage());
-            }
-            memoMap.put("error", ex.getMessage());
-        }
-        try {
-            logMap.put("memo", memoMap);
-            iCommonBusinessService.createUserActionLog(logMap);
-        }catch (Exception ex3){
-            logger.error(ex3.getMessage());
-        }
-        return response;
-    }
+
 }

@@ -14,4 +14,6 @@ public interface IRPGFunction {
     String convertMapToString(HashMap map) throws Exception;
 
     UUID UUID() throws Exception;
+
+    boolean checkEmail(String email) throws Exception;
 }
