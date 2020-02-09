@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/public_job")
+@RequestMapping("/api/public_job")
 public class PublicJobController {
     private final IPublicJobBusinessService iPublicJobBusinessService;
     private final ICommonBusinessService iCommonBusinessService;

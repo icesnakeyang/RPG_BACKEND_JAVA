@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/my_common")
+@RequestMapping("/api/job/my_common")
 public class MyJobCommonController {
     private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
 
