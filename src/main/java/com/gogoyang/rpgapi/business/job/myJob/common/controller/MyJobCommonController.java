@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.job.myJob.common.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

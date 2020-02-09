@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.job.myJob.stop.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.stop.vo.StopRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.vo;
+package com.gogoyang.rpgapi.controller.vo;
 
 public class Response {
     private Integer errorCode=0;

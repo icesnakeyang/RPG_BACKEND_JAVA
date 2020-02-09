@@ -3,7 +3,7 @@ package com.gogoyang.rpgapi.business.job.myJob.spotlight.controller;
 import com.gogoyang.rpgapi.business.job.myJob.spotlight.service.IMySpotBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.business.spotlight.vo.SpotlightRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

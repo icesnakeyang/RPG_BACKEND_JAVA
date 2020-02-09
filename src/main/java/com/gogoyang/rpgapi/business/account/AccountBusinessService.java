@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.account.service;
+package com.gogoyang.rpgapi.business.account;
 
 
 import com.gogoyang.rpgapi.meta.account.entity.Account;

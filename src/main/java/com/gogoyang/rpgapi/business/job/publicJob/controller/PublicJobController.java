@@ -3,7 +3,7 @@ package com.gogoyang.rpgapi.business.job.publicJob.controller;
 import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.business.job.publicJob.service.IPublicJobBusinessService;
 import com.gogoyang.rpgapi.business.job.publicJob.vo.PublicJobRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

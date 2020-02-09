@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.user.profile.controller;
 
 import com.gogoyang.rpgapi.business.user.profile.service.IProfileBusinessService;
 import com.gogoyang.rpgapi.business.user.profile.vo.ProfileRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

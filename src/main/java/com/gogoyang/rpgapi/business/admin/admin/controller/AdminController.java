@@ -3,7 +3,7 @@ package com.gogoyang.rpgapi.business.admin.admin.controller;
 import com.gogoyang.rpgapi.business.admin.admin.service.IAdminBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.business.sms.vo.SMSRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
 import org.slf4j.Logger;

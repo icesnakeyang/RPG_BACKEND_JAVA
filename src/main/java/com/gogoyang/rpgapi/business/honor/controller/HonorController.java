@@ -2,8 +2,7 @@ package com.gogoyang.rpgapi.business.honor.controller;
 
 import com.gogoyang.rpgapi.business.honor.service.IHonorBusinessService;
 import com.gogoyang.rpgapi.business.honor.vo.HonorRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
-import com.gogoyang.rpgapi.meta.honor.entity.Honor;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

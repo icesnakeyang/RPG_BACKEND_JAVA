@@ -38,6 +38,11 @@ public class CommonBusinessService implements ICommonBusinessService {
         return user;
     }
 
+    /**
+     * 记录用户行为日志
+     * @param in
+     * @throws Exception
+     */
     @Transactional(rollbackOn = Exception.class)
     @Override
     public void createUserActionLog(Map in) throws Exception {

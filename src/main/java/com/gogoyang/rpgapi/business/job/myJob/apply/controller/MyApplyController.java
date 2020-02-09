@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.job.myJob.apply.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.apply.service.IMyApplyBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,10 +1,8 @@
-package com.gogoyang.rpgapi.business.account.controller;
+package com.gogoyang.rpgapi.controller.account;
 
-import com.gogoyang.rpgapi.business.account.service.IAccountBusinessService;
-import com.gogoyang.rpgapi.business.account.vo.AccountRequest;
-import com.gogoyang.rpgapi.business.vo.Response;
+import com.gogoyang.rpgapi.business.account.IAccountBusinessService;
+import com.gogoyang.rpgapi.controller.vo.Response;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/api/account")
 public class AccountController {
     private final IAccountBusinessService iAccountBusinessService;
 
-    @Autowired
     public AccountController(IAccountBusinessService iAccountBusinessService) {
         this.iAccountBusinessService = iAccountBusinessService;
     }
