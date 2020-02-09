@@ -49,6 +49,12 @@ public class AdminService implements IAdminService {
         return admin;
     }
 
+    /**
+     * 根据token读取管理员用户信息
+     * @param token
+     * @return
+     * @throws Exception
+     */
     @Override
     public Admin getAdminByToken(String token) throws Exception {
         Admin admin = adminDao.findByToken(token);

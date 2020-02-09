@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.admin.secretary.match.controller;
 
 import com.gogoyang.rpgapi.business.admin.secretary.match.service.ISecretaryMatchBusinessService;
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

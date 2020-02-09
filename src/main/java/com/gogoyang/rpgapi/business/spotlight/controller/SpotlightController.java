@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.spotlight.controller;
 
 import com.gogoyang.rpgapi.business.spotlight.service.ISpotlightBusinessService;
 import com.gogoyang.rpgapi.business.spotlight.vo.SpotlightRequest;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

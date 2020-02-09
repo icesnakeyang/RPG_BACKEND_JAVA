@@ -3,7 +3,7 @@ package com.gogoyang.rpgapi.business.job.myJob.complete.controller;
 import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.complete.vo.JobCompleteRequest;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

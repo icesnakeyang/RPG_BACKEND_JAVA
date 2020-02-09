@@ -10,6 +10,12 @@ public interface IAdminService {
 
     Admin createAdmin(Admin admin) throws Exception;
 
+    /**根据token读取管理员用户信息
+     *
+     * @param token
+     * @return
+     * @throws Exception
+     */
     Admin getAdminByToken(String token) throws Exception;
 
     ArrayList<Admin> listAdminByRoleType(RoleType roleType) throws Exception;

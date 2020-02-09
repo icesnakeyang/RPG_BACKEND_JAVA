@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.sms.controller;
 
 import com.gogoyang.rpgapi.business.admin.vo.AdminRequest;
 import com.gogoyang.rpgapi.business.sms.business.ISMSBusinessService;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;

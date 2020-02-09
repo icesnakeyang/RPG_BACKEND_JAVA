@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.task.controller;
 
 import com.gogoyang.rpgapi.business.task.service.ITaskBusinessService;
 import com.gogoyang.rpgapi.business.task.vo.TaskRequest;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

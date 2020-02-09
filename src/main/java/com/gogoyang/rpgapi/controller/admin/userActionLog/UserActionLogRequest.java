@@ -1,6 +1,6 @@
 package com.gogoyang.rpgapi.controller.admin.userActionLog;
 
-import com.gogoyang.rpgapi.controller.vo.Request;
+import com.gogoyang.rpgapi.framework.vo.Request;
 import lombok.Data;
 
 @Data

@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.controller.user;
 
 import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.business.user.IUserBusinessService;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

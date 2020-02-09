@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.controller.account;
 
 import com.gogoyang.rpgapi.business.account.IAccountBusinessService;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;

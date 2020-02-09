@@ -2,7 +2,7 @@ package com.gogoyang.rpgapi.business.job.myJob.partyB.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.partyB.service.IPartyBBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
-import com.gogoyang.rpgapi.controller.vo.Response;
+import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

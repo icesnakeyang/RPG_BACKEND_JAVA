@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.controller.vo;
+package com.gogoyang.rpgapi.framework.vo;
 
 import lombok.Data;
 
