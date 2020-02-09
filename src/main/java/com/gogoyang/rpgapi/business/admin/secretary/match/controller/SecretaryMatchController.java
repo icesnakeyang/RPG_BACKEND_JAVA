@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/secretary/match")
+@RequestMapping("/rpgapi/secretary/match")
 public class SecretaryMatchController {
     private final ISecretaryMatchBusinessService iSecretaryMatchBusinessService;
 

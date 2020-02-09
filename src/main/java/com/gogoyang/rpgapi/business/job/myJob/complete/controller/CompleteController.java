@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/complete")
+@RequestMapping("/rpgapi/job/complete")
 public class CompleteController {
     private final ICompleteBusinessService iCompleteBusinessService;
 

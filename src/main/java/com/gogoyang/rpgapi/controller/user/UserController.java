@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/rpgapi/user")
 public class UserController {
     private final IUserBusinessService iUserBusinessService;
     private final ICommonBusinessService iCommonBusinessService;

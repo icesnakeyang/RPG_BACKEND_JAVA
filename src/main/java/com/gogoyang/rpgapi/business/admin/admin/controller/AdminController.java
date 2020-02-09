@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/rpgapi/admin")
 public class AdminController {
     private final IRPGFunction irpgFunction;
     private final IAdminBusinessService iAdminBusinessService;

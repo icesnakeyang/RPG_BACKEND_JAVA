@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/honor")
+@RequestMapping("/rpgapi/honor")
 public class HonorController {
     private final IHonorBusinessService iHonorBusinessService;
 

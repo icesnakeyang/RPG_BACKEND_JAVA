@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/task")
+@RequestMapping("/rpgapi/task")
 public class TaskController {
     private final ITaskBusinessService iTaskBusinessService;
 

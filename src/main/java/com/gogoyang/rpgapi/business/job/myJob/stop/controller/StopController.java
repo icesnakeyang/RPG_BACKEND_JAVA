@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/stop")
+@RequestMapping("/rpgapi/job/stop")
 public class StopController {
     private final IStopBusinessService iStopBusinessService;
 

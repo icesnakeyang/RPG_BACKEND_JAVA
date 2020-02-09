@@ -14,7 +14,7 @@ import java.util.Map;
  * 我发布的任务，但没有成交的
  */
 @RestController
-@RequestMapping("/mypending")
+@RequestMapping("/rpgapi/mypending")
 public class MyPendingController {
     private final IMyPendingBusinessService iMyPendingBusinessService;
 

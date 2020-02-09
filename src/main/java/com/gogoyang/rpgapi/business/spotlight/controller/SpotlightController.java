@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("spotlight")
+@RequestMapping("/rpgapi/spotlight")
 public class SpotlightController {
     private final ISpotlightBusinessService iSpotlightBusinessService;
 

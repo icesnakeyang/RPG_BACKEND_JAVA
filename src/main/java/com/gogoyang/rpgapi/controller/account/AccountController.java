@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/account")
+@RequestMapping("/rpgapi/account")
 public class AccountController {
     private final IAccountBusinessService iAccountBusinessService;
 

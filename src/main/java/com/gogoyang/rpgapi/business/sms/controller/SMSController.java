@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/sms")
+@RequestMapping("/rpgapi/sms")
 public class SMSController {
     private final ISMSBusinessService ismsBusinessService;
 

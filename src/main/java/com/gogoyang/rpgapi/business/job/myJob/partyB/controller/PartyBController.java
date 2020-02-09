@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/partyB")
+@RequestMapping("/rpgapi/job/partyB")
 public class PartyBController {
     private final IPartyBBusinessService iPartyBBusinessService;
 

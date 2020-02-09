@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/myApply")
+@RequestMapping("/rpgapi/job/myApply")
 public class MyApplyController {
     private final IMyApplyBusinessService iMyApplyBusinessService;
 

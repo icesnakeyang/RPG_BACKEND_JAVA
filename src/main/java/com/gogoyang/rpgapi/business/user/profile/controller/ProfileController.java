@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user/profile")
+@RequestMapping("/rpgapi/user/profile")
 public class ProfileController {
     private final IProfileBusinessService iProfileBusinessService;
 

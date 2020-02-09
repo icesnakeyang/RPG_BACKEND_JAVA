@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/public_job")
+@RequestMapping("/rpgapi/public_job")
 public class PublicJobController {
     private final IPublicJobBusinessService iPublicJobBusinessService;
     private final ICommonBusinessService iCommonBusinessService;
@@ -72,17 +72,17 @@ public class PublicJobController {
      * @return
      */
     @ResponseBody
-    @GetMapping("getJobDetail")
-    public Response getJobDetail(@RequestBody PublicJobRequest request,
+    @GetMapping("getJobDetail/{jobId}")
+    public Response getJobDetail(@PathVariable Integer jobId,
                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         Map logMap = new HashMap();
         Map memoMap = new HashMap();
         try {
-            in.put("jobId", request.getJobId());
+            in.put("jobId", jobId);
             logMap.put("GogoActType", GogoActType.LOAD_JOB_DETAIL);
-            memoMap.put("jobId", request.getJobId());
+            memoMap.put("jobId", jobId);
             String token = httpServletRequest.getHeader("token");
             if (token != null) {
                 memoMap.put("token", token);

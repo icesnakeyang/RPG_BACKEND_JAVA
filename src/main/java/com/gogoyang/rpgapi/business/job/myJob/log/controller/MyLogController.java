@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/job/log")
+@RequestMapping("/rpgapi/job/log")
 public class MyLogController {
     private final IMyLogBusinessService iMyLogBusinessService;
 
