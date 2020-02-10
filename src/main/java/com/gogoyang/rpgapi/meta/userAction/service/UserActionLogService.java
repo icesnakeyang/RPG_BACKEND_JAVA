@@ -29,9 +29,8 @@ public class UserActionLogService implements IUserActionLogService {
     /**
      * 查询用户行为记录
      *
-     * @param qIn
-     * offset
-     * size
+     * @param qIn offset
+     *            size
      * @return
      * @throws Exception
      */
@@ -39,5 +38,16 @@ public class UserActionLogService implements IUserActionLogService {
     public ArrayList<UserActionLog> listUserActionLog(Map qIn) throws Exception {
         ArrayList<UserActionLog> userActionLogs = userActionLogDao.listUserActionLog(qIn);
         return userActionLogs;
+    }
+
+    /**
+     * 统计用户行为记录总数
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Integer totalUserActionLog() throws Exception {
+        Integer total = userActionLogDao.totalUserActionLog();
+        return total;
     }
 }

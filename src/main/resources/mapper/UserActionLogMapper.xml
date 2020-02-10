@@ -28,4 +28,9 @@
         order by ids desc
         limit #{offset}, #{size}
     </select>
+
+    <!--统计用户行为记录总数-->
+    <select id="totalUserActionLog" resultType="java.lang.Integer">
+        select count(*) as total from user_action_log
+    </select>
 </mapper>

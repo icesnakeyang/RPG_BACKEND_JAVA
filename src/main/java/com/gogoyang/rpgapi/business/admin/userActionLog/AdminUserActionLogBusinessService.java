@@ -23,6 +23,7 @@ public class AdminUserActionLogBusinessService implements IAdminUserActionLogBus
 
     /**
      * 查询用户行为记录
+     * 统计用户行为记录总数
      * @param in
      * @return
      * @throws Exception
@@ -44,6 +45,14 @@ public class AdminUserActionLogBusinessService implements IAdminUserActionLogBus
 
         Map out=new HashMap();
         out.put("userActionLogs", userActionLogs);
+
+        /**
+         * 统计记录总数
+         */
+        Integer total=iUserActionLogService.totalUserActionLog();
+
+        out.put("totalUserActionLog", total);
+
         return out;
     }
 }

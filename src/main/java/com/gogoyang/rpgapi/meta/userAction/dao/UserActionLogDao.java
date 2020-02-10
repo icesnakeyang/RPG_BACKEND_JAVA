@@ -22,4 +22,10 @@ public interface UserActionLogDao{
      * @return
      */
     ArrayList<UserActionLog> listUserActionLog(Map qIn);
+
+    /**
+     * 统计用户行为记录总数
+     * @return
+     */
+    Integer totalUserActionLog();
 }

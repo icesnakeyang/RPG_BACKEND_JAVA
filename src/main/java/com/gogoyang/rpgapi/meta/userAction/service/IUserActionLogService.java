@@ -21,4 +21,11 @@ public interface IUserActionLogService {
      * @return
      */
     ArrayList<UserActionLog> listUserActionLog(Map qIn) throws Exception;
+
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
+    Integer totalUserActionLog() throws Exception;
 }

@@ -23,6 +23,12 @@ public class UserActionLogController {
         this.iAdminUserActionLogBusinessService = iAdminUserActionLogBusinessService;
     }
 
+    /**
+     * 查询用户行为记录
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
     @ResponseBody
     @PostMapping("/listUserActionLog")
     public Response listUserActionLog(@RequestBody UserActionLogRequest request,
