@@ -3,6 +3,8 @@ package com.gogoyang.rpgapi.controller.account;
 import com.gogoyang.rpgapi.business.account.IAccountBusinessService;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,8 @@ import java.util.Map;
 @RequestMapping("/rpgapi/account")
 public class AccountController {
     private final IAccountBusinessService iAccountBusinessService;
+
+    private Logger logger= LoggerFactory.getLogger(getClass());
 
     public AccountController(IAccountBusinessService iAccountBusinessService) {
         this.iAccountBusinessService = iAccountBusinessService;
@@ -43,6 +47,7 @@ public class AccountController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10106);
+                logger.error(ex.getMessage());
             }
         }
         return response;
@@ -64,6 +69,38 @@ public class AccountController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
                 response.setErrorCode(10106);
+                logger.error(ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    /**
+     * 用户申请取现
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/withdraw")
+    public Response withdraw(@RequestBody AccountRequest request,
+                             HttpServletRequest httpServletRequest){
+        Response response=new Response();
+        Map in=new HashMap();
+        try{
+            String token=httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("userId", request.getUserId());
+            in.put("amount", request.getAmount());
+            in.put("remark", request.getRemark());
+
+            iAccountBusinessService.withdraw(in);
+        }catch (Exception ex){
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            }catch (Exception ex2){
+                response.setErrorCode(20003);
+                logger.error(ex.getMessage());
             }
         }
         return response;

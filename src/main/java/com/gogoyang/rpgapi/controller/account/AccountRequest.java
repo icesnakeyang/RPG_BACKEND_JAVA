@@ -6,4 +6,6 @@ import lombok.Data;
 @Data
 public class AccountRequest extends Request {
     private Integer userId;
+    private Double amount;
+    private String remark;
 }

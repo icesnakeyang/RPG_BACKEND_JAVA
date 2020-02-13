@@ -9,4 +9,11 @@ public interface IAccountBusinessService {
     Page<Account> listMyAccount(Map in) throws Exception;
 
     Map loadAccountBalance(Map in) throws Exception;
+
+    /**
+     * 用户申请取现
+     * @param in
+     * @throws Exception
+     */
+    void withdraw(Map in) throws Exception;
 }
