@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.account.dao.AccountMapper">
+
+    <!--配置job_log表和JobLog对象的字段映射 -->
+    <resultMap id="jobCompleteMap" type="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger">
+        <result property="withdrawLedgerId" column="withdraw_ledger_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="readTime" column="read_time"/>
+        <result property="processTime" column="process_time"/>
+        <result property="processRemark" column="process_remark"/>
+        <result property="processReadTime" column="process_read_time"/>
+    </resultMap>
+
+    <!--统计所有未阅读的任务完成日志-->
+    <select id="totalUnreadComplete" parameterType="map"
+            resultType="java.lang.Integer">
+        select count(*) as total_unread_complete
+        from job_complete
+        where 1 = 1
+        and (
+        (
+        read_time is null
+        <![CDATA[
+        and created_user_id <> #{userId}
+        ]]>
+        )
+        or (
+        process_read_time is null
+        and created_user_id = #{userId}
+        )
+        )
+        <choose>
+            <when test="jobId!=null">
+                and job_id = #{jobId}
+            </when>
+        </choose>
+    </select>
+
+    <!--把所有未阅读的验收日志设置为当前阅读时间-->
+    <update id="setJobCompleteReadTime" parameterType="map">
+        update job_complete set
+        read_time=#{readTime}
+        where 1 = 1
+        and read_time is null
+        <![CDATA[
+        and created_user_id <> #{userId}
+        ]]>
+        <choose>
+            <when test="jobId!=null">
+                and job_id = #{jobId}
+            </when>
+        </choose>
+    </update>
+
+    <!--设置处理结果的阅读时间-->
+    <update id="setJobCompleteProcessReadTime" parameterType="map">
+        update job_complete set
+        process_read_time=#{processReadTime}
+        where 1=1
+        and process_read_time is null
+        and created_user_id=#{userId}
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+    </update>
+
+</mapper>
