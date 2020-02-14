@@ -48,4 +48,36 @@
         </choose>
     </select>
 
+    <select id="listWithdrawAdmin" parameterType="map"
+            resultType="map">
+        select withdraw_ledger_id,
+        user.user_id,
+        create_time,
+        amount,
+        remark,
+        status,
+        read_time,
+        process_time,
+        process_remark,
+        process_read_time,
+        account,
+        account_in,
+        account_out,
+        honor,
+        honor_in,
+        honor_out,
+        real_name,
+        email,
+        phone
+        from withdraw_ledger
+        left join user on withdraw_ledger.user_id=user.user_id
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user.user_id=#{userId}
+            </when>
+        </choose>
+
+    </select>
+
 </mapper>

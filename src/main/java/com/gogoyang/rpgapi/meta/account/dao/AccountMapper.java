@@ -33,4 +33,5 @@ public interface AccountMapper {
      */
     Integer totalWithdraw(Map qIn);
 
+    ArrayList<Map<String, Object>> listWithdrawAdmin(Map qIn);
 }

@@ -41,6 +41,12 @@ public class WithdrawLedgerService implements IWithdrawLedgerService {
         return withdrawLedgers;
     }
 
+    @Override
+    public ArrayList<Map<String, Object>> listWithdrawAdmin(Map qIn) throws Exception {
+        ArrayList<Map<String, Object>> list=accountMapper.listWithdrawAdmin(qIn);
+        return list;
+    }
+
     /**
      * 统计取现记录总数
      *

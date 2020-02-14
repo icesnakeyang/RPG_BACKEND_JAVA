@@ -2,6 +2,8 @@ package com.gogoyang.rpgapi.business.common;
 
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.meta.admin.entity.Admin;
+import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import com.gogoyang.rpgapi.meta.userAction.entity.UserActionLog;
@@ -19,13 +21,16 @@ public class CommonBusinessService implements ICommonBusinessService {
     private final IUserService iUserService;
     private final IRPGFunction irpgFunction;
     private final IUserActionLogService iUserActionLogService;
+    private final IAdminService iAdminService;
 
     public CommonBusinessService(IUserService iUserService,
                                  IRPGFunction irpgFunction,
-                                 IUserActionLogService iUserActionLogService) {
+                                 IUserActionLogService iUserActionLogService,
+                                 IAdminService iAdminService) {
         this.iUserService = iUserService;
         this.irpgFunction = irpgFunction;
         this.iUserActionLogService = iUserActionLogService;
+        this.iAdminService = iAdminService;
     }
 
     @Override
@@ -72,6 +77,15 @@ public class CommonBusinessService implements ICommonBusinessService {
         userActLog.setMemo(irpgFunction.convertMapToString(memoMap));
         userActLog.setUserActionLogId(irpgFunction.UUID().toString());
         iUserActionLogService.createUserActionLog(userActLog);
+    }
+
+    @Override
+    public Admin getAdminByToken(String token) throws Exception {
+        Admin admin=iAdminService.getAdminByToken(token);
+        if(admin==null){
+            throw new Exception("20001");
+        }
+        return admin;
     }
 
     public User getUserByUserId(Integer userId) throws Exception {

@@ -23,6 +23,14 @@ public interface IWithdrawLedgerService {
     ArrayList<WithdrawLedger> listWithdraw(Map qIn) throws Exception;
 
     /**
+     * 管理员查询用户的取现申请
+     * @param qIn
+     * @return
+     * @throws Exception
+     */
+    ArrayList<Map<String, Object>> listWithdrawAdmin(Map qIn) throws Exception;
+
+    /**
      * 统计取现记录总数
      * @param qIn
      * {userId}

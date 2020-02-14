@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.common;
 
+import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 
 import java.util.Map;
@@ -13,4 +14,6 @@ public interface ICommonBusinessService {
      * @throws Exception
      */
     void createUserActionLog(Map in) throws Exception;
+
+    Admin getAdminByToken(String token) throws Exception;
 }
