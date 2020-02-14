@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,18 +37,18 @@ public class AccountBusinessService implements IAccountBusinessService {
 
     @Override
     public Page<Account> listMyAccount(Map in) throws Exception {
-        String token=in.get("token").toString();
+        String token = in.get("token").toString();
 
-        User user=iCommonBusinessService.getUserByToken(token);
-        Map qIn=new HashMap();
+        User user = iCommonBusinessService.getUserByToken(token);
+        Map qIn = new HashMap();
         qIn.put("userId", user.getUserId());
         qIn.put("pageIndex", in.get("pageIndex"));
         qIn.put("pageSize", in.get("pageSize"));
-        Page<Account> accounts=iAccountService.listMyAccount(qIn);
+        Page<Account> accounts = iAccountService.listMyAccount(qIn);
 
-        for(int i=0;i<accounts.getContent().size();i++){
-            Date d1=(Date)accounts.getContent().get(i).getCreatedTime();
-            String dd=(new SimpleDateFormat("yyyy-MM-dd")).format(d1);
+        for (int i = 0; i < accounts.getContent().size(); i++) {
+            Date d1 = (Date) accounts.getContent().get(i).getCreatedTime();
+            String dd = (new SimpleDateFormat("yyyy-MM-dd")).format(d1);
             accounts.getContent().get(i).setCratedTimeStr(dd);
         }
         return accounts;
@@ -55,24 +56,25 @@ public class AccountBusinessService implements IAccountBusinessService {
 
     @Override
     public Map loadAccountBalance(Map in) throws Exception {
-        String token=in.get("token").toString();
+        String token = in.get("token").toString();
         in.put("token", token);
-        User user=iCommonBusinessService.getUserByToken(token);
-        Map out=iAccountService.loadAccountBalance(user.getUserId());
+        User user = iCommonBusinessService.getUserByToken(token);
+        Map out = iAccountService.loadAccountBalance(user.getUserId());
         return out;
     }
 
     /**
      * 用户申请取现
+     *
      * @param in
      * @throws Exception
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void withdraw(Map in) throws Exception {
-        String token=in.get("token").toString();
-        Double amount=(Double)in.get("amount");
-        String remark=(String)in.get("remark");
+        String token = in.get("token").toString();
+        Double amount = (Double) in.get("amount");
+        String remark = (String) in.get("remark");
 
         /**
          * 1、检查用户是否登录
@@ -81,19 +83,19 @@ public class AccountBusinessService implements IAccountBusinessService {
          * 4、创建提现日志，等待管理员处理
          */
 
-        User user=iCommonBusinessService.getUserByToken(token);
+        User user = iCommonBusinessService.getUserByToken(token);
 
         //检查用户余额
-        Map accountMap=iAccountService.loadAccountBalance(user.getUserId());
-        Double balance=(Double)accountMap.get("balance");
-        if(balance<amount){
+        Map accountMap = iAccountService.loadAccountBalance(user.getUserId());
+        Double balance = (Double) accountMap.get("balance");
+        if (balance < amount) {
             throw new Exception("20004");
         }
 
         //todo 检查被申诉任务的金额
 
         //提现申请
-        WithdrawLedger withdrawLedger=new WithdrawLedger();
+        WithdrawLedger withdrawLedger = new WithdrawLedger();
         withdrawLedger.setAmount(amount);
         withdrawLedger.setCreateTime(new Date());
         withdrawLedger.setRemark(remark);
@@ -102,5 +104,36 @@ public class AccountBusinessService implements IAccountBusinessService {
         withdrawLedger.setWithdrawLedgerId(GogoTools.UUID());
 
         iWithdrawLedgerService.createWithdrawLedger(withdrawLedger);
+    }
+
+    /**
+     * 查询用户取现记录
+     *
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Map listWithdraw(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
+
+        User user = iCommonBusinessService.getUserByToken(token);
+
+        Map qIn = new HashMap();
+        qIn.put("userId", user.getUserId());
+        Integer offset = (pageIndex - 1) * pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<WithdrawLedger> withdrawLedgers = iWithdrawLedgerService.listWithdraw(qIn);
+
+        Map out = new HashMap();
+        out.put("withdrawLedgers", withdrawLedgers);
+
+        Integer total = iWithdrawLedgerService.totalWithdraw(qIn);
+        out.put("totalWithdrawLedger", total);
+
+        return out;
     }
 }

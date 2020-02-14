@@ -2,10 +2,31 @@ package com.gogoyang.rpgapi.meta.account.service;
 
 import com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 public interface IWithdrawLedgerService {
     /**
      * 创建一个取现日志
      * @param withdrawLedger
      */
-    void createWithdrawLedger(WithdrawLedger withdrawLedger);
+    void createWithdrawLedger(WithdrawLedger withdrawLedger) throws Exception;
+
+    /**
+     * 查询用户取现记录
+     * @param qIn
+     * userId
+     * offset
+     * size
+     * @return
+     */
+    ArrayList<WithdrawLedger> listWithdraw(Map qIn) throws Exception;
+
+    /**
+     * 统计取现记录总数
+     * @param qIn
+     * {userId}
+     * @return
+     */
+    Integer totalWithdraw(Map qIn) throws Exception;
 }

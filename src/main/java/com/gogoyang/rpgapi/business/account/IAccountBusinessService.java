@@ -16,4 +16,12 @@ public interface IAccountBusinessService {
      * @throws Exception
      */
     void withdraw(Map in) throws Exception;
+
+    /**
+     * 查询用户取现记录
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map listWithdraw(Map in) throws Exception;
 }

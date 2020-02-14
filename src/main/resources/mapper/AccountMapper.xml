@@ -3,7 +3,7 @@
 <mapper namespace="com.gogoyang.rpgapi.meta.account.dao.AccountMapper">
 
     <!--配置withdraw_ledger表和WithdrawLedger对象的字段映射 -->
-    <resultMap id="jobCompleteMap" type="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger">
+    <resultMap id="withdrawLedgerMap" type="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger">
         <result property="withdrawLedgerId" column="withdraw_ledger_id"/>
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
@@ -18,9 +18,34 @@
             useGeneratedKeys="true"
             keyProperty="ids">
         insert into withdraw_ledger
-        (withdraw_ledger_id, user_id, create_time, amount, reamrk, status)
+        (withdraw_ledger_id, user_id, create_time, amount, remark, status)
         values
         (#{withdrawLedgerId}, #{userId}, #{createTime}, #{amount}, #{remark}, #{status})
     </insert>
+
+    <!--查询用户取现记录-->
+    <select id="listWithdraw" parameterType="map"
+            resultMap="withdrawLedgerMap">
+        select * from withdraw_ledger
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        limit #{offset}, #{size}
+    </select>
+
+    <!--统计取现记录总数-->
+    <select id="totalWithdraw" parameterType="map"
+            resultType="java.lang.Integer">
+        select count(*) as total from withdraw_ledger
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
 
 </mapper>
