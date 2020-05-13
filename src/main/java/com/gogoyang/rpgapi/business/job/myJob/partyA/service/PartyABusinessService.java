@@ -7,6 +7,7 @@ import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.realname.entity.RealName;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
@@ -56,11 +57,16 @@ public class PartyABusinessService implements IPartyABusinessService{
         Page<Job> jobPage=iJobService.listPartyAJob(user.getUserId(),JobStatus.PROGRESS, 0, 100);
 
         for(int i=0;i<jobPage.getContent().size();i++){
-            jobPage.getContent().get(i).setPartyAName(iRealNameService.getRealNameByUserId(
-                    jobPage.getContent().get(i).getPartyAId()).getRealName());
+            Job job=jobPage.getContent().get(i);
+            Integer partyAId=job.getPartyAId();
+            RealName realName=iRealNameService.getRealNameByUserId(partyAId);
+            String theName=realName.getRealName();
+            jobPage.getContent().get(i).setPartyAName(theName);
             if(jobPage.getContent().get(i).getPartyBId()!=null){
-                jobPage.getContent().get(i).setPartyBName(iRealNameService.getRealNameByUserId(
-                        jobPage.getContent().get(i).getPartyBId()).getRealName());
+                Integer partyBId=job.getPartyBId();
+                realName=iRealNameService.getRealNameByUserId(partyBId);
+                theName=realName.getRealName();
+                jobPage.getContent().get(i).setPartyBName(theName);
                 Integer unread=0;
                 unread=iMyJobCommonBusinessService.totalUnreadOneJob(token, jobPage.getContent().get(i).getJobId());
                 jobPage.getContent().get(i).setUnRead(unread);

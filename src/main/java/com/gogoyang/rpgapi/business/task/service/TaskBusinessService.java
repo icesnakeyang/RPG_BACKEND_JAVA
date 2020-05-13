@@ -93,8 +93,8 @@ public class TaskBusinessService implements ITaskBusinessService {
     @Transactional(rollbackOn = Exception.class)
     public void updateTask(Map in) throws Exception {
         Integer taskId = (Integer) in.get("taskId");
-        String detail = in.get("detail").toString();
-        String code = in.get("code").toString();
+        String detail = (String)in.get("detail");
+        String code = (String)in.get("code");
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
         Double price = (Double) in.get("price");

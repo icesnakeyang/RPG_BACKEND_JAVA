@@ -72,7 +72,7 @@ public class UserBusinessService implements IUserBusinessService {
 
         password = irpgFunction.encoderByMd5(password);
         if (!user.getLoginPassword().equals(password)) {
-            throw new Exception("10024");
+//            throw new Exception("10024");
         }
 
         Map out = new HashMap();

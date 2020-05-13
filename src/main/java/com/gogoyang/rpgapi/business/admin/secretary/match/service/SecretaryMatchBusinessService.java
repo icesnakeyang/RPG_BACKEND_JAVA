@@ -84,6 +84,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
             map.put("createdTime", job.getCreatedTime());
             map.put("jobApplyNum", job.getJobApplyNum());
             map.put("partyAId", job.getPartyAId());
+            map.put("jobId", job.getJobId());
             list.add(map);
         }
 
