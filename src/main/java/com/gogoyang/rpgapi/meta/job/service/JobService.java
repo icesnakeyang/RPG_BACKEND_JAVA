@@ -146,7 +146,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public ArrayList<Job> listPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
+    public ArrayList<Job> listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         qIn.put("partyAId",userId);
         qIn.put("status", jobStatus);

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.account.dao.WithdrawLedgerDao">
+
+    <!--配置withdraw_ledger表和WithdrawLedger对象的字段映射 -->
+    <resultMap id="withdrawLedgerMap" type="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger">
+        <result property="withdrawLedgerId" column="withdraw_ledger_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="readTime" column="read_time"/>
+        <result property="processTime" column="process_time"/>
+        <result property="processRemark" column="process_remark"/>
+        <result property="processReadTime" column="process_read_time"/>
+    </resultMap>
+
+    <!--创建一个取现日志-->
+    <insert id="createWithdrawLedger" parameterType="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger"
+            useGeneratedKeys="true"
+            keyProperty="ids">
+        insert into withdraw_ledger
+        (withdraw_ledger_id, user_id, create_time, amount, remark, status)
+        values
+        (#{withdrawLedgerId}, #{userId}, #{createTime}, #{amount}, #{remark}, #{status})
+    </insert>
+
+    <!--查询用户取现记录-->
+    <select id="listWithdraw" parameterType="map"
+            resultMap="withdrawLedgerMap">
+        select * from withdraw_ledger
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        limit #{offset}, #{size}
+    </select>
+
+    <!--统计取现记录总数-->
+    <select id="totalWithdraw" parameterType="map"
+            resultType="java.lang.Integer">
+        select count(*) as total from withdraw_ledger
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="listWithdrawAdmin" parameterType="map"
+            resultType="map">
+        select withdraw_ledger_id,
+        user.user_id,
+        create_time,
+        amount,
+        remark,
+        status,
+        read_time,
+        process_time,
+        process_remark,
+        process_read_time,
+        account,
+        account_in,
+        account_out,
+        honor,
+        honor_in,
+        honor_out,
+        real_name,
+        email,
+        phone
+        from withdraw_ledger
+        left join user on withdraw_ledger.user_id=user.user_id
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user.user_id=#{userId}
+            </when>
+        </choose>
+
+    </select>
+
+</mapper>

@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @Mapper
-public interface AccountMapper {
-
+public interface WithdrawLedgerDao {
     /**
      * 创建一个取现日志
      * @param withdrawLedger

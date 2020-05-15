@@ -1,16 +1,35 @@
 package com.gogoyang.rpgapi.meta.honor.dao;
 
-import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface HonorDao extends JpaRepository<Honor, Integer> {
-    Page<Honor> findAllByUserId(Integer userId, Pageable pageable);
+import java.util.ArrayList;
+import java.util.Map;
 
-    @Query(nativeQuery = true, value = "select sum(point) from honor o where user_id=:userId and type=:honorType")
-    Long loadSumPoint(@Param("userId")Integer userId, @Param("honorType")Integer honorType);
+@Mapper
+public interface HonorDao{
+    /**
+     * 创建一个荣誉值记录
+     * @param honor
+     */
+    void createHonor(Honor honor);
+
+    /**
+     *
+     * @param qIn
+     * userId
+     * offset
+     * size
+     * @return
+     */
+    ArrayList<Honor> listHonor(Map qIn);
+
+    /**
+     * 统计一个用户的荣誉值，可按type分类统计
+     * @param qIn
+     * userId
+     * type
+     * @return
+     */
+    Integer sumHonor(Map qIn);
 }

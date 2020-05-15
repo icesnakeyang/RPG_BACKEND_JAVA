@@ -1,100 +1,22 @@
 package com.gogoyang.rpgapi.meta.honor.entity;
 
 import com.gogoyang.rpgapi.framework.constant.HonorType;
+import lombok.Data;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "honor")
+@Data
 public class Honor {
-    @Id
-    @GeneratedValue
-    @Column(name = "honor_id")
-    private Integer honorId;
-
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @Column(name = "point")
-    private Double point;
-
-    @Column(name = "type")
+    private Integer ids;
+    private String honorId;
+    private String userId;
+    private Integer point;
     private HonorType type;
-
-    @Column(name = "job_id")
-    private Integer jobId;
-
-    @Column(name = "created_time")
+    private String jobId;
     private Date createdTime;
-
-    @Column(name = "created_user_id")
-    private Integer createdUserId;
-
-    @Column(name = "remark")
+    private String createdUserId;
     private String remark;
-    ////////////////////////////////////////////////////////////////////////////////
-    public Integer getHonorId() {
-        return honorId;
-    }
 
-    public void setHonorId(Integer honorId) {
-        this.honorId = honorId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Double getPoint() {
-        return point;
-    }
-
-    public void setPoint(Double point) {
-        this.point = point;
-    }
-
-    public HonorType getType() {
-        return type;
-    }
-
-    public void setType(HonorType type) {
-        this.type = type;
-    }
-
-    public Integer getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Integer getCreatedUserId() {
-        return createdUserId;
-    }
-
-    public void setCreatedUserId(Integer createdUserId) {
-        this.createdUserId = createdUserId;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
+    private String jobTitle;
+    private String userName;
 }

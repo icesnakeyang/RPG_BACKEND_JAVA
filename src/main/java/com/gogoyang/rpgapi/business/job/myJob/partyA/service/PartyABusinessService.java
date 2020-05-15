@@ -1,25 +1,27 @@
 package com.gogoyang.rpgapi.business.job.myJob.partyA.service;
 
+import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.realname.entity.RealName;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class PartyABusinessService implements IPartyABusinessService{
+public class PartyABusinessService implements IPartyABusinessService {
     private final IJobService iJobService;
+    private final ICommonBusinessService iCommonBusinessService;
     private final ICompleteBusinessService iCompleteBusinessService;
     private final IStopBusinessService iStopBusinessService;
     private final IUserService iUserService;
@@ -34,7 +36,8 @@ public class PartyABusinessService implements IPartyABusinessService{
                                  IUserService iUserService,
                                  IRealNameService iRealNameService,
                                  IMyLogBusinessService iMyLogBusinessService,
-                                 IMyJobCommonBusinessService iMyJobCommonBusinessService) {
+                                 IMyJobCommonBusinessService iMyJobCommonBusinessService,
+                                 ICommonBusinessService iCommonBusinessService) {
         this.iJobService = iJobService;
         this.iCompleteBusinessService = iCompleteBusinessService;
         this.iStopBusinessService = iStopBusinessService;
@@ -42,67 +45,52 @@ public class PartyABusinessService implements IPartyABusinessService{
         this.iRealNameService = iRealNameService;
         this.iMyLogBusinessService = iMyLogBusinessService;
         this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     @Override
-    public Page<Job> listMyPartyAJob(Map in) throws Exception {
-        String token=in.get("token").toString();
+    public Map listMyPartyAJob(Map in) throws Exception {
+        String token = in.get("token").toString();
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
+        UserInfo user = iUserService.getUserByToken(token);
+        if (user == null) {
             throw new Exception("10004");
         }
 
-        Page<Job> jobPage=iJobService.listPartyAJob(user.getUserId(),JobStatus.PROGRESS, 0, 100);
+        ArrayList<Job> jobs = iJobService.listPartyAJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
 
-        for(int i=0;i<jobPage.getContent().size();i++){
-            Job job=jobPage.getContent().get(i);
-            Integer partyAId=job.getPartyAId();
-            RealName realName=iRealNameService.getRealNameByUserId(partyAId);
-            String theName=realName.getRealName();
-            jobPage.getContent().get(i).setPartyAName(theName);
-            if(jobPage.getContent().get(i).getPartyBId()!=null){
-                Integer partyBId=job.getPartyBId();
-                realName=iRealNameService.getRealNameByUserId(partyBId);
-                theName=realName.getRealName();
-                jobPage.getContent().get(i).setPartyBName(theName);
-                Integer unread=0;
-                unread=iMyJobCommonBusinessService.totalUnreadOneJob(token, jobPage.getContent().get(i).getJobId());
-                jobPage.getContent().get(i).setUnRead(unread);
-            }
+        for (int i = 0; i < jobs.size(); i++) {
+            Job job = jobs.get(i);
+            Integer unread = 0;
+            unread = iMyJobCommonBusinessService.totalUnreadOneJob(token, job.getJobId());
+            jobs.get(i).setUnRead(unread);
         }
 
-        return jobPage;
+        Map out = new HashMap();
+        out.put("jobs", jobs);
+
+        return out;
     }
 
     @Override
     public Map getPartyAJob(Map in) throws Exception {
-        String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
+        String token = in.get("token").toString();
+        String jobId = in.get("jobId").toString();
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
+        Job job = iJobService.getJobDetailByJobId(jobId);
+
+        if(!job.getPartyAId().equals(user.getUserId())){
+            //当前登录用户不是甲方，没有查看任务权限
+            throw new Exception("30003");
         }
 
-        Job job=iJobService.getJobByJobId(jobId);
+        Map out = new HashMap();
+        out.put("job", job);
 
-        Map out=new HashMap();
-        out.put("jobId", job.getJobId());
-        out.put("title", job.getTitle());
-        out.put("code", job.getCode());
-        out.put("price", job.getPrice());
-        out.put("days", job.getDays());
-        out.put("publishTime", job.getCreatedTime());
-        out.put("contractTime", job.getContractTime());
-        out.put("partyAId", job.getPartyAId());
-        out.put("partyBId", job.getPartyBId());
-        out.put("partyAName", user.getRealName());
-        User userB=iUserService.getUserByUserId(job.getPartyBId());
-        if(userB!=null) {
-            out.put("partyBName", userB.getRealName());
-        }
-        out.put("detail", job.getDetail());
         return out;
     }
 }

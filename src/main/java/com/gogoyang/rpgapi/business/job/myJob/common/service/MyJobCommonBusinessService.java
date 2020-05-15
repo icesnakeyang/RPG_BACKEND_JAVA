@@ -104,7 +104,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
     /**
      * 统计一个任务里我未阅读的各种更新状态
      */
-    public Integer totalUnreadOneJob(String token, Integer jobId) throws Exception {
+    public Integer totalUnreadOneJob(String token, String jobId) throws Exception {
         Map qIn = new HashMap();
         qIn.put("token", token);
         qIn.put("jobId", jobId);

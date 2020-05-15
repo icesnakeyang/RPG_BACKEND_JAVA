@@ -1,101 +1,24 @@
 package com.gogoyang.rpgapi.meta.account.entity;
 
 import com.gogoyang.rpgapi.framework.constant.AccountType;
+import lombok.Data;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
+/**
+ * 用户账户表
+ */
+@Data
 public class Account {
-    @Id
-    @GeneratedValue
-    @Column(name = "account_id")
-    private Integer accountId;
-
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @Column(name = "created_time")
+    private Integer ids;
+    private String accountId;
+    private String userId;
     private Date createdTime;
-
-    @Column(name = "amount")
     private Double amount;
-
-    @Column(name = "type")
-    private AccountType type;
-
-    @Column(name = "remark")
+    private String type;
     private String remark;
+    private String jobId;
 
-    @Column(name = "job_id")
-    private Integer jobId;
-
-    @Transient
-    private String cratedTimeStr;
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public AccountType getType() {
-        return type;
-    }
-
-    public void setType(AccountType type) {
-        this.type = type;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getCratedTimeStr() {
-        return cratedTimeStr;
-    }
-
-    public void setCratedTimeStr(String cratedTimeStr) {
-        this.cratedTimeStr = cratedTimeStr;
-    }
-
-    public Integer getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(Integer jobId) {
-        this.jobId = jobId;
-    }
+    private String userName;
+    private String jobTitle;
 }

@@ -31,9 +31,11 @@ public class PartyAController {
             String token=httpServletRequest.getHeader("token");
             Map in =new HashMap();
             in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
 
-            Page<Job> jobPage=iPartyABusinessService.listMyPartyAJob(in);
-            response.setData(jobPage);
+            Map out=iPartyABusinessService.listMyPartyAJob(in);
+            response.setData(out);
         }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

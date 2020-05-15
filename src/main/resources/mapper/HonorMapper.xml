@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.honor.dao.HonorDao">
+
+    <resultMap id="honorMap" type="com.gogoyang.rpgapi.meta.honor.entity.Honor">
+        <result property="honorId" column="honor_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="jobId" column="job_id"/>
+        <result property="createdTime" column="create_time"/>
+        <result property="readTime" column="read_time"/>
+        <result property="createdUserId" column="create_user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="jobTitle" column="job_title"/>
+    </resultMap>
+
+    <!--创建一个荣誉值记录-->
+    <insert id="createHonor" parameterType="com.gogoyang.rpgapi.meta.honor.entity.Honor"
+            useGeneratedKeys="true"
+            keyProperty="ids">
+        insert into honor
+        (honor_id, user_id, point, type, job_id,
+        created_time, created_user_id, remark)
+        values
+        (#{honorId}, #{userId}, #{point}, #{type}, #{jobId},
+         #{createdTime}, #{createdUserId}, #{remark})
+    </insert>
+
+    <select id="listHonor" parameterType="map" resultMap="honorMap">
+        select honor.ids,
+        honor_id,
+        honor.user_id,
+        real_name as user_name,
+        point,
+        type,
+        honor.job_id,
+        title as job_title,
+        honor.created_time,
+        remark
+        from honor
+        left join user_info on honor.user_id=user_info.user_id
+        left join job on honor.job_id=job.job_id
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and honor.user_id=#{userId}
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
+
+    <!--统计一个用户的荣誉值，可按type分类统计-->
+    <select id="sumHonor" parameterType="map" resultType="java.lang.Integer">
+        select sum(point) as sum from honor
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="type!=null">
+                and type=#{type}
+            </when>
+        </choose>
+    </select>
+
+</mapper>

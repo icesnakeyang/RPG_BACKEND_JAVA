@@ -1,13 +1,18 @@
 package com.gogoyang.rpgapi.meta.account.dao;
 
 import com.gogoyang.rpgapi.meta.account.entity.Account;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface AccountDao extends JpaRepository<Account, Integer>{
-    ArrayList<Account> findAllByUserId(Integer userId);
-    Page<Account> findAllByUserId(Integer userId, Pageable pageable);
+@Mapper
+public interface AccountDao {
+
+    void createAccount(Account account);
+
+    Account getAccount(String accountId);
+
+    ArrayList<Account> listAccount(Map qIn);
 }

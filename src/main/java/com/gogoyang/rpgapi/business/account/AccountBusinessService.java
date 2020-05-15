@@ -8,7 +8,7 @@ import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger;
 import com.gogoyang.rpgapi.meta.account.service.IAccountService;
 import com.gogoyang.rpgapi.meta.account.service.IWithdrawLedgerService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class AccountBusinessService implements IAccountBusinessService {
     public Page<Account> listMyAccount(Map in) throws Exception {
         String token = in.get("token").toString();
 
-        User user = iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
         Map qIn = new HashMap();
         qIn.put("userId", user.getUserId());
         qIn.put("pageIndex", in.get("pageIndex"));
@@ -58,7 +58,7 @@ public class AccountBusinessService implements IAccountBusinessService {
     public Map loadAccountBalance(Map in) throws Exception {
         String token = in.get("token").toString();
         in.put("token", token);
-        User user = iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
         Map out = iAccountService.loadAccountBalance(user.getUserId());
         return out;
     }

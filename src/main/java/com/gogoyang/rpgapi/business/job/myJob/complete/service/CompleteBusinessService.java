@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.job.myJob.complete.service;
 
 import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -190,28 +191,27 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         String token = in.get("token").toString();
         String jobId = (String) in.get("jobId");
         String processRemark = (String) in.get("processRemark");
-=
-        //首先判断任务是否已经验收
+
+        //首先判断任务状态，只有PROGRESS的任务可以操作完成
         Job job=iCommonBusinessService.getJobTinyByJobId(jobId);
-        if (job.getStatus() != JobStatus.PROGRESS) {
+        if (!job.getStatus().equals(JobStatus.PROGRESS)) {
             throw new Exception("10063");
         }
 
         //读取当前用户
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         //当前用户必须是甲方
-        if (user.getUserId() != job.getPartyAId()) {
+        if (!user.getUserId().equals(job.getPartyAId())) {
             throw new Exception("10128");
         }
+
         //读取完成申请
         JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
         if (jobComplete == null) {
             //如果没有申请，则为甲方直接通过验收，需创建一个申请
             jobComplete = new JobComplete();
+            jobComplete.setCompleteId(GogoTools.UUID());
             jobComplete.setCreatedUserId(user.getUserId());
             jobComplete.setCreatedTime(new Date());
             jobComplete.setJobId(jobId);
@@ -219,11 +219,11 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             jobComplete.setProcessUserId(user.getUserId());
             jobComplete.setProcessTime(new Date());
             jobComplete.setProcessRemark(processRemark);
-            jobComplete.setResult(LogStatus.ACCEPT);
+            jobComplete.setStatus(LogStatus.ACCEPT);
             iJobCompleteService.insertJobComplete(jobComplete);
         } else {
             //乙方已经申请，直接处理
-            jobComplete.setResult(LogStatus.ACCEPT);
+            jobComplete.setStatus(LogStatus.ACCEPT);
             jobComplete.setProcessRemark(processRemark);
             jobComplete.setProcessTime(new Date());
             jobComplete.setProcessUserId(user.getUserId());
@@ -231,11 +231,12 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         //把job设置为accept
-        job.setStatus(JobStatus.ACCEPTANCE);
+        job.setStatus(JobStatus.ACCEPTANCE.toString());
         iJobService.updateJob(job);
 
         //给甲方增加honor
         Honor honor = new Honor();
+        honor.setHonorId(GogoTools.UUID());
         honor.setCreatedTime(new Date());
         honor.setCreatedUserId(user.getUserId());
         honor.setJobId(job.getJobId());
@@ -345,9 +346,6 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyBUnreadAccept(user.getUserId());
 
-        Map qIn=new HashMap();
-        qIn.put("")
-        ArrayList<JobComplete> jobCompletes = iJobCompleteService.listJobComplete(qIn);
         for (int i = 0; i < jobCompletes.size(); i++) {
             jobCompletes.get(i).setProcessReadTime(new Date());
             iJobCompleteService.updateJobComplete(jobCompletes.get(i));

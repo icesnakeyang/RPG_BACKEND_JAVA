@@ -15,9 +15,9 @@ public class UserInfo {
     private Double account;
     private Double accountIn;
     private Double accountOut;
-    private Double honor;
-    private Double honorIn;
-    private Double honorOut;
+    private Integer honor;
+    private Integer honorIn;
+    private Integer honorOut;
     private String email;
     private String phone;
     private String realName;

@@ -2,13 +2,34 @@ package com.gogoyang.rpgapi.meta.honor.service;
 
 
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
-import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 
 public interface IHonorService {
-    void insertHonor(Honor honor) throws Exception;
-    Page<Honor> listMyHonor(Integer userId, Integer pageIndex, Integer pageSize);
-    Map loadUserHonorBalance(Integer userId) throws Exception;
+    /**
+     * 创建一个荣誉值记录
+     * @param honor
+     */
+    void createHonor(Honor honor);
+
+    /**
+     *
+     * @param qIn
+     * userId
+     * offset
+     * size
+     * @return
+     */
+    ArrayList<Honor> listHonor(Map qIn);
+
+    /**
+     * 统计一个用户的荣誉值，可按type分类统计
+     * @param qIn
+     * userId
+     * type
+     * @return
+     */
+    Integer sumHonor(Map qIn);
 }

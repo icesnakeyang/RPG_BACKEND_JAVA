@@ -1,83 +1,76 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gogoyang.rpgapi.meta.account.dao.AccountMapper">
+<mapper namespace="com.gogoyang.rpgapi.meta.account.dao.AccountDao">
 
-    <!--配置withdraw_ledger表和WithdrawLedger对象的字段映射 -->
-    <resultMap id="withdrawLedgerMap" type="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger">
-        <result property="withdrawLedgerId" column="withdraw_ledger_id"/>
+    <resultMap id="accountMap" type="com.gogoyang.rpgapi.meta.account.entity.Account">
+        <result property="accountId" column="account_id"/>
         <result property="userId" column="user_id"/>
-        <result property="createTime" column="create_time"/>
-        <result property="readTime" column="read_time"/>
-        <result property="processTime" column="process_time"/>
-        <result property="processRemark" column="process_remark"/>
-        <result property="processReadTime" column="process_read_time"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="jobId" column="job_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="jobTitle" column="job_title"/>
     </resultMap>
 
-    <!--创建一个取现日志-->
-    <insert id="createWithdrawLedger" parameterType="com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger"
-            useGeneratedKeys="true"
-            keyProperty="ids">
-        insert into withdraw_ledger
-        (withdraw_ledger_id, user_id, create_time, amount, remark, status)
+    <select id="createAccount" parameterType="com.gogoyang.rpgapi.meta.account.entity.Account">
+        insert into account
+        (account_id, user_id, created_time, amount, type, remark, job_id)
         values
-        (#{withdrawLedgerId}, #{userId}, #{createTime}, #{amount}, #{remark}, #{status})
-    </insert>
-
-    <!--查询用户取现记录-->
-    <select id="listWithdraw" parameterType="map"
-            resultMap="withdrawLedgerMap">
-        select * from withdraw_ledger
-        where 1=1
-        <choose>
-            <when test="userId!=null">
-                and user_id=#{userId}
-            </when>
-        </choose>
-        limit #{offset}, #{size}
+        (#{accountId}, #{userId}, #{createdTime}, #{amount}, #{type}, #{remark}, #{jobId})
     </select>
 
-    <!--统计取现记录总数-->
-    <select id="totalWithdraw" parameterType="map"
-            resultType="java.lang.Integer">
-        select count(*) as total from withdraw_ledger
-        where 1=1
-        <choose>
-            <when test="userId!=null">
-                and user_id=#{userId}
-            </when>
-        </choose>
+    <select id="getAccount" parameterType="java.lang.String" resultType="accountMap">
+        select account.ids,
+           account_id,
+           account.user_id,
+           real_name as user_name,
+           account.created_time,
+           amount,
+           type,
+           remark,
+           account.job_id,
+           title as job_title
+           from account
+        left join user_info user on account.user_id=user.user_id
+        left join job on account.job_id=job.job_id
+        where account_id=#{accountId}
     </select>
 
-    <select id="listWithdrawAdmin" parameterType="map"
-            resultType="map">
-        select withdraw_ledger_id,
-        user.user_id,
-        create_time,
-        amount,
-        remark,
-        status,
-        read_time,
-        process_time,
-        process_remark,
-        process_read_time,
-        account,
-        account_in,
-        account_out,
-        honor,
-        honor_in,
-        honor_out,
-        real_name,
-        email,
-        phone
-        from withdraw_ledger
-        left join user on withdraw_ledger.user_id=user.user_id
-        where 1=1
+    <select id="listAccount" parameterType="map" resultType="accountMap">
+        select account.ids,
+       account_id,
+       account.user_id,
+       real_name as user_name,
+       account.created_time,
+       amount,
+       type,
+       remark,
+       account.job_id,
+       title as job_title
+       from account
+left join user_info user on account.user_id=user.user_id
+left join job on account.job_id=job.job_id
+where 1=1
         <choose>
             <when test="userId!=null">
-                and user.user_id=#{userId}
+                and account.user_id=#{userId}
             </when>
         </choose>
-
+        <choose>
+            <when test="jobId!=null">
+                and account.job_id=#{jobId}
+            </when>
+        </choose>
+and account.user_id=''
+and account.job_id=''
+order by ids desc
+limit 0,1
     </select>
+
+    Account getAccount(Map qIn);
+
+    ArrayList<Account> listAccount(Map qIn);
+
+
+
 
 </mapper>
