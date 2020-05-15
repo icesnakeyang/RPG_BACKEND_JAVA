@@ -19,6 +19,8 @@ public interface JobCompleteDao {
      * 统计所有未阅读的任务完成日志
      *
      * @param qIn
+     * userId
+     * jobId
      * @return
      */
     Integer totalUnreadComplete(Map qIn);

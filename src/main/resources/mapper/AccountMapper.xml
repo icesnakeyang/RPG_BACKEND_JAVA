@@ -37,19 +37,19 @@
 
     <select id="listAccount" parameterType="map" resultType="accountMap">
         select account.ids,
-       account_id,
-       account.user_id,
-       real_name as user_name,
-       account.created_time,
-       amount,
-       type,
-       remark,
-       account.job_id,
-       title as job_title
-       from account
-left join user_info user on account.user_id=user.user_id
-left join job on account.job_id=job.job_id
-where 1=1
+        account_id,
+        account.user_id,
+        real_name as user_name,
+        account.created_time,
+        amount,
+        type,
+        remark,
+        account.job_id,
+        title as job_title
+        from account
+        left join user_info user on account.user_id=user.user_id
+        left join job on account.job_id=job.job_id
+        where 1=1
         <choose>
             <when test="userId!=null">
                 and account.user_id=#{userId}
@@ -60,17 +60,24 @@ where 1=1
                 and account.job_id=#{jobId}
             </when>
         </choose>
-and account.user_id=''
-and account.job_id=''
-order by ids desc
-limit 0,1
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
     </select>
 
-    Account getAccount(Map qIn);
-
-    ArrayList<Account> listAccount(Map qIn);
-
-
-
+    <!--分类汇总账户总额-->
+    <select id="sumAccountByType" parameterType="map" resultType="map">
+        select type, sum(amount) as total from account
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        group by type
+    </select>
 
 </mapper>

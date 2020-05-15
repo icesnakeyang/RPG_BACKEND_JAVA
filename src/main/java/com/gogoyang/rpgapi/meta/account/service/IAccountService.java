@@ -1,25 +1,40 @@
 package com.gogoyang.rpgapi.meta.account.service;
 
 import com.gogoyang.rpgapi.meta.account.entity.Account;
-import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface IAccountService {
-    Account insertNewAccount(Account account) throws Exception;
-
-    Map loadAccountBalance(String userId) throws Exception;
+    /**
+     * 创建用户账户流水记录
+     * @param account
+     */
+    void createAccount(Account account);
 
     /**
-     * Read my account data
-     * @param qIn
-     * {
-     *     userId:
-     *     pageIndex:
-     *     pageSize:
-     * }
+     * 读取一条账户流水记录
+     * @param accountId
      * @return
-     * @throws Exception
      */
-    Page listMyAccount(Map qIn) throws Exception;
+    Account getAccount(String accountId);
+
+    /**
+     * 查询用户账户流水记录
+     * @param qIn
+     * userId
+     * jobId
+     * offset
+     * size
+     * @return
+     */
+    ArrayList<Account> listAccount(Map qIn);
+
+    /**
+     * 分类汇总账户总额
+     * @param qIn
+     * userId
+     * @return
+     */
+    Map sumAccountByType(Map qIn);
 }

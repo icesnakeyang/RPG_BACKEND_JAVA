@@ -1,5 +1,7 @@
 package com.gogoyang.rpgapi.business.admin.secretary.match.service;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -11,7 +13,8 @@ import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,18 +34,21 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     private final IJobApplyService iJobApplyService;
     private final IAccountService iAccountService;
     private final IUserService iUserService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     @Autowired
     public SecretaryMatchBusinessService(IAdminService iAdminService,
                                          IJobService iJobService,
                                          IJobApplyService iJobApplyService,
                                          IAccountService iAccountService,
-                                         IUserService iUserService) {
+                                         IUserService iUserService,
+                                         ICommonBusinessService iCommonBusinessService) {
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
         this.iJobApplyService = iJobApplyService;
         this.iAccountService = iAccountService;
         this.iUserService = iUserService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
 
@@ -70,25 +76,10 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         /**
          * 查询出正在等待匹配的任务
          */
-        Page<Job> jobs=iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
-
-        ArrayList<Map<String, Object>> list=new ArrayStack<Map<String, Object>>();
-        for(int i=0;i<jobs.getContent().size();i++){
-            Job job=jobs.getContent().get(i);
-            Map map=new HashMap();
-            map.put("title", job.getTitle());
-            map.put("code", job.getCode());
-            map.put("price", job.getPrice());
-            map.put("days", job.getDays());
-            map.put("createdTime", job.getCreatedTime());
-            map.put("jobApplyNum", job.getJobApplyNum());
-            map.put("partyAId", job.getPartyAId());
-            map.put("jobId", job.getJobId());
-            list.add(map);
-        }
+        ArrayList<Job> jobs=iJobService.listJobByStatus(JobStatus.MATCHING, pageIndex, pageSize);
 
         Map out=new HashMap();
-        out.put("newApplyList", list);
+        out.put("jobs", jobs);
         return out;
     }
 
@@ -102,41 +93,32 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         /**
          * 当前操作用户必须是RPG秘书权限
          */
-        Admin admin = iAdminService.getAdminByToken(token);
-        if (admin == null) {
-            throw new Exception("10004");
-        }
-        if (admin.getRoleType() != RoleType.SECRETARY) {
+        Admin admin = iCommonBusinessService.getAdminByToken(token);
+        if (!admin.getRoleType().equals(RoleType.SECRETARY)) {
             throw new Exception("10040");
         }
 
         /**
          * read jobApply by jobId where processResult==null
          */
-        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApplyByJobId(jobId);
-
-        ArrayList<Map<String, Object>> applyList=new ArrayList<Map<String, Object>>();
-        for(int i=0;i<jobApplies.size();i++){
-            JobApply apply=jobApplies.get(i);
-            Map map=new HashMap();
-            User user=iUserService.getUserByUserId(apply.getApplyUserId());
-            if(user.getRealName()!=null){
-                map.put("applyUser", user.getRealName());
-            }else {
-                map.put("applyUser", user.getEmail());
-            }
-            map.put("applyUserId", user.getUserId());
-            map.put("applyTime", apply.getApplyTime());
-            map.put("applyId", apply.getJobApplyId());
-            map.put("content", apply.getContent());
-            applyList.add(map);
-        }
+        Map qIn=new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("status", LogStatus.PENDING);
+        Integer offset=(pageIndex-1);
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
 
         Map out = new HashMap();
-        out.put("applyList", applyList);
+        out.put("applyList", jobApplies);
         return out;
     }
 
+    /**
+     * 同意用户的任务申请，任务交易成功
+     * @param in
+     * @throws Exception
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void agreeApply(Map in) throws Exception {
@@ -149,70 +131,75 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
          * set all other apply to disable
          */
         String token=in.get("token").toString();
-        Integer applyId=(Integer)in.get("applyId");
+        String applyId=in.get("applyId").toString();
 
         //检查用户权限，必须是秘书
-        Admin admin=iAdminService.getAdminByToken(token);
+        Admin admin=iCommonBusinessService.getAdminByToken(token);
         if(admin==null){
             throw new Exception("10004");
         }
-        if(admin.getRoleType()!=RoleType.SECRETARY){
+        if(!admin.getRoleType().equals(RoleType.SECRETARY)){
             throw new Exception("10034");
         }
 
         //读取申请，保存为成功
-        JobApply jobApply=iJobApplyService.getJobApplyByJobApplyId(applyId);
+        Map qIn=new HashMap();
+        qIn.put("jobApplyId", applyId);
+        JobApply jobApply=iJobApplyService.getJobApply(qIn);
         if(jobApply==null){
             throw new Exception("10109");
         }
         jobApply.setProcessUserId(admin.getAdminId());
         jobApply.setProcessTime(new Date());
-        jobApply.setProcessResult(LogStatus.ACCEPT);
+        jobApply.setStatus(LogStatus.ACCEPT.toString());
         iJobApplyService.updateJobApply(jobApply);
 
         //读取任务，保存乙方信息，任务状态为进行中
-        Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+        Job job=iJobService.getJobTinyByJobId(jobApply.getJobId());
         if(job==null){
             throw new Exception("10112");
         }
-        job.setStatus(JobStatus.PROGRESS);
-        job.setContractTime(jobApply.getProcessTime());
-        job.setPartyBId(jobApply.getApplyUserId());
-        iJobService.updateJob(job);
+        Job jobEdit=new Job();
+        jobEdit.setJobId(job.getJobId());
+        jobEdit.setStatus(JobStatus.PROGRESS.toString());
+        jobEdit.setContractTime(jobApply.getProcessTime());
+        jobEdit.setPartyBId(jobApply.getApplyUserId());
+        iJobService.updateJob(jobEdit);
 
         //把任务金额转给乙方
-        User userB=iUserService.getUserByUserId(jobApply.getApplyUserId());
+        UserInfo userB=iUserService.getUserByUserId(jobApply.getApplyUserId());
         if(userB==null){
             throw new Exception("10019");
         }
         Account account=new Account();
+        account.setAccountId(GogoTools.UUID());
         account.setAmount(job.getPrice());
         account.setCreatedTime(jobApply.getProcessTime());
-        account.setType(AccountType.ACCEPT);
+        account.setType(AccountType.APPLY_SUCCESS.toString());
         account.setUserId(jobApply.getApplyUserId());
         account.setJobId(jobApply.getJobId());
-        iAccountService.insertNewAccount(account);
+        iAccountService.createAccount(account);
 
-        Map accountMap=new HashMap();
-        accountMap=iAccountService.loadAccountBalance(jobApply.getApplyUserId());
-        Double balance=(Double)accountMap.get("balance");
-        Double income=(Double)accountMap.get("income");
-        Double outgoing=(Double)accountMap.get("outgoing");
+        //刷新乙方的账户余额
+        iCommonBusinessService.sumUserAccount(jobApply.getApplyUserId());
 
-        //更新乙方的账户统计信息
-        userB.setAccount(balance);
-        userB.setAccountIn(income);
-        userB.setAccountOut(outgoing);
-        iUserService.update(userB);
-
-        //处理其他用户的申请
-        ArrayList<JobApply> otherApplies=iJobApplyService.listJobApplyByNotProcesJobId(jobApply.getJobId());
+        /**
+         * 处理其他用户的申请
+         * 查询jobApply，jobId，status=PENDING, applyUserId!=applyId（乙方）
+         */
+        qIn=new HashMap();
+        qIn.put("jobId", jobApply.getJobId());
+        qIn.put("status", LogStatus.PENDING.toString());
+        ArrayList<JobApply> otherApplies=iJobApplyService.listJobApply(qIn);
         for(int i=0;i<otherApplies.size();i++){
-            JobApply otherApply=otherApplies.get(i);
-            otherApply.setProcessResult(LogStatus.ACCEPT_BY_OTHERS);
-            otherApply.setProcessTime(jobApply.getProcessTime());
-            otherApply.setProcessUserId(admin.getAdminId());
-            iJobApplyService.updateJobApply(otherApply);
+            if(!otherApplies.get(i).getApplyUserId().equals(jobApply.getApplyUserId())) {
+                JobApply otherApply=new JobApply();
+                otherApply.setJobApplyId(otherApplies.get(i).getJobApplyId());
+                otherApply.setStatus(LogStatus.ACCEPT_BY_OTHERS.toString());
+                otherApply.setProcessTime(jobApply.getProcessTime());
+                otherApply.setProcessUserId(admin.getAdminId());
+                iJobApplyService.updateJobApply(otherApply);
+            }
         }
     }
 
@@ -228,21 +215,21 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         Integer applyId=(Integer)in.get("applyId");
         String remark=(String)in.get("remark");
 
-        Admin admin=iAdminService.getAdminByToken(token);
-        if(admin==null){
-            throw new Exception("10004");
-        }
+        Admin admin=iCommonBusinessService.getAdminByToken(token);
 
-        if(admin.getRoleType()!=RoleType.SECRETARY){
+        if(!admin.getRoleType().equals(RoleType.SECRETARY)){
+            //当前用户不是秘书，不能操作
             throw new Exception("10034");
         }
 
-        JobApply jobApply=iJobApplyService.getJobApplyByJobApplyId(applyId);
+        Map qIn=new HashMap();
+        qIn.put("jobApplyId", applyId);
+        JobApply jobApply=iJobApplyService.getJobApply(qIn);
         if(jobApply==null){
             throw new Exception("10109");
         }
 
-        jobApply.setProcessResult(LogStatus.REJECT);
+        jobApply.setStatus(LogStatus.REJECT.toString());
         jobApply.setProcessTime(new Date());
         jobApply.setProcessUserId(admin.getAdminId());
         jobApply.setProcessRemark(remark);
@@ -253,14 +240,11 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     @Override
     public Map getApplyJobTiny(Map in) throws Exception {
         String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
+        String jobId=in.get("jobId").toString();
 
-        Admin admin=iAdminService.getAdminByToken(token);
-        if(admin==null){
-            throw new Exception("10004");
-        }
+        Admin admin=iCommonBusinessService.getAdminByToken(token);
 
-        Job job=iJobService.getJobByJobIdTiny(jobId);
+        Job job=iJobService.getJobTinyByJobId(jobId);
 
         Map out=new HashMap();
         out.put("job", job);
@@ -271,14 +255,11 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     @Override
     public Map getApplyJobDetail(Map in) throws Exception {
         String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
+        String jobId=in.get("jobId").toString();
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
-        }
+        UserInfo user=iCommonBusinessService.getUserByToken(token);
 
-        Job job=iJobService.getJobByJobId(jobId);
+        Job job=iJobService.getJobDetailByJobId(jobId);
 
         Map out=new HashMap();
         out.put("job", job);

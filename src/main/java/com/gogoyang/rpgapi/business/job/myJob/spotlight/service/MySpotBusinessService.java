@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.business.job.myJob.spotlight.service;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
@@ -87,7 +87,7 @@ public class MySpotBusinessService implements IMySpotBusinessService {
 
         //创建申诉后，甲方和乙方都要扣除任务金额price对应的荣誉值honor
         UserInfo userA = iUserService.getUserByUserId(job.getPartyAId());
-        Double honor = 0.0;
+        double honor = 0.0;
         if (userA.getHonor() != null) {
             honor = userA.getHonor();
         }

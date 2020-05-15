@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.admin.dao.AdminDao">
+
+    <resultMap id="adminMap" type="com.gogoyang.rpgapi.meta.admin.entity.Admin">
+        <result property="adminId" column="admin_id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="tokenTime" column="token_time"/>
+        <result property="roleType" column="role_type"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="createdAdminId" column="created_admin_id"/>
+        <result property="adminName" column="admin_name"/>
+    </resultMap>
+
+    <select id="createAdmin" parameterType="com.gogoyang.rpgapi.meta.admin.entity.Admin">
+        insert into admin
+        (admin_id, login_name, password, token, token_time,
+        role_type, created_time, created_admin_id, phone, admin_name)
+        values
+        (#{adminId}, #{loginName}, #{password}, #{token}, #{tokenTime},
+        #{roleType}, #{createdTime}, #{createdAdminId}, #{phone}, #{adminName})
+    </select>
+
+    <select id="getAdmin" parameterType="map" resultType="adminMap">
+        select * from admin
+        where 1=1
+        <choose>
+            <when test="adminId!=null">
+                and admin_id=#{adminId}
+            </when>
+        </choose>
+        <choose>
+            <when test="loginName!=null">
+                and login_name=#{loginName}
+            </when>
+        </choose>
+        <choose>
+            <when test="password!=null">
+                and password=#{password}
+            </when>
+        </choose>
+        <choose>
+            <when test="token!=null">
+                and token=#{token}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone=#{phone}
+            </when>
+        </choose>
+    </select>
+
+    <select id="listAdmin" parameterType="map" resultType="adminMap">
+        select * from admin
+        where 1=1
+                <choose>
+                    <when test="roleType!=null">
+                        and role_type=#{roleType}
+                    </when>
+                </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateAdmin" parameterType="com.gogoyang.rpgapi.meta.admin.entity.Admin">
+        update admin
+        <set>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="token!=null">
+                token=#{token},
+            </if>
+            <if test="tokenTime!=null">
+                token_time=#{tokenTime},
+            </if>
+            <if test="roleType!=null">
+                role_type=#{roleType},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="adminName!=null">
+                admin_name=#{adminName}
+            </if>
+            where admin_id=#{adminId}
+        </set>
+    </update>
+
+    <delete id="deleteAdmin" parameterType="java.lang.String">
+        delete from admin
+        where admin_id=#{adminId}
+    </delete>
+
+</mapper>

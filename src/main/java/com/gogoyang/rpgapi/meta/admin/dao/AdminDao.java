@@ -1,19 +1,40 @@
 package com.gogoyang.rpgapi.meta.admin.dao;
 
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
-import com.gogoyang.rpgapi.framework.constant.RoleType;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface AdminDao extends JpaRepository<Admin, Integer> {
-    Admin findByLoginName(String loginName);
+@Mapper
+public interface AdminDao{
+    /**
+     * 创建一个管理员用户
+     * @param admin
+     */
+    void createAdmin(Admin admin);
 
-    Admin findByToken(String token);
+    /**
+     * 查询一个管理员
+     * @param qIn
+     * adminId
+     * loginName
+     * password
+     * token
+     * phone
+     * @return
+     */
+    Admin getAdmin(Map qIn);
 
-    Admin findAdminByPhone(String phone);
+    /**
+     * 查询多个管理员
+     * @param qIn
+     * roleType
+     * @return
+     */
+    ArrayList<Admin> listAdmin(Map qIn);
 
-    ArrayList<Admin> findAllByRoleType(RoleType roleType);
+    void updateAdmin(Admin admin);
 
-
+    void deleteAdmin(String adminId);
 }

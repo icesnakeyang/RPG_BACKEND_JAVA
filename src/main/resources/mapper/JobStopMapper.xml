@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.stop.dao.JobStopDao">
+
+    <resultMap id="jobStopMap" type="com.gogoyang.rpgapi.meta.stop.entity.JobStop">
+        <result property="stopId" column="stopId"/>
+        <result property="jobId" column="job_id"/>
+        <result property="createdUserId" column="apply_user_id"/>
+        <result property="createdTime" column="apply_time"/>
+        <result property="readTime" column="process_user_id"/>
+        <result property="processTime" column="process_time"/>
+        <result property="processRemark" column="process_remark"/>
+        <result property="processUserId" column="process_remark"/>
+        <result property="processReadTime" column="process_read_time"/>
+        <result property="createdUserName" column="created_user_name"/>
+        <result property="processUserName" column="process_user_name"/>
+    </resultMap>
+
+    <!--创建一个任务终止日志-->
+    <insert id="createJobStop" parameterType="com.gogoyang.rpgapi.meta.stop.entity.JobStop"
+            useGeneratedKeys="true"
+            keyProperty="ids">
+        insert into job_stop
+        (stop_id, job_id, created_user_id, created_time,
+         refund, content, status)
+        values
+        (#{stopId}, #{jobId}, #{createdUserId}, #{createdTime},
+         #{refund}, #{content}, #{status})
+    </insert>
+
+    <!--读取任务终止日志-->
+    <select id="getJobStop" parameterType="java.lang.String" resultMap="jobStopMap">
+        select job_stop.ids,
+           stop_id,
+           job_stop.job_id,
+           title as job_title,
+           created_user_id,
+           create_user.real_name as created_user_name,
+           job_stop.created_time,
+           refund,
+           content,
+           job_stop.status,
+           read_time,
+           process_time,
+           process_user_id,
+           process_user.real_name as process_user_name,
+           process_remark,
+           process_read_time
+           from job_stop
+        left join job on job_stop.job_id=job.job_id
+        left join user_info create_user on created_user_id=user_id
+        left join user_info process_user on process_user_id=process_user.user_id
+        where stop_id=#{stopId}
+    </select>
+
+    <select id="listJobStop" parameterType="map">
+        select job_stop.ids,
+           stop_id,
+           job_stop.job_id,
+           title as job_title,
+           created_user_id,
+           create_user.real_name as created_user_name,
+           job_stop.created_time,
+           refund,
+           content,
+           job_stop.status,
+           read_time,
+           process_time,
+           process_user_id,
+           process_user.real_name as process_user_name,
+           process_remark,
+           process_read_time
+           from job_stop
+        left join job on job_stop.job_id=job.job_id
+        left join user_info create_user on created_user_id=user_id
+        left join user_info process_user on process_user_id=process_user.user_id
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and job_stop.job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="createdUserId!=null">
+                and created_user_id=#{createdUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="processUserId!=null">
+                and process_user_id=#{processUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="unread!=null">
+                and read_time is null
+                <![CDATA[
+                and created_user_id<>#{userId}
+                ]]>
+            </when>
+        </choose>
+        <choose>
+            <when test="unreadProcess!=null">
+                and process_read_time is null
+                <![CDATA[
+                and process_user_id<>#{userId}
+                ]]>
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateJobStop" parameterType="com.gogoyang.rpgapi.meta.stop.entity.JobStop">
+        update job_stop
+        <set>
+            <if test="refund!=null">
+                refund=#{refund},
+            </if>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="readTime!=null">
+                read_time=#{readTime},
+            </if>
+            <if test="processTime!=null">
+                process_time=#{processTime},
+            </if>
+            <if test="processUserId!=null">
+                process_user_id=#{processUserId},
+            </if>
+            <if test="processRemark!=null">
+                process_remark=#{processRemark},
+            </if>
+            <if test="processReadTime!=null">
+                process_read_time=#{processReadTime}
+            </if>
+        </set>
+        where stop_id=#{stopId}
+    </update>
+
+</mapper>

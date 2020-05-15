@@ -1,16 +1,15 @@
 package com.gogoyang.rpgapi.business.job.myJob.log.service;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +42,7 @@ public class MyLogBusinessService implements IMyLogBusinessService {
         Integer jobId = (Integer) in.get("jobId");
         String content = in.get("content").toString();
 
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         JobLog jobLog = new JobLog();
         jobLog.setContent(content);

@@ -3,24 +3,21 @@ package com.gogoyang.rpgapi.meta.admin.service;
 import com.gogoyang.rpgapi.meta.admin.dao.AdminDao;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
-import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AdminService implements IAdminService {
     private final AdminDao adminDao;
-    private final IJobApplyService iJobApplyService;
 
     @Autowired
-    public AdminService(AdminDao adminDao,
-                        IJobApplyService iJobApplyService) {
+    public AdminService(AdminDao adminDao) {
         this.adminDao = adminDao;
-        this.iJobApplyService = iJobApplyService;
-
     }
 
     /**
@@ -35,7 +32,9 @@ public class AdminService implements IAdminService {
         /**
          * adminDao.findByLoginName
          */
-        Admin admin = adminDao.findByLoginName(loginName);
+        Map qIn=new HashMap();
+        qIn.put("loginName", loginName);
+        Admin admin = adminDao.getAdmin(qIn);
         return admin;
     }
 
@@ -45,7 +44,7 @@ public class AdminService implements IAdminService {
         /**
          * adminDao.save(admin)
          */
-        admin.setAdminId(adminDao.save(admin).getAdminId());
+        adminDao.createAdmin(admin);
         return admin;
     }
 
@@ -57,10 +56,11 @@ public class AdminService implements IAdminService {
      */
     @Override
     public Admin getAdminByToken(String token) throws Exception {
-        Admin admin = adminDao.findByToken(token);
+        Map qIn=new HashMap();
+        qIn.put("token", token);
+        Admin admin = adminDao.getAdmin(qIn);
         return admin;
     }
-
 
     /**
      * 根据用户类型读取所有管理员用户
@@ -71,18 +71,28 @@ public class AdminService implements IAdminService {
      */
     @Override
     public ArrayList<Admin> listAdminByRoleType(RoleType roleType) throws Exception {
-        ArrayList<Admin> admins = adminDao.findAllByRoleType(roleType);
+        Map qIn=new HashMap();
+        qIn.put("roleType",roleType);
+        ArrayList<Admin> admins = adminDao.listAdmin(qIn);
         return admins;
     }
 
     @Override
     public Admin getAdminByPhone(String phone) throws Exception {
-        return adminDao.findAdminByPhone(phone);
+        Map qIn=new HashMap();
+        qIn.put("phone", phone);
+        Admin admin= adminDao.getAdmin(qIn);
+        return admin;
     }
 
     @Override
     public void updateAdmin(Admin admin) throws Exception {
-        adminDao.save(admin);
+        adminDao.updateAdmin(admin);
+    }
+
+    @Override
+    public void deleteAdmin(String adminId) throws Exception {
+        adminDao.deleteAdmin(adminId);
     }
 
 }

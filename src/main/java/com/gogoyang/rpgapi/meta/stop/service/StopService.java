@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class StopService implements IJobStopService {
@@ -24,29 +26,34 @@ public class StopService implements IJobStopService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void insertJobStop(JobStop jobStop) throws Exception {
-        if (jobStop.getStopId() != null) {
-            throw new Exception("10064");
-        }
-        jobStopDao.save(jobStop);
+        jobStopDao.createJobStop(jobStop);
     }
 
     @Override
-    public Page<JobStop> loadJobStopByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception {
-        Sort sort = new Sort(Sort.Direction.DESC, "stopId");
-        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<JobStop> jobStops = jobStopDao.findAllByJobId(jobId, pageable);
+    public ArrayList<JobStop> loadJobStopByJobId(String jobId, Integer pageIndex, Integer pageSize) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("jobId", jobId);
+        Integer offset =(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<JobStop> jobStops=jobStopDao.listJobStop(qIn);
         return jobStops;
     }
 
     @Override
-    public JobStop loadJobStopUnProcess(Integer jobId) throws Exception {
-        JobStop jobStop=jobStopDao.findByJobIdAndResultIsNull(jobId);
+    public JobStop loadJobStopUnProcess(String jobId) throws Exception {
+        JobStop jobStop=jobStopDao.getJobStop(jobId);
+
         return jobStop;
     }
 
     @Override
-    public ArrayList<JobStop> loadMyUnReadStop(Integer jobId, Integer userId) throws Exception {
-        ArrayList<JobStop> jobStops = jobStopDao.findAllByJobIdAndReadTimeIsNullAndCreatedUserIdIsNot(jobId, userId);
+    public ArrayList<JobStop> loadMyUnReadStop(String jobId, String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("unread", true);
+        qIn.put("userId", userId);
+        ArrayList<JobStop> jobStops = jobStopDao.listJobStop(qIn);
         return jobStops;
     }
 
@@ -55,6 +62,6 @@ public class StopService implements IJobStopService {
         if(jobStop.getStopId()==null){
             throw new Exception("10072");
         }
-        jobStopDao.save(jobStop);
+        jobStopDao.updateJobStop(jobStop);
     }
 }

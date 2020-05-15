@@ -154,9 +154,16 @@ public class JobCompleteService implements IJobCompleteService {
         Map qIn=new HashMap();
         qIn.put("jobId", jobId);
         qIn.put("status", LogStatus.PENDING);
-
+        JobComplete jobComplete=jobCompleteDao.getJobComplete(qIn);
+        return jobComplete;
     }
 
+    /**
+     * 统计所有未阅读的任务完成日志
+     * @param qIn
+     * @return
+     * @throws Exception
+     */
     @Override
     public Integer totalUnreadComplete(Map qIn) throws Exception {
         Integer totalUnreadComplete = jobCompleteDao.totalUnreadComplete(qIn);

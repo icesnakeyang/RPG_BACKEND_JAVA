@@ -1,33 +1,20 @@
 package com.gogoyang.rpgapi.meta.log.service;
 
 import com.gogoyang.rpgapi.meta.log.dao.JobLogDao;
-import com.gogoyang.rpgapi.meta.log.dao.JobLogMapper;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
-import com.gogoyang.rpgapi.meta.user.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class JobLogService implements IJobLogService {
     private final JobLogDao jobLogDao;
-    private final IUserService iUserService;
-    private final JobLogMapper jobLogMapper;
 
-    @Autowired
-    public JobLogService(JobLogDao jobLogDao,
-                         IUserService iUserService,
-                         JobLogMapper jobLogMapper) {
+    public JobLogService(JobLogDao jobLogDao) {
         this.jobLogDao = jobLogDao;
-        this.iUserService = iUserService;
-        this.jobLogMapper = jobLogMapper;
     }
 
     /**
@@ -39,10 +26,31 @@ public class JobLogService implements IJobLogService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void createJobLog(JobLog jobLog) throws Exception {
-        if (jobLog.getJobLogId() != null) {
-            throw new Exception("10051");
-        }
-        jobLogDao.save(jobLog);
+        jobLogDao.createJobLog(jobLog);
+    }
+
+    @Override
+    public JobLog getJobLog(String jobLogId) throws Exception {
+        JobLog jobLog=jobLogDao.getJobLog(jobLogId);
+        return jobLog;
+    }
+
+    /**
+     * 批量查询任务日志
+     * @param qIn
+     * jobId
+     * createdUserId
+     * unread
+     * partyAId
+     * partyBId
+     * offset
+     * size
+     * @return
+     */
+    @Override
+    public ArrayList<JobLog> listJobLog(Map qIn) throws Exception {
+        ArrayList<JobLog> jobLogs=jobLogDao.listJobLog(qIn);
+        return jobLogs;
     }
 
     /**
@@ -53,88 +61,105 @@ public class JobLogService implements IJobLogService {
      * @throws Exception
      */
     @Override
-    public Page<JobLog> loadJobLogByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception {
-        Sort sort = new Sort(Sort.Direction.DESC, "jobLogId");
-        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<JobLog> jobLogs = jobLogDao.findAllByJobId(jobId, pageable);
-        for (int i = 0; i < jobLogs.getContent().size(); i++) {
-            User user = iUserService.getUserByUserId(jobLogs.getContent().get(i).getCreatedUserId());
-            if (user.getRealName() != null) {
-                jobLogs.getContent().get(i).setCreatedUserName(user.getRealName());
-            } else {
-                jobLogs.getContent().get(i).setCreatedUserName(user.getEmail());
-            }
-        }
+    public ArrayList<JobLog> loadJobLogByJobId(String jobId, Integer pageIndex, Integer pageSize) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("jobId", jobId);
+        Integer offset=(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<JobLog> jobLogs = jobLogDao.listJobLog(qIn);
+
         return jobLogs;
     }
 
     /**
-     * 修改日志
-     *
-     * @param jobLog
+     * 读取当前用户为甲方时所有未阅读的日志
+     */
+    @Override
+    public ArrayList<JobLog> listPartyAUnreadJobLog(String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        qIn.put("partyAId", userId);
+        qIn.put("unread", true);
+        ArrayList<JobLog> jobLogs=jobLogDao.listJobLog(qIn);
+        return jobLogs;
+    }
+
+    /**
+     * 读取指定任务的甲方未阅读的日志
+     * @param userId
+     * @param jobId
+     * @return
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void updateJobLog(JobLog jobLog) throws Exception {
-        if (jobLog.getJobLogId() == null) {
-            throw new Exception("10053");
-        }
-        jobLogDao.save(jobLog);
-    }
-
-    /**
-     * 读取一个任务里所有甲方未阅读的日志
-     */
-    @Override
-    public ArrayList<JobLog> listPartyAUnreadJobLog(Integer userId) throws Exception {
-        ArrayList<JobLog> jobLogs = jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyAId(userId, userId);
+    public ArrayList<JobLog> listPartyAUnreadJobLogJobId(String userId, String jobId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("unread", true);
+        qIn.put("userId", userId);
+        qIn.put("partyAId", userId);
+        qIn.put("jobId", jobId);
+        ArrayList<JobLog> jobLogs=jobLogDao.listJobLog(qIn);
         return jobLogs;
     }
 
+    /**
+     * 读取当前用户为乙方时所有未阅读的日志
+     */
     @Override
-    public ArrayList<JobLog> listPartyAUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
-        ArrayList<JobLog> jobLogs = jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyAIdAndJobId(userId, userId, jobId);
+    public ArrayList<JobLog> listPartyBUnreadJobLog(String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("unread", true);
+        qIn.put("userId", userId);
+        qIn.put("partyBId", userId);
+        ArrayList<JobLog> jobLogs=jobLogDao.listJobLog(qIn);
         return jobLogs;
     }
 
     /**
      * 读取一个任务里所有乙方未阅读的日志
+     * @param userId
+     * @param jobId
+     * @return
+     * @throws Exception
      */
     @Override
-    public ArrayList<JobLog> listPartyBUnreadJobLog(Integer userId) throws Exception {
-        ArrayList<JobLog> jobLogs = jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyBId(userId, userId);
+    public ArrayList<JobLog> listPartyBUnreadJobLogJobId(String userId, String jobId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("unread", true);
+        qIn.put("userId", userId);
+        qIn.put("partyBId", userId);
+        qIn.put("jobId", jobId);
+        ArrayList<JobLog> jobLogs=jobLogDao.listJobLog(qIn);
         return jobLogs;
     }
 
-    @Override
-    public ArrayList<JobLog> listPartyBUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
-        ArrayList<JobLog> jobLogs = jobLogDao.findAllByReadTimeIsNullAndCreatedUserIdIsNotAndPartyBIdAndJobId(userId, userId, jobId);
-        return jobLogs;
-    }
-
+    /**
+     * 统计所有未阅读的任务日志
+     * @param qIn
+     * jobId:选填，指定任务
+     * userId：必填，查询readTime为null时，createdUserId不是userId
+     * partyAId：选填，查询甲方未读
+     * partyBId：选填，查询乙方未读
+     * @return
+     * @throws Exception
+     */
     @Override
     public Integer totalUnreadLog(Map qIn) throws Exception {
-        Integer jobId = (Integer) qIn.get("jobId");
-        Integer userId = (Integer) qIn.get("userId");
-
-        if (userId == null) {
-            throw new Exception("10119");
-        }
-
-        Integer totalUnreadLog = jobLogMapper.totalUnreadLog(qIn);
-
+        Integer totalUnreadLog = jobLogDao.totalUnreadLog(qIn);
         return totalUnreadLog;
     }
 
+    /**
+     * 设置阅读时间
+     * @param qIn
+     * readTime：必填
+     * userId：必填
+     * jobId：必填
+     * @throws Exception
+     */
     @Override
     public void setJobLogReadTime(Map qIn) throws Exception {
-        jobLogMapper.setJobLogReadTime(qIn);
-    }
-
-    @Override
-    public Integer totalUnreadComplete(Map qIn) throws Exception {
-        Integer totalUnreadComplete = jobLogMapper.totalUnreadLog(qIn);
-        return totalUnreadComplete;
+        jobLogDao.setJobLogReadTime(qIn);
     }
 }

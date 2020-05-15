@@ -1,8 +1,7 @@
 package com.gogoyang.rpgapi.meta.account.service;
 
-import com.gogoyang.rpgapi.meta.account.dao.AccountMapper;
+import com.gogoyang.rpgapi.meta.account.dao.WithdrawLedgerDao;
 import com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,10 +9,10 @@ import java.util.Map;
 
 @Service
 public class WithdrawLedgerService implements IWithdrawLedgerService {
-    private final AccountMapper accountMapper;
+    private final WithdrawLedgerDao withdrawLedgerDao;
 
-    public WithdrawLedgerService(AccountMapper accountMapper) {
-        this.accountMapper = accountMapper;
+    public WithdrawLedgerService(WithdrawLedgerDao withdrawLedgerDao) {
+        this.withdrawLedgerDao = withdrawLedgerDao;
     }
 
     /**
@@ -23,7 +22,7 @@ public class WithdrawLedgerService implements IWithdrawLedgerService {
      */
     @Override
     public void createWithdrawLedger(WithdrawLedger withdrawLedger) throws Exception {
-        accountMapper.createWithdrawLedger(withdrawLedger);
+        withdrawLedgerDao.createWithdrawLedger(withdrawLedger);
     }
 
     /**
@@ -37,13 +36,13 @@ public class WithdrawLedgerService implements IWithdrawLedgerService {
      */
     @Override
     public ArrayList<WithdrawLedger> listWithdraw(Map qIn) throws Exception {
-        ArrayList<WithdrawLedger> withdrawLedgers = accountMapper.listWithdraw(qIn);
+        ArrayList<WithdrawLedger> withdrawLedgers = withdrawLedgerDao.listWithdraw(qIn);
         return withdrawLedgers;
     }
 
     @Override
     public ArrayList<Map<String, Object>> listWithdrawAdmin(Map qIn) throws Exception {
-        ArrayList<Map<String, Object>> list=accountMapper.listWithdrawAdmin(qIn);
+        ArrayList<Map<String, Object>> list=withdrawLedgerDao.listWithdrawAdmin(qIn);
         return list;
     }
 
@@ -56,7 +55,7 @@ public class WithdrawLedgerService implements IWithdrawLedgerService {
      */
     @Override
     public Integer totalWithdraw(Map qIn) throws Exception {
-        Integer total = accountMapper.totalWithdraw(qIn);
+        Integer total = withdrawLedgerDao.totalWithdraw(qIn);
         return total;
     }
 }

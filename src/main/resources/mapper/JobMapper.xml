@@ -139,7 +139,7 @@
         limit #{offset}, #{size}
     </select>
 
-    <update id="updateJob" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
+    <update id="updateJobTiny" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
         update job
         <set>
             <if test="code!=null">

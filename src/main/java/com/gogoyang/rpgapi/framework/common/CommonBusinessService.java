@@ -1,7 +1,9 @@
-package com.gogoyang.rpgapi.business.common;
+package com.gogoyang.rpgapi.framework.common;
 
+import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.meta.account.service.IAccountService;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
@@ -10,6 +12,7 @@ import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import com.gogoyang.rpgapi.meta.userAction.entity.UserActionLog;
 import com.gogoyang.rpgapi.meta.userAction.service.IUserActionLogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -24,17 +27,20 @@ public class CommonBusinessService implements ICommonBusinessService {
     private final IUserActionLogService iUserActionLogService;
     private final IAdminService iAdminService;
     private final IJobService iJobService;
+    private final IAccountService iAccountService;
 
     public CommonBusinessService(IUserService iUserService,
                                  IRPGFunction irpgFunction,
                                  IUserActionLogService iUserActionLogService,
                                  IAdminService iAdminService,
-                                 IJobService iJobService) {
+                                 IJobService iJobService,
+                                 IAccountService iAccountService) {
         this.iUserService = iUserService;
         this.irpgFunction = irpgFunction;
         this.iUserActionLogService = iUserActionLogService;
         this.iAdminService = iAdminService;
         this.iJobService = iJobService;
+        this.iAccountService = iAccountService;
     }
 
     @Override
@@ -125,6 +131,80 @@ public class CommonBusinessService implements ICommonBusinessService {
             throw new Exception("20001");
         }
         return admin;
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    @Override
+    public Map sumUserAccount(String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        Map sum=iAccountService.sumAccountByType(qIn);
+
+        Double accountIn=0.0;
+        Double accountOut=0.0;
+        Double accountBalance=0.0;
+
+        //乙方获得的任务合同总额
+        Double APPLY_SUCCESS=(Double)sum.get("APPLY_SUCCESS");
+        if(APPLY_SUCCESS==null){
+            APPLY_SUCCESS=0.0;
+        }
+        accountIn+=APPLY_SUCCESS;
+        accountBalance+=APPLY_SUCCESS;
+
+        //充值总额
+        Double TOP_UP=(Double)sum.get("TOP_UP");
+        if(TOP_UP==null){
+            TOP_UP=0.0;
+        }
+        accountBalance+=TOP_UP;
+
+        //取现总额
+        Double WITHDRAW=(Double)sum.get("WITHDRAW");
+        if(WITHDRAW==null){
+            WITHDRAW=0.0;
+        }
+        accountOut+=WITHDRAW;
+        accountBalance-=WITHDRAW;
+
+        //发布任务总额
+        Double PUBLISH=(Double)sum.get("PUBLISH");
+        if(PUBLISH==null){
+            PUBLISH=0.0;
+        }
+        accountOut+=PUBLISH;
+        accountBalance-=PUBLISH;
+
+        //退款支出总额
+        Double REFUND_OUT=(Double)sum.get("REFUND_OUT");
+        if(REFUND_OUT==null){
+            REFUND_OUT=0.0;
+        }
+        accountOut+=REFUND_OUT;
+        accountBalance-=REFUND_OUT;
+
+        //退款收入总额
+        Double REFUND_IN=(Double)sum.get("REFUND_IN");
+        if(REFUND_IN==null){
+            REFUND_IN=0.0;
+        }
+        accountIn+=REFUND_IN;
+        accountBalance+=REFUND_IN;
+
+        //更新用户表账户余额
+        UserInfo userInfo=new UserInfo();
+        userInfo.setUserId(userId);
+        userInfo.setAccount(accountBalance);
+        userInfo.setAccountIn(accountIn);
+        userInfo.setAccountOut(accountOut);
+        iUserService.updateUserInfo(userInfo);
+
+        Map out=new HashMap();
+        out.put("accountIn", accountIn);
+        out.put("accountOut", accountOut);
+        out.put("accountBalance", accountBalance);
+
+        return out;
     }
 
     public UserInfo getUserByUserId(String userId) throws Exception {

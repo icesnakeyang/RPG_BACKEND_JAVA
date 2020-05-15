@@ -10,7 +10,96 @@
         <result property="createdUserName" column="real_name"/>
         <result property="createdTime" column="created_time"/>
         <result property="readTime" column="read_time"/>
+        <result property="partyAId" column="partya_id"/>
+        <result property="partyBId" column="partyb_id"/>
     </resultMap>
+
+    <select id="createJobLog" parameterType="com.gogoyang.rpgapi.meta.log.entity.JobLog">
+        insert into job_log
+        (job_log_id, job_id, created_user_id, created_time,
+        content, partya_id, partyb_id)
+        values
+        (#{jobLogId}, #{jobId}, #{createdUserId}, #{createdTime},
+        #{content}, #{partyAId}, #{partyBId})
+    </select>
+
+    <!--读取任务日志详情-->
+    <select id="getJobLog" parameterType="java.lang.String" resultMap="jobLogMap">
+        select job_log.ids,
+           job_log_id,
+           job_log.job_id,
+           created_user_id,
+           created_user.real_name as created_user_name,
+           job_log.created_time,
+           content,
+           read_time,
+           job_log.partya_id,
+           partya.real_name as partya_name,
+           job_log.partyb_id,
+           partyb.real_name as partyb_name
+        from job_log
+        left join job on job_log.job_id=job.job_id
+        left join user_info created_user on created_user_id=user_id
+        left join user_info partya on job_log.partya_id=partya.user_id
+        left join user_info partyb on job_log.partyb_id=partyb.user_id
+        where job_log_id=#{jobLogId}
+    </select>
+
+    <!--批量查询任务日志-->
+    <select id="listJobLog" parameterType="map" resultMap="jobLogMap">
+        select job_log.ids,
+        job_log_id,
+        job_log.job_id,
+        created_user_id,
+        created_user.real_name as created_user_name,
+        job_log.created_time,
+        content,
+        read_time,
+        job_log.partya_id,
+        partya.real_name as partya_name,
+        job_log.partyb_id,
+        partyb.real_name as partyb_name
+        from job_log
+        left join job on job_log.job_id=job.job_id
+        left join user_info created_user on created_user_id=user_id
+        left join user_info partya on job_log.partya_id=partya.user_id
+        left join user_info partyb on job_log.partyb_id=partyb.user_id
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and job_log.job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="createdUserId!=null">
+                and created_user_id=#{createdUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="unread!=null">
+                and read_time is null
+                <![CDATA[
+                and created_user_id <>#{userId}
+                ]]>
+            </when>
+        </choose>
+        <choose>
+            <when test="partyAId!=null">
+                and job_log.partya_id=#{partyAId}
+            </when>
+        </choose>
+        <choose>
+            <when test="partyBId!=null">
+                and job_log.partyb_id=#{partyBId}
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
 
     <!--统计所有未阅读的任务日志-->
     <select id="totalUnreadLog" parameterType="map"
@@ -24,12 +113,23 @@
                 and job_id = #{jobId}
             </when>
         </choose>
+        <choose>
+            <when test="partyAId!=null">
+                partya_id=#{partyAId}
+            </when>
+        </choose>
+        <choose>
+            <when test="partyBId!=null">
+                partyb_id=#{partyBId}
+            </when>
+        </choose>
         and read_time is null
         <![CDATA[
         and created_user_id<>#{userId}
         ]]>
     </select>
 
+    <!--设置日志阅读时间-->
     <update id="setJobLogReadTime" parameterType="map">
         update job_log set
         read_time=#{readTime}
@@ -38,11 +138,7 @@
         <![CDATA[
         and created_user_id<>#{userId}
         ]]>
-        <choose>
-            <when test="jobId!=null">
-                and job_id=#{jobId}
-            </when>
-        </choose>
+        and job_id=#{jobId}
     </update>
 
 </mapper>

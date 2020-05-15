@@ -3,12 +3,12 @@ package com.gogoyang.rpgapi.business.job.myJob.stop.service;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import com.gogoyang.rpgapi.meta.stop.service.IJobStopService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -44,7 +44,7 @@ public class StopBusinessService implements IStopBusinessService {
         }
 
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
+        UserInfo user = iUserService.getUserByToken(token);
         if (user == null) {
             throw new Exception("10004");
         }

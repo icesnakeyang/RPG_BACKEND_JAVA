@@ -21,7 +21,7 @@ public interface IJobStopService {
      * @return
      * @throws Exception
      */
-    Page<JobStop> loadJobStopByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception;
+    ArrayList<JobStop> loadJobStopByJobId(String jobId, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 获取未处理的终止申请
@@ -29,7 +29,7 @@ public interface IJobStopService {
      * @return
      * @throws Exception
      */
-    JobStop loadJobStopUnProcess(Integer jobId) throws Exception;
+    JobStop loadJobStopUnProcess(String jobId) throws Exception;
 
     /**
      * 读取未读
@@ -38,7 +38,7 @@ public interface IJobStopService {
      * @return
      * @throws Exception
      */
-    ArrayList<JobStop> loadMyUnReadStop(Integer jobId, Integer userId) throws Exception;
+    ArrayList<JobStop> loadMyUnReadStop(String jobId, String userId) throws Exception;
 
     /**
      * 修改

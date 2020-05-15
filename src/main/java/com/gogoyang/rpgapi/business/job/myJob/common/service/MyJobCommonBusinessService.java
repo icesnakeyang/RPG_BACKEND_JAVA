@@ -6,9 +6,10 @@ import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.complete.service.IJobCompleteService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,7 +68,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
          */
         String token = in.get("token").toString();
         Integer jobId = (Integer) in.get("jobId");
-        User user = iUserService.getUserByToken(token);
+        UserInfo user = iUserService.getUserByToken(token);
         if (user == null) {
             throw new Exception("10004");
         }
@@ -93,7 +94,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         return out;
     }
 
-    private Object countUnreadCompleteJobId(Integer userId, Integer jobId) throws Exception{
+    private Object countUnreadCompleteJobId(String userId, Integer jobId) throws Exception{
         Map qIn = new HashMap();
         qIn.put("jobId", jobId);
         qIn.put("userId", userId);
@@ -133,7 +134,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
      */
     @Override
     public Map getJobTinyByTaskId(Map in) throws Exception {
-        Integer taskId = (Integer) in.get("taskId");
+        String taskId = in.get("taskId").toString();
         Job job = iJobService.getJobByTaskId(taskId);
         Map out = new HashMap();
         out.put("job", job);
@@ -142,8 +143,8 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
 
     @Override
     public Map getJobTinyByJobId(Map in) throws Exception {
-        Integer jobId = (Integer) in.get("jobId");
-        Job job = iJobService.getJobByJobIdTiny(jobId);
+        String jobId = in.get("jobId").toString();
+        Job job = iJobService.getJobTinyByJobId(jobId);
         Map out = new HashMap();
         out.put("job", job);
         return out;
@@ -155,7 +156,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         return out;
     }
 
-    private Integer countUnreadJobLogJobId(Integer userId, Integer jobId) throws Exception {
+    private Integer countUnreadJobLogJobId(String userId, Integer jobId) throws Exception {
         ArrayList<JobLog> jobLogsA = iJobLogService.listPartyAUnreadJobLog(userId);
         ArrayList<JobLog> jobLogsB = iJobLogService.listPartyBUnreadJobLog(userId);
         int unRead = jobLogsA.size() + jobLogsB.size();
@@ -167,7 +168,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         return unRead;
     }
 
-    private Integer totalUnreadJobLog(Integer userId, Integer jobId) throws Exception {
+    private Integer totalUnreadJobLog(String userId, Integer jobId) throws Exception {
         Map qIn = new HashMap();
         qIn.put("jobId", jobId);
         qIn.put("userId", userId);
@@ -178,16 +179,26 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
     /**
      * 统计甲方未读日志
      */
-    private Integer totalPartyAUnread(Integer userId) throws Exception {
+    private Integer totalPartyAUnread(String userId) throws Exception {
         /**
          * party a unread log
          * party a unread complete
          */
-        int unread = 0;
-        ArrayList<JobLog> jobLogs = iJobLogService.listPartyAUnreadJobLog(userId);
-        unread += jobLogs.size();
-        ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyAUnread(userId);
-        unread += jobCompletes.size();
+        Integer unread = 0;
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        qIn.put("partyAId", userId);
+        Integer unreadLog = iJobLogService.totalUnreadLog(qIn);
+        if(unreadLog==null){
+            unreadLog=0;
+        }
+        unread+=unreadLog;
+
+        Integer unreadComplete = iJobCompleteService.totalUnreadComplete(qIn);
+        if(unreadComplete==null){
+            unreadComplete=0;
+        }
+        unread += unreadComplete;
         return unread;
     }
 
@@ -198,7 +209,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
      * @return
      * @throws Exception
      */
-    private Integer totalPartyBUnread(Integer userId) throws Exception {
+    private Integer totalPartyBUnread(String userId) throws Exception {
         /**
          * party b unread complete
          * party b unread job log
@@ -211,7 +222,7 @@ public class MyJobCommonBusinessService implements IMyJobCommonBusinessService {
         return unread;
     }
 
-    private Integer totalUnreadAccept(Integer userId) throws Exception {
+    private Integer totalUnreadAccept(String userId) throws Exception {
         /**
          * 只有乙方才有未读的验收日志
          */

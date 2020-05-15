@@ -1,8 +1,8 @@
 package com.gogoyang.rpgapi.business.account;
 
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger;
@@ -36,21 +36,19 @@ public class AccountBusinessService implements IAccountBusinessService {
     }
 
     @Override
-    public Page<Account> listMyAccount(Map in) throws Exception {
+    public ArrayList<Account> listMyAccount(Map in) throws Exception {
         String token = in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
         Map qIn = new HashMap();
         qIn.put("userId", user.getUserId());
-        qIn.put("pageIndex", in.get("pageIndex"));
-        qIn.put("pageSize", in.get("pageSize"));
-        Page<Account> accounts = iAccountService.listMyAccount(qIn);
+        Integer offset=(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<Account> accounts = iAccountService.listAccount(qIn);
 
-        for (int i = 0; i < accounts.getContent().size(); i++) {
-            Date d1 = (Date) accounts.getContent().get(i).getCreatedTime();
-            String dd = (new SimpleDateFormat("yyyy-MM-dd")).format(d1);
-            accounts.getContent().get(i).setCratedTimeStr(dd);
-        }
         return accounts;
     }
 
@@ -59,7 +57,7 @@ public class AccountBusinessService implements IAccountBusinessService {
         String token = in.get("token").toString();
         in.put("token", token);
         UserInfo user = iCommonBusinessService.getUserByToken(token);
-        Map out = iAccountService.loadAccountBalance(user.getUserId());
+        Map out = iCommonBusinessService.sumUserAccount(user.getUserId());
         return out;
     }
 
@@ -83,11 +81,11 @@ public class AccountBusinessService implements IAccountBusinessService {
          * 4、创建提现日志，等待管理员处理
          */
 
-        User user = iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         //检查用户余额
-        Map accountMap = iAccountService.loadAccountBalance(user.getUserId());
-        Double balance = (Double) accountMap.get("balance");
+        Map accountMap = iCommonBusinessService.sumUserAccount(user.getUserId());
+        Double balance = (Double) accountMap.get("accountBalance");
         if (balance < amount) {
             throw new Exception("20004");
         }
@@ -119,7 +117,7 @@ public class AccountBusinessService implements IAccountBusinessService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
 
-        User user = iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         Map qIn = new HashMap();
         qIn.put("userId", user.getUserId());

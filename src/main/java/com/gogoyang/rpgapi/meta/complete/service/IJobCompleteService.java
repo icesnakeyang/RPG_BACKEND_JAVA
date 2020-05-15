@@ -2,7 +2,6 @@ package com.gogoyang.rpgapi.meta.complete.service;
 
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
-import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -69,6 +68,14 @@ public interface IJobCompleteService {
      */
     JobComplete getCompleteByStatus(String jobId, LogStatus logStatus) throws Exception;
 
+    /**
+     * 统计所有未阅读的任务完成日志
+     * @param in
+     * userId
+     * jobId
+     * @return
+     * @throws Exception
+     */
     Integer totalUnreadComplete(Map in) throws Exception;
 
     void setJobCompleteReadTime(Map qIn) throws Exception;

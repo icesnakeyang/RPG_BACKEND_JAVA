@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myJob.apply.service;
 
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
@@ -7,11 +8,9 @@ import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,17 +24,17 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
     private final IJobApplyService iJobApplyService;
     private final IJobService iJobService;
     private final IUserService iUserService;
-    private final IRealNameService iRealNameService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     @Autowired
     public MyApplyBusinessService(IJobApplyService iJobApplyService,
                                   IJobService iJobService,
                                   IUserService iUserService,
-                                  IRealNameService iRealNameService) {
+                                  ICommonBusinessService iCommonBusinessService) {
         this.iJobApplyService = iJobApplyService;
         this.iJobService = iJobService;
         this.iUserService = iUserService;
-        this.iRealNameService = iRealNameService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -68,7 +67,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
         ArrayList<JobApply> myApplyList =iJobApplyService.listJobApply(qIn);
         ArrayList jobList = new ArrayList();
         for (int i = 0; i < myApplyList.size(); i++) {
-            Job job = iJobService.getJobByJobId(myApplyList.get(i).getJobId());
+            Job job = iJobService.getJobTinyByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
                 Map theMap = new HashMap();
@@ -104,7 +103,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
         }
 
         //check common
-        Job job = iJobService.getJobByJobId(jobId);
+        Job job = iJobService.getJobTinyByJobId(jobId);
         if (job == null) {
             throw new Exception("10005");
         }
@@ -156,12 +155,9 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
         String token = in.get("token").toString();
         String jobId = in.get("jobId").toString();
 
-        UserInfo user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Job job = iJobService.getJobByJobId(jobId);
+        Job job = iJobService.getJobTinyByJobId(jobId);
 
         Map out = new HashMap();
         out.put("job", job);

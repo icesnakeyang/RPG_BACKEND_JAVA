@@ -22,7 +22,7 @@ public class WithdrawLedger {
     /**
      * 申请取现用户
      */
-    private Integer userId;
+    private String userId;
 
     /**
      * 取现申请时间

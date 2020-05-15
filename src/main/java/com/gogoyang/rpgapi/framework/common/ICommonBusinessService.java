@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.common;
+package com.gogoyang.rpgapi.framework.common;
 
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
@@ -21,4 +21,13 @@ public interface ICommonBusinessService {
     void createUserActionLog(Map in) throws Exception;
 
     Admin getAdminByToken(String token) throws Exception;
+
+    /**
+     * 计算并返回一个用户的账户统计信息
+     * 更新用户userInfo表的账户汇总信息
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    Map sumUserAccount(String userId) throws Exception;
 }

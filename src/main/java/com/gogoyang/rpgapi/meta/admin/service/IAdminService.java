@@ -23,4 +23,6 @@ public interface IAdminService {
     Admin getAdminByPhone(String phone) throws Exception;
 
     void updateAdmin(Admin admin) throws Exception;
+
+    void deleteAdmin(String adminId) throws Exception;
 }
