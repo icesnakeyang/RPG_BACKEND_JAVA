@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.user.dao.UserDao">
+
+    <resultMap id="userInfoMap" type="com.gogoyang.rpgapi.meta.user.entity.UserInfo">
+        <result property="userId" column="user_id"/>
+        <result property="loginPassword" column="login_password"/>
+        <result property="registerTime" column="register_time"/>
+        <result property="tokenCreatedTime" column="token_created_time"/>
+        <result property="accountIn" column="account_in"/>
+        <result property="accountOut" column="account_out"/>
+        <result property="honorIn" column="honor_in"/>
+        <result property="honorOut" column="honor_out"/>
+        <result property="realName" column="real_name"/>
+    </resultMap>
+
+    <!--创建一个用户-->
+    <insert id="createUserInfo" parameterType="com.gogoyang.rpgapi.meta.user.entity.UserInfo"
+            useGeneratedKeys="true"
+            keyProperty="ids">
+        insert into user_info
+        (user_id, login_password, token, register_time, token_created_time,
+        real_name, phone, email)
+        values
+        (#{userId}, #{loginPassword}, #{token}, #{registerTime}, #{tokenCreatedTime},
+        #{realName}, #{phone}, #{email})
+    </insert>
+
+    <select id="getUserInfo" parameterType="map" resultMap="userInfoMap">
+        select * from user_info
+        where 1=1
+        <choose>
+            <when test="token!=null">
+                and token=#{token}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="phone!=null">
+                and phone=#{phone}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateUserInfo" parameterType="com.gogoyang.rpgapi.meta.user.entity.UserInfo">
+        update user_info
+        <set>
+            <if test="loginPassword!=null">
+                login_password=#{loginPassword},
+            </if>
+            <if test="token!=null">
+                token=#{token},
+            </if>
+            <if test="tokenCreatedTime!=null">
+                token_created_time=#{tokenCreatedTime},
+            </if>
+            <if test="account!=null">
+                account=#{account},
+            </if>
+            <if test="accountIn!=null">
+                account_in=#{accountIn},
+            </if>
+            <if test="accountOut!=null">
+                account_out=#{accountOut},
+            </if>
+            <if test="honor!=null">
+                honor=#{honor},
+            </if>
+            <if test="honorIn!=null">
+                honor_in=#{honorIn},
+            </if>
+            <if test="honorOut!=null">
+                honor_out=#{honorOut},
+            </if>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="phone!=null">
+                phone=#{phone},
+            </if>
+            <if test="realName!=null">
+                real_name=#{realName}
+            </if>
+            where user_id=#{userId}
+        </set>
+    </update>
+
+</mapper>

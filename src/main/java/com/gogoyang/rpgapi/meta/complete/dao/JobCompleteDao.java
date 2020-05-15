@@ -1,46 +1,42 @@
 package com.gogoyang.rpgapi.meta.complete.dao;
 
-import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface JobCompleteDao extends JpaRepository<JobComplete, Integer>{
-    /**
-     * 读取一个任务的所有日志
-     */
-    Page<JobComplete> findAllByJobId(Integer jobId, Pageable pageable);
+@Mapper
+public interface JobCompleteDao {
 
-    /**
-     * 读取一个任务的没有验收处理的申请日志
-     */
-    JobComplete findByJobIdAndResultIsNull(Integer jobId);
+    void createJobComplete(JobComplete jobComplete);
 
-    /**
-     * 读取指定任务且处于指定状态的验收申请日志
-     */
-    JobComplete findByJobIdAndResult(Integer jobId, LogStatus logStatus);
+    JobComplete getJobComplete(Map qIn);
+
+    ArrayList<JobComplete> listJobComplete(Map qIn);
 
     /**
-     * 读取甲方未阅读的乙方发起的验收申请
+     * 统计所有未阅读的任务完成日志
+     *
+     * @param qIn
+     * @return
      */
-    ArrayList<JobComplete> findAllByReadTimeIsNullAndProcessUserId(Integer partyAId);
+    Integer totalUnreadComplete(Map qIn);
 
     /**
-     * 甲方读取一个任务的未阅读的验收日志
+     * 把所有未阅读的验收日志设置为当前阅读时间
+     * @param qIn
      */
-    ArrayList<JobComplete> findAllByReadTimeIsNullAndProcessUserIdAndJobId(Integer partyAId, Integer jobId);
+    void setJobCompleteReadTime(Map qIn);
 
     /**
-     * 读取乙方未阅读的甲方已验收申请
+     * 设置甲方对处理结果的阅读时间
+     * @param qIn
+     * jobId
+     * processReadTime
+     * userId
      */
-    ArrayList<JobComplete> findAllByResultAndProcessReadTimeIsNullAndCreatedUserId(LogStatus logStatus, Integer partyBId);
+    void setJobCompleteProcessReadTime(Map qIn);
 
-    /**
-     * 读取一个任务乙方未阅读的甲方已处理的验收申请
-     */
-    ArrayList<JobComplete> findAllByResultIsNotNullAndProcessReadTimeIsNullAndCreatedUserIdAndJobId(Integer partyBId, Integer jobId);
+    void updateJobComplete(JobComplete jobComplete);
 }

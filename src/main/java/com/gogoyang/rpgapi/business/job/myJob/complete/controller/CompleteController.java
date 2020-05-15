@@ -242,6 +242,7 @@ public class CompleteController {
             String token = httpServletRequest.getHeader("token");
             Map in = new HashMap();
             in.put("token", token);
+            in.put("completeId", request.getCompleteId());
             iCompleteBusinessService.setAcceptReadTime(in);
         } catch (Exception ex) {
             try {

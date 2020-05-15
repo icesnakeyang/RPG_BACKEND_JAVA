@@ -10,13 +10,14 @@ import com.gogoyang.rpgapi.meta.honor.entity.Honor;
 import com.gogoyang.rpgapi.meta.honor.service.IHonorService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -116,7 +117,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         String token = in.get("token").toString();
         Integer jobId = (Integer) in.get("jobId");
 
-        User user = iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         Map qIn = new HashMap();
         qIn.put("userId", user.getUserId());
@@ -126,9 +127,11 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iJobCompleteService.setJobCompleteReadTime(qIn);
 
         //设置处理结果的阅读时间
+        qIn=new HashMap();
         qIn.put("processReadTime", new Date());
+        qIn.put("jobId", jobId);
+        qIn.put("userId", user.getUserId());
         iJobCompleteService.setJobCompleteProcessReadTime(qIn);
-
     }
 
     /**
@@ -143,27 +146,25 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackOn = Exception.class)
     public void rejectComplete(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId =  in.get("jobId").toString();
         String processRemark = (String) in.get("processRemark");
 
         //job status must be progress
-        Job job = iJobService.getJobByJobIdTiny(jobId);
-        if (job.getStatus() != JobStatus.PROGRESS) {
+        Job job = iCommonBusinessService.getJobTinyByJobId(jobId);
+        if (!job.getStatus().equals(JobStatus.PROGRESS)) {
             throw new Exception("10063");
         }
 
         //user must login
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
         //user must be party A
-        if (user.getUserId() != job.getPartyAId()) {
+        if (!user.getUserId().equals(job.getPartyAId())) {
             throw new Exception("10127");
         }
 
         JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
-        jobComplete.setResult(LogStatus.REJECT);
+        jobComplete.setStatus(LogStatus.REJECT);
         jobComplete.setProcessRemark(processRemark);
         jobComplete.setProcessTime(new Date());
         jobComplete.setProcessUserId(user.getUserId());
@@ -187,11 +188,11 @@ public class CompleteBusinessService implements ICompleteBusinessService {
          * 5、刷新甲方和乙方的userinfo的honor值
          */
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId = (String) in.get("jobId");
         String processRemark = (String) in.get("processRemark");
-
+=
         //首先判断任务是否已经验收
-        Job job = iJobService.getJobByJobIdTiny(jobId);
+        Job job=iCommonBusinessService.getJobTinyByJobId(jobId);
         if (job.getStatus() != JobStatus.PROGRESS) {
             throw new Exception("10063");
         }
@@ -308,68 +309,49 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         return out;
     }
 
+    /**
+     * 读取我是乙方的所有已验收的任务
+     * @param in
+     * @return
+     * @throws Exception
+     */
     @Override
     public Map listMyPartyBAcceptJob(Map in) throws Exception {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
 
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Page<Job> jobs = iJobService.listMyPartyBAcceptJob(user.getUserId(), pageIndex, pageSize);
-        ArrayList list = new ArrayList();
-        for (int i = 0; i < jobs.getContent().size(); i++) {
-            Map map = fillAcceptJobMap(jobs.getContent().get(i));
-            list.add(map);
-        }
+        ArrayList<Job> jobs=iJobService.listMyPartyBAcceptJob(user.getUserId(), pageIndex, pageSize);
+
         Map out = new HashMap();
-        out.put("jobs", list);
+        out.put("jobs", jobs);
         return out;
     }
 
+    /**
+     * 设置已验收任务的用户阅读时间
+     * @param in
+     * @throws Exception
+     */
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void setAcceptReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        String completeId=in.get("completeId").toString();
+
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         ArrayList<JobComplete> jobCompletes = iJobCompleteService.listPartyBUnreadAccept(user.getUserId());
+
+        Map qIn=new HashMap();
+        qIn.put("")
+        ArrayList<JobComplete> jobCompletes = iJobCompleteService.listJobComplete(qIn);
         for (int i = 0; i < jobCompletes.size(); i++) {
             jobCompletes.get(i).setProcessReadTime(new Date());
             iJobCompleteService.updateJobComplete(jobCompletes.get(i));
         }
     }
 
-    private Map fillAcceptJobMap(Job job) throws Exception {
-        Map map = new HashMap();
-        map.put("title", job.getTitle());
-        map.put("jobId", job.getJobId());
-        map.put("code", job.getCode());
-        map.put("partyAId", job.getPartyAId());
-        User userA = iUserService.getUserByUserId(job.getPartyAId());
-        if (userA.getRealName() != null) {
-            map.put("partyAName", userA.getRealName());
-        } else {
-            map.put("partyAName", userA.getEmail());
-        }
-        map.put("partyBId", job.getPartyBId());
-        User userB = iUserService.getUserByUserId(job.getPartyBId());
-        if (userB.getRealName() != null) {
-            map.put("partyBName", userB.getRealName());
-        } else {
-            map.put("partyBName", userB.getEmail());
-        }
-        map.put("contractTime", job.getContractTime());
-        map.put("price", job.getPrice());
-        map.put("days", job.getDays());
-        JobComplete jobComplete = iJobCompleteService.getCompleteByStatus(job.getJobId(), LogStatus.ACCEPT);
-        map.put("acceptedTime", jobComplete.getProcessTime());
-        return map;
-    }
 }

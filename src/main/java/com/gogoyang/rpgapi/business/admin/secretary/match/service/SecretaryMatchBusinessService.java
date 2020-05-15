@@ -11,7 +11,6 @@ import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.apache.tomcat.util.digester.ArrayStack;

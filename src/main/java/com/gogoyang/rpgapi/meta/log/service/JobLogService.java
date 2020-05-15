@@ -3,7 +3,6 @@ package com.gogoyang.rpgapi.meta.log.service;
 import com.gogoyang.rpgapi.meta.log.dao.JobLogDao;
 import com.gogoyang.rpgapi.meta.log.dao.JobLogMapper;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
-import com.gogoyang.rpgapi.meta.user.entity.User;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

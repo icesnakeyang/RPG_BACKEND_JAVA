@@ -4,11 +4,12 @@ import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.admin.service.IAdminService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import com.gogoyang.rpgapi.meta.userAction.entity.UserActionLog;
 import com.gogoyang.rpgapi.meta.userAction.service.IUserActionLogService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,20 +23,23 @@ public class CommonBusinessService implements ICommonBusinessService {
     private final IRPGFunction irpgFunction;
     private final IUserActionLogService iUserActionLogService;
     private final IAdminService iAdminService;
+    private final IJobService iJobService;
 
     public CommonBusinessService(IUserService iUserService,
                                  IRPGFunction irpgFunction,
                                  IUserActionLogService iUserActionLogService,
-                                 IAdminService iAdminService) {
+                                 IAdminService iAdminService,
+                                 IJobService iJobService) {
         this.iUserService = iUserService;
         this.irpgFunction = irpgFunction;
         this.iUserActionLogService = iUserActionLogService;
         this.iAdminService = iAdminService;
+        this.iJobService = iJobService;
     }
 
     @Override
-    public User getUserByToken(String token) throws Exception {
-        User user = iUserService.getUserByToken(token);
+    public UserInfo getUserByToken(String token) throws Exception {
+        UserInfo user = iUserService.getUserByToken(token);
         if (user == null) {
             //读取用户信息失败
             throw new Exception("10028");
@@ -44,7 +48,42 @@ public class CommonBusinessService implements ICommonBusinessService {
     }
 
     /**
+     * 根据jobId查询job
+     * 如果没查到，就中断程序，返回错误码
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Job getJobTinyByJobId(String jobId) throws Exception {
+        Job job = iJobService.getJobTinyByJobId(jobId);
+        if(job==null){
+            //没有查找到Job
+            throw new Exception("30001");
+        }
+        return job;
+    }
+
+    /**
+     * 根据jobId查询job
+     * 如果没查到，就中断程序，返回错误码
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Job getJobDetailByJobId(String jobId) throws Exception {
+        Job job = iJobService.getJobDetailByJobId(jobId);
+        if(job==null){
+            //没有查找到Job
+            throw new Exception("30001");
+        }
+        return job;
+    }
+
+    /**
      * 记录用户行为日志
+     *
      * @param in
      * @throws Exception
      */
@@ -52,14 +91,14 @@ public class CommonBusinessService implements ICommonBusinessService {
     @Override
     public void createUserActionLog(Map in) throws Exception {
         GogoActType gogoActType = (GogoActType) in.get("GogoActType");
-        Integer userId = (Integer) in.get("userId");
+        String userId = (String) in.get("userId");
         String device = (String) in.get("device");
         String ipAddress = (String) in.get("ipAddress");
         HashMap memoMap = (HashMap) in.get("memo");
         String os = (String) in.get("os");
         String token = (String) in.get("token");
 
-        User userInfo = null;
+        UserInfo userInfo = null;
         if (userId != null) {
             userInfo = getUserByUserId(userId);
         } else {
@@ -81,15 +120,15 @@ public class CommonBusinessService implements ICommonBusinessService {
 
     @Override
     public Admin getAdminByToken(String token) throws Exception {
-        Admin admin=iAdminService.getAdminByToken(token);
-        if(admin==null){
+        Admin admin = iAdminService.getAdminByToken(token);
+        if (admin == null) {
             throw new Exception("20001");
         }
         return admin;
     }
 
-    public User getUserByUserId(Integer userId) throws Exception {
-        User userInfo = iUserService.getUserByUserId(userId);
+    public UserInfo getUserByUserId(String userId) throws Exception {
+        UserInfo userInfo = iUserService.getUserByUserId(userId);
         if (userInfo == null) {
             throw new Exception("10028");
         }

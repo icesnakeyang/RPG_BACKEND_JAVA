@@ -7,35 +7,28 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface IJobApplyService {
-    JobApply getJobApplyByJobApplyId(Integer applyId) throws Exception;
-
-    ArrayList<JobApply> listJobApplyByNotProcesJobId(Integer jobId) throws Exception;
-
-    JobApply loadJobApplyByUserIdAndJobId(Integer userId, Integer jobId) throws Exception;
+    JobApply getJobApply(Map qIn) throws Exception;
 
     void insertJobApply(JobApply jobApply) throws Exception;
 
-    JobApply getJobApplyByApplyId(Integer applyId) throws Exception;
-
     /**
-     * 读取指定任务的所有未处理的申请记录
-     * @param jobId
-     * @return
-     * @throws Exception
-     */
-    ArrayList<JobApply> listJobApplyByJobId(Integer jobId) throws Exception;
-
-    /**
-     * 读取任务申请列表
+     * 批量查询任务申请
      * @param qIn
+     * jobApplyId
+     * jobId
+     * status
+     * processUserId
+     * applyUserId
+     * offset
+     * size
      * @return
-     * @throws Exception
      */
-    Page<JobApply> listJobApply(Map qIn) throws Exception;
+    ArrayList<JobApply> listJobApply(Map qIn);
+
 
     boolean isApplied(Integer userId, Integer jobId) throws Exception;
 
-    Integer countApplyUsers(Integer jobId) throws Exception;
+    Integer countApplyUsers(String jobId) throws Exception;
 
     ArrayList<JobApply> listMyApplies(Integer userId) throws Exception;
 
@@ -43,7 +36,6 @@ public interface IJobApplyService {
 
     void updateJobApply(JobApply jobApply) throws Exception;
 
-    Page<JobApply> listJobapplybyUserId(Integer userId, Integer pageIndex, Integer pageSize) throws Exception;
 
     ArrayList<JobApply> listPartyBNewJob(Integer userId) throws Exception;
 }

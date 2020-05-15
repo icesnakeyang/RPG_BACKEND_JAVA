@@ -9,7 +9,7 @@ import com.gogoyang.rpgapi.meta.phone.entity.Phone;
 import com.gogoyang.rpgapi.meta.phone.service.IPhoneService;
 import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
 import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +54,7 @@ public class UserBusinessService implements IUserBusinessService {
         String loginName = in.get("loginName").toString();
         String password = in.get("password").toString();
 
-        User user = null;
+        UserInfo user = null;
         if (irpgFunction.checkEmail(loginName)) {
             Email email = iEmailService.getEmailByEmail(loginName);
             if (email != null) {

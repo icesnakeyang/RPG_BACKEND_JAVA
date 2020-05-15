@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.phone.dao.PhoneDao">
+
+    <resultMap id="phoneMap" type="com.gogoyang.rpgapi.meta.phone.entity.Phone">
+        <result property="phoneId" column="phone_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="createdUserId" column="created_user_id"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="isVerify" column="is_verify"/>
+        <result property="verifyTime" column="verify_time"/>
+    </resultMap>
+
+    <select id="createPhone" parameterType="com.gogoyang.rpgapi.meta.phone.entity.Phone">
+        insert into phone
+        (phone_id, user_id, created_time, created_user_id,
+         phone, is_default, is_verify, verify_time)
+        values
+        (#{phoneId}, #{userId}, #{createdTime}, #{createdUserId},
+        #{phone}, #{isDefault}, #{isVerify}, #{verifyTime})
+    </select>
+
+    <!--查询手机号码-->
+    <select id="getPhone" parameterType="map" resultMap="phoneMap">
+        select * from phone
+        where 1=1
+        <choose>
+            <when test="phone!=null">
+                and phone=#{phone}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="phoneId!=null">
+                and phone_id=#{phoneId}
+            </when>
+        </choose>
+        <choose>
+            <when test="isVerify!=null">
+                and is_verify=#{isVerify}
+            </when>
+        </choose>
+    </select>
+
+    <!--批量查询手机号码-->
+    <select id="listPhone" parameterType="map" resultMap="phoneMap">
+        select * from email
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="isVerify!=null">
+                and is_verify=#{isVerify}
+            </when>
+        </choose>
+        <choose>
+            <when test="isDefault!=null">
+                and is_default=#{isDefault}
+            </when>
+        </choose>
+    </select>
+</mapper>

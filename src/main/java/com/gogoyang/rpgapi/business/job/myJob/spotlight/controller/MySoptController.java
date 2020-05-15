@@ -4,9 +4,7 @@ import com.gogoyang.rpgapi.business.job.myJob.spotlight.service.IMySpotBusinessS
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.business.spotlight.vo.SpotlightRequest;
 import com.gogoyang.rpgapi.framework.vo.Response;
-import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/rpgapi/job/mySpotlight")
+@RequestMapping("/rpgapi/job/spotlight")
 public class MySoptController {
     private final IMySpotBusinessService iMySpotBusinessService;
 
@@ -32,8 +30,8 @@ public class MySoptController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/create")
-    public Response createSpot(@RequestBody SpotlightRequest request,
+    @PostMapping("/createSpotlight")
+    public Response createSpotlight(@RequestBody SpotlightRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
@@ -43,8 +41,7 @@ public class MySoptController {
             in.put("content", request.getContent());
             in.put("jobId", request.getJobId());
             in.put("title", request.getTitle());
-            Map out = iMySpotBusinessService.createSpotlight(in);
-            response.setData(out);
+            iMySpotBusinessService.createSpotlight(in);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
@@ -58,14 +55,14 @@ public class MySoptController {
     }
 
     /**
-     * 读取我的一个任务的所有申诉事件
+     * 读取我的所有申诉事件
      *
      * @param request
      * @param httpServletRequest
      * @return
      */
     @ResponseBody
-    @PostMapping("/list")
+    @PostMapping("/listMySpotlight")
     public Response listMySpotlight(@RequestBody JobRequest request,
                                     HttpServletRequest httpServletRequest) {
         Response response = new Response();
@@ -76,8 +73,8 @@ public class MySoptController {
             in.put("jobId", request.getJobId());
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Page<Spot> spots = iMySpotBusinessService.listMySpotlight(in);
-            response.setData(spots);
+            Map out = iMySpotBusinessService.listMySpotlight(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

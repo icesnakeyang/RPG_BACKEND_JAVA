@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EmailService implements IEmailService{
@@ -19,22 +21,25 @@ public class EmailService implements IEmailService{
 
     @Override
     public Email getEmailByEmail(String emailName) throws Exception {
-        Email email=emailDao.findByEmail(emailName);
+        Map qIn=new HashMap();
+        qIn.put("email", emailName);
+        Email email=emailDao.getEmail(qIn);
         return email;
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
     public void insert(Email email) throws Exception {
         if(email.getEmailId()!=null){
             throw new Exception("10023");
         }
-        emailDao.save(email);
+        emailDao.createEmail(email);
     }
 
     @Override
-    public ArrayList<Email> listEmailByUserId(Integer userId) throws Exception {
-        ArrayList<Email> emails=emailDao.findAllByUserId(userId);
+    public ArrayList<Email> listEmailByUserId(String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        ArrayList<Email> emails=emailDao.listEmail(qIn);
         return emails;
     }
 
@@ -44,12 +49,14 @@ public class EmailService implements IEmailService{
         if(email.getEmailId()==null){
             throw new Exception("10114");
         }
-        emailDao.save(email);
+        emailDao.updateEmail(email);
     }
 
     @Override
-    public Email getDefaultEmailByUserId(Integer userId) throws Exception {
-        Email email=emailDao.findByUserIdAndIsDefaultIsTrue(userId);
+    public Email getDefaultEmailByUserId(String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        Email email=emailDao.getEmail(qIn);
         return email;
     }
 }

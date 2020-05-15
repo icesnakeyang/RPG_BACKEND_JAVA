@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.spotlight.dao.SpotlightDao">
+
+    <resultMap id="spotlightMap" type="com.gogoyang.rpgapi.meta.spotlight.entity.Spotlight">
+        <result property="spotlightId" column="spotlight_id"/>
+        <result property="jobId" column="job_id"/>
+        <result property="createdUserId" column="created_user_id"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="partyAId" column="partya_id"/>
+        <result property="partyBId" column="partyb_id"/>
+        <result property="partyAName" column="partya_name"/>
+        <result property="partyBname" column="partyb_name"/>
+        <result property="createdUserName" column="created_user_name"/>
+    </resultMap>
+
+    <!--创建一个申请文章-->
+    <insert id="createSpotlight" parameterType="com.gogoyang.rpgapi.meta.spotlight.entity.Spotlight"
+            useGeneratedKeys="true"
+            keyProperty="ids">
+        insert into spotlight
+        (spotlight_id, job_id, created_user_id, created_time, title, content)
+        values
+        (#{spotlightId}, #{jobId}, #{createdUserId}, #{createdTime}, #{title}, #{content})
+    </insert>
+
+    <!--查询一个申诉事件-->
+    <select id="getSpotlight" parameterType="map" resultMap="spotlightMap">
+        select spotlight.ids,
+        spotlight_id,
+        spotlight.job_id,
+        job.title as job_title,
+        created_user_id,
+        created_user.real_name as created_user_name,
+        spotlight.created_time,
+        spotlight.title as spotlight_title,
+        views,
+        comments,
+        upvote,
+        downvote,
+        content,
+        partya_id,
+        partya.real_name as partya_name,
+        partyb_id,
+        partyb.real_name as partyb_name
+        from spotlight
+        left join job on spotlight.job_id=job.job_id
+        left join user_info created_user on created_user_id=user_id
+        left join user_info partya on partya_id=partya.user_id
+        left join user_info partyb on partyb_id=partyb.user_id
+        where 1=1
+        <choose>
+            <when test="spotlightId!=null">
+                and spotlight_id=#{spotlightId}
+            </when>
+        </choose>
+        <choose>
+            <when test="jobId!=null">
+                and spotlight.job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and job.status=#{status}
+            </when>
+        </choose>
+    </select>
+
+    <!--批量查询申诉事件-->
+    <select id="listSpotlight" parameterType="map" resultMap="spotlightMap">
+        select spotlight.ids,
+           spotlight_id,
+           spotlight.job_id,
+           job.title as job_title,
+           created_user_id,
+           created_user.real_name as created_user_name,
+           spotlight.created_time,
+           spotlight.title as spotlight_title,
+           views,
+           comments,
+           upvote,
+           downvote,
+           content,
+           partya_id,
+           partya.real_name as partya_name,
+           partyb_id,
+           partyb.real_name as partyb_name
+           from spotlight
+        left join job on spotlight.job_id=job.job_id
+        left join user_info created_user on created_user_id=user_id
+        left join user_info partya on partya_id=partya.user_id
+        left join user_info partyb on partyb_id=partyb.user_id
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and spotlight.job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and job.status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and (partya_id=#{userId} or partyb_id=#{userId})
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
+</mapper>

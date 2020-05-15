@@ -1,12 +1,32 @@
 package com.gogoyang.rpgapi.meta.phone.dao;
 
 import com.gogoyang.rpgapi.meta.phone.entity.Phone;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface PhoneDao extends JpaRepository<Phone, Integer> {
-    Phone findByPhone(String phone);
-    ArrayList<Phone> findAllByUserId(Integer userId);
-    Phone findByUserIdAndIsDefaultIsTrue(Integer userId);
+@Mapper
+public interface PhoneDao {
+    void createPhone(Phone phone);
+
+    /**
+     * 查询手机号码
+     * @param qIn
+     * phone
+     * userId
+     * phoneId
+     * isVerify
+     * @return
+     */
+    Phone getPhone(Map qIn);
+
+    /**
+     * 批量查询手机号码
+     * @param qIn
+     * userId
+     * isVerify
+     * @return
+     */
+    ArrayList<Phone> listPhone(Map qIn);
 }

@@ -3,7 +3,6 @@ package com.gogoyang.rpgapi.business.job.myJob.stop.service;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import com.gogoyang.rpgapi.meta.stop.service.IJobStopService;
 import com.gogoyang.rpgapi.meta.user.entity.User;

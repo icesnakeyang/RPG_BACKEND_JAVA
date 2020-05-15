@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public interface IPhoneService {
     void insert(Phone phone) throws Exception;
     Phone getPhoneByPhone(String strPhone) throws Exception;
-    ArrayList<Phone> listPhoneByUserId(Integer userId) throws Exception;
-    void updatePhone(Phone phone) throws Exception;
-    Phone getDefaultPhoneByUserId(Integer userId) throws Exception;
+    ArrayList<Phone> listPhoneByUserId(String userId) throws Exception;
+    Phone getDefaultPhoneByUserId(String userId) throws Exception;
 }

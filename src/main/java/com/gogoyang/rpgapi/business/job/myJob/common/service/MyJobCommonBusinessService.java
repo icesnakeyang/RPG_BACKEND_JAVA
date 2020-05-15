@@ -6,7 +6,6 @@ import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.complete.service.IJobCompleteService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
 import com.gogoyang.rpgapi.meta.user.entity.User;

@@ -1,15 +1,17 @@
 package com.gogoyang.rpgapi.meta.user.service;
 
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
+
+import java.util.Map;
 
 public interface IUserService {
-    User getUserByUserId(Integer userId) throws Exception;
+    UserInfo getUserByUserId(String userId) throws Exception;
 
-    User insert(User user) throws Exception;
+    void createUserInfo(UserInfo userInfo) throws Exception;
 
-    User getUserByToken(String token) throws Exception;
+    UserInfo getUserByToken(String token) throws Exception;
 
-    void update(User user) throws Exception;
+    void updateUserInfo(UserInfo userInfo) throws Exception;
 
-    User getUserByPhone(String phoneNumber) throws Exception;
+    UserInfo getUserByPhone(String phoneNumber) throws Exception;
 }

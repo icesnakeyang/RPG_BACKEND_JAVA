@@ -4,12 +4,15 @@ public enum JobStatus {
     /**
      * When a common has been published and waiting for match
      * 当任务已经发布，并等待匹配时
+     * PENDING时甲方可以修改任务
+     * 乙方可进行任务申请
      */
     PENDING,
 
     /**
      * When common has been applied or matched, but not yet dealt
      * 当任务已被人申请，或者被秘书分配，但未成交前
+     * 乙方可进行任务申请
      */
     MATCHING,
 

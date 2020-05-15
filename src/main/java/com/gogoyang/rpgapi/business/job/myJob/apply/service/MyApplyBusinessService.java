@@ -1,12 +1,14 @@
 package com.gogoyang.rpgapi.business.job.myJob.apply.service;
 
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -54,20 +56,24 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
-        User user = iUserService.getUserByToken(token);
+        UserInfo user = iUserService.getUserByToken(token);
         if (user == null) {
             throw new Exception("10004");
         }
-        Page<JobApply> myApplyList = iJobApplyService.listJobapplybyUserId(user.getUserId(), pageIndex, pageSize);
+        Map qIn=new HashMap();
+        qIn.put("applyUserId", user.getUserId());
+        Integer offset =(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<JobApply> myApplyList =iJobApplyService.listJobApply(qIn);
         ArrayList jobList = new ArrayList();
-        for (int i = 0; i < myApplyList.getContent().size(); i++) {
-            Job job = iJobService.getJobByJobId(myApplyList.getContent().get(i).getJobId());
+        for (int i = 0; i < myApplyList.size(); i++) {
+            Job job = iJobService.getJobByJobId(myApplyList.get(i).getJobId());
             if (job != null) {
-                job.setPartyAName(iRealNameService.getRealNameByUserId(job.getPartyAId()).getRealName());
                 Integer applyNum = iJobApplyService.countApplyUsers(job.getJobId());
                 Map theMap = new HashMap();
                 theMap.put("job", job);
-                theMap.put("apply", myApplyList.getContent().get(i));
+                theMap.put("apply", myApplyList.get(i));
                 theMap.put("applyNum", applyNum);
 
                 jobList.add(theMap);
@@ -89,10 +95,10 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
     public void applyJob(Map in) throws Exception {
         //check token
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId = (String) in.get("jobId");
         String content = (String) in.get("content");
 
-        User user = iUserService.getUserByToken(token);
+        UserInfo user = iUserService.getUserByToken(token);
         if (user == null) {
             throw new Exception("10004");
         }
@@ -103,63 +109,59 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
             throw new Exception("10005");
         }
 
-        //是否已成交，即不是Matching，也不是Pending
-        if (job.getStatus().ordinal() != JobStatus.MATCHING.ordinal() &&
-                job.getStatus().ordinal() != JobStatus.PENDING.ordinal()) {
+        /**
+         * 检查任务状态，只有PENGIND和MATCHING状态的任务才能申请
+         */
+        if (!job.getStatus().equals(JobStatus.MATCHING) &&
+                !job.getStatus().equals(JobStatus.PENDING)) {
             throw new Exception("10006");
         }
 
-        //检查用户是否为甲方
-        if (job.getPartyAId() == user.getUserId()) {
+        //检查当前用户是否为甲方
+        if (job.getPartyAId().equals(user.getUserId())) {
             throw new Exception("10037");
         }
 
         //检查用户是否已经申请过该任务了
-        JobApply jobApply = iJobApplyService.loadJobApplyByUserIdAndJobId(user.getUserId(), jobId);
-        if (jobApply != null) {
+        Map qIn = new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("status", LogStatus.PENDING);
+        qIn.put("applyUserId", user.getUserId());
+        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApply(qIn);
+        if (jobApplies.size() > 0) {
             //the common has applied by current user already
             throw new Exception("10007");
         }
 
         //保存任务申请日志
-        jobApply = new JobApply();
+        JobApply jobApply = new JobApply();
         jobApply.setApplyTime(new Date());
         jobApply.setApplyUserId(user.getUserId());
         jobApply.setJobId(jobId);
         jobApply.setContent(content);
+        jobApply.setStatus(LogStatus.PENDING.toString());
         iJobApplyService.insertJobApply(jobApply);
 
         //刷新job的applyNum次数，且把jobStatus改成Matching
+        Job job2 = new Job();
+        job2.setJobId(job.getJobId());
         Integer applyNum = iJobApplyService.countApplyUsers(jobId);
-        if (job.getJobApplyNum() != applyNum) {
-            job.setJobApplyNum(applyNum);
-        }
-        if (job.getStatus() != JobStatus.MATCHING) {
-            job.setStatus(JobStatus.MATCHING);
-        }
+        job2.setJobApplyNum(applyNum);
+        job2.setStatus(JobStatus.MATCHING.toString());
         iJobService.updateJob(job);
     }
 
     @Override
     public Map getMyApplyJob(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId = in.get("jobId").toString();
 
-        User user = iUserService.getUserByToken(token);
+        UserInfo user = iUserService.getUserByToken(token);
         if (user == null) {
             throw new Exception("10004");
         }
 
         Job job = iJobService.getJobByJobId(jobId);
-
-        if (job != null) {
-            User partyA = iUserService.getUserByUserId(job.getPartyAId());
-            if (partyA.getRealName() != null) {
-                job.setPartyAName(partyA.getRealName());
-            } else {
-                job.setPartyAName(partyA.getEmail());
-            }
-        }
 
         Map out = new HashMap();
         out.put("job", job);

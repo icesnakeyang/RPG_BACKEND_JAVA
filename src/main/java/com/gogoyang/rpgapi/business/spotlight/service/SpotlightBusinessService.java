@@ -2,9 +2,8 @@ package com.gogoyang.rpgapi.business.spotlight.service;
 
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
-import com.gogoyang.rpgapi.meta.spotlight.entity.SpotBook;
 import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,7 +39,7 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
         Page<Spot> spots=iSpotService.listSpotlight(pageIndex, pageSize);
 
         for(int i=0;i<spots.getContent().size();i++){
-            User user=iUserService.getUserByUserId(spots.getContent().get(i).getCreatedUserId());
+            UserInfo user=iUserService.getUserByUserId(spots.getContent().get(i).getCreatedUserId());
             if(user.getRealName()!=null){
                 spots.getContent().get(i).setCreatedUserName(user.getRealName());
             }else {

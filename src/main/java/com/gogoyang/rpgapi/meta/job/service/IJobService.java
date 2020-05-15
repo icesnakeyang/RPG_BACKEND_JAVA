@@ -2,41 +2,62 @@ package com.gogoyang.rpgapi.meta.job.service;
 
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public interface IJobService {
-    Job insertJob(Job job) throws Exception;
-
-    Job getJobByJobId(Integer jobId) throws Exception;
-
-    Job getJobByJobIdTiny(Integer jobId) throws Exception;
-
-    Job getJobByTaskId(Integer taskId) throws Exception;
+    public void insertJob(Job job) throws Exception;
 
     /**
-     * 根据jobStatus读取所有job
-     * load all jobs by jobStatus
-     * paginate the result
+     * 读取Job的详细信息，包括jobDetail
+     *
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    public Job getJobDetailByJobId(String jobId) throws Exception;
+
+    /**
+     * 读取job，不带detail
+     *
+     * @param jobId
+     * @return
+     * @throws Exception
+     */
+    public Job getJobTinyByJobId(String jobId) throws Exception;
+
+    /**
+     * 根据taskId读取job
+     *
+     * @param taskId
+     * @return
+     * @throws Exception
+     */
+    public Job getJobByTaskId(String taskId) throws Exception;
+
+    /**
+     * 根据jobStatus读取jobs
+     * read jobs by jobStatus
+     * paginate the list
      *
      * @param pageIndex
      * @param pageSize
      * @return
      * @throws Exception
      */
-    Page<Job> listJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    public ArrayList<Job> listJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
-     * 修改任务
+     * 修改job
+     *
      * @param job
      * @throws Exception
      */
-    void updateJob(Job job) throws Exception;
+    public void updateJob(Job job) throws Exception;
 
     /**
-     * 获取我是甲方的任务
+     * 读取所有我是甲方的任务
+     *
      * @param userId
      * @param jobStatus
      * @param pageIndex
@@ -44,10 +65,11 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    Page<Job> listPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    public ArrayList<Job> listPartyAJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
-     * 获取我是乙方的任务
+     * 读取我是乙方的所有任务
+     *
      * @param userId
      * @param jobStatus
      * @param pageIndex
@@ -55,17 +77,17 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    Page<Job> listPartyBJob(Integer userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    public ArrayList<Job> listPartyBJob(Integer userId, JobStatus jobStatus,
+                                        Integer pageIndex, Integer pageSize) throws Exception;
 
-    Page<Job> listMyPendingJob(Integer partyAId, Integer pageIndex, Integer pageSize) throws Exception;
+    public ArrayList<Job> listMyPendingJob(String partyAId,
+                                           Integer pageIndex, Integer pageSize) throws Exception;
 
-    Page<Job> listJobByStausMap(Map qIn) throws Exception;
+    public void deleteJob(String jobId) throws Exception;
 
-    void deleteJob(Integer jobId) throws Exception;
+    public ArrayList<Job> listPublicJob(Integer pageIndex, Integer pageSize) throws Exception;
 
-    Page<Job> listPublicJob(Map qIn) throws Exception;
+    public ArrayList<Job> listMyPartyAAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
 
-    Page<Job> listMyPartyAAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception;
-
-    Page<Job> listMyPartyBAcceptJob(Integer userId, Integer pageIndex, Integer pageSize) throws Exception;
+    public ArrayList<Job> listMyPartyBAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
 }

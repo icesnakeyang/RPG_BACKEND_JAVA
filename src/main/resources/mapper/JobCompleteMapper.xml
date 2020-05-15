@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gogoyang.rpgapi.meta.complete.dao.JobCompleteMapper">
+<mapper namespace="com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao">
 
-    <!--配置job_log表和JobLog对象的字段映射 -->
     <resultMap id="jobCompleteMap" type="com.gogoyang.rpgapi.meta.complete.entity.JobComplete">
         <result property="jobLogId" column="job_log_id"/>
         <result property="jobId" column="job_id"/>
@@ -11,6 +10,52 @@
         <result property="createdTime" column="created_time"/>
         <result property="readTime" column="read_time"/>
     </resultMap>
+
+    <select id="createJobComplete" parameterType="com.gogoyang.rpgapi.meta.complete.entity.JobComplete">
+        insert into job_complete
+        (complete_id, job_id, created_user_id, created_time, content,
+        status, process_user_id)
+        values
+        (#{completeId}, #{jobId}, #{createdUserId}, #{createdTime}, #{content},
+        #{status}, #{processUserId})
+    </select>
+
+    <select id="getJobComplete" parameterType="map" resultMap="jobCompleteMap">
+        select * from job_complete
+        where complete_id=#{completeId}
+    </select>
+
+    <select id="listJobComplete" parameterType="map" resultMap="jobCompleteMap">
+        select * from job_complete
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and jobId=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="createUserUnread!=null">
+                and process_read_time is null
+                and created_user_id=#{createdUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="processUserUnread!=null">
+                and read_time is null
+                and process_user_id=#{processUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
 
     <!--统计所有未阅读的任务完成日志-->
     <select id="totalUnreadComplete" parameterType="map"
@@ -36,6 +81,16 @@
             </when>
         </choose>
     </select>
+
+    <update id="updateJobComplete" parameterType="com.gogoyang.rpgapi.meta.complete.entity.JobComplete">
+        update job_complete
+        <set>
+            <if test="readTime!=null">
+                read_time=#{readTime}
+            </if>
+        </set>
+        where complete_id=#{completeId}
+    </update>
 
     <!--把所有未阅读的验收日志设置为当前阅读时间-->
     <update id="setJobCompleteReadTime" parameterType="map">

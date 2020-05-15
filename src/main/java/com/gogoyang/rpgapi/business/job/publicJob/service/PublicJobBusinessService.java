@@ -2,8 +2,7 @@ package com.gogoyang.rpgapi.business.job.publicJob.service;
 
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,7 +36,7 @@ public class PublicJobBusinessService implements IPublicJobBusinessService{
         Page<Job> jobPage= iJobService.listPublicJob(qIn);
         for(int i=0;i<jobPage.getContent().size();i++){
             Job job=jobPage.getContent().get(i);
-            User user=iUserService.getUserByUserId(job.getPartyAId());
+            UserInfo user=iUserService.getUserByUserId(job.getPartyAId());
             if(user.getRealName()!=null){
                 jobPage.getContent().get(i).setPartyAName(user.getRealName());
             }else{

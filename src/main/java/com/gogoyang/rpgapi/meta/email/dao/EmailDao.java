@@ -1,12 +1,26 @@
 package com.gogoyang.rpgapi.meta.email.dao;
 
 import com.gogoyang.rpgapi.meta.email.entity.Email;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface EmailDao extends JpaRepository<Email, Integer> {
-    Email findByEmail(String email);
-    ArrayList<Email> findAllByUserId(Integer userId);
-    Email findByUserIdAndIsDefaultIsTrue(Integer userId);
+@Mapper
+public interface EmailDao {
+    void createEmail(Email email);
+
+    /**
+     * 查询email
+     * @param qIn
+     * email
+     * userId
+     * emailId
+     * @return
+     */
+    Email getEmail(Map qIn);
+
+    ArrayList<Email> listEmail(Map qIn);
+
+    void updateEmail(Email email);
 }

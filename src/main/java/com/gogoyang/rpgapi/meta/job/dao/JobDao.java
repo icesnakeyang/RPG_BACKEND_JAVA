@@ -1,40 +1,55 @@
 package com.gogoyang.rpgapi.meta.job.dao;
 
-
-import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface JobDao extends JpaRepository<Job, Integer>{
-//    List findAllByCategory(String category);
-    Job findByJobId(Integer jobId);
+@Mapper
+public interface JobDao {
+    ArrayList<Job> listMyPendingJob(Map qIn);
 
-    Job findByTaskId(Integer taskId);
-
-    //find jobs waiting for match
-    Page<Job> findAllByStatus(JobStatus jobStatus,Pageable pageable);
-
-    //find all party a jobs
-    Page<Job> findAllByPartyAIdAndStatus(Integer userId, JobStatus jobStatus, Pageable pageable);
-//    ArrayList<Job> findAllByPartyAIdAndStatus(Integer userId, JobStatus jobStatus);
-
-    Page<Job> findAllByPartyBIdAndStatus(Integer userId, JobStatus jobStatus, Pageable pageable);
-
-    Page<Job> findAllByStatusOrStatus(JobStatus jobStatus1, JobStatus jobStatus2, Pageable pageable);
-
-    Page<Job> findAllByPartyAIdAndStatusOrPartyAIdAndStatus(Integer userId, JobStatus jobStatus1, Integer userId2, JobStatus jobStatus2, Pageable pageable);
+    ////////////////////////////
 
     /**
-     * read party a accepted job
+     * 读取任务简要信息
+     * @param qIn
+     * jobId
+     * taskId
+     * @return
      */
-    Page<Job> findAllByStatusAndPartyAId(JobStatus jobStatus, Integer partyAId, Pageable pageable);
+    Job getJob(Map qIn);
 
     /**
-     * read party b accepted job
+     * 读取任务详情
+     * @param jobId
+     * @return
      */
-    Page<Job> findAllByStatusAndPartyBId(JobStatus jobStatus, Integer partyBId, Pageable pageable);
+    JobDetail getJobDetail(String jobId);
+
+    /**
+     * 批量查询job任务
+     * @param qIn
+     * status或statusList
+     * partyAId
+     * partyBId
+     * offset
+     * size
+     * @return
+     */
+    ArrayList<Job> listJob(Map qIn);
+
+    void createJob(Job job);
+
+    void createJobDetail(JobDetail jobDetail);
+
+    void updateJobTiny(Job job);
+
+    void updateJobDetail(JobDetail jobDetail);
+
+    void deleteJob(String jobId);
+
+    void deleteJobDetail(String jobId);
 }

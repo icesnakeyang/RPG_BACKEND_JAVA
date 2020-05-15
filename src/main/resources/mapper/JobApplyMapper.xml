@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.apply.dao.JobApplyDao">
+
+    <resultMap id="jobApplyMap" type="com.gogoyang.rpgapi.meta.apply.entity.JobApply">
+        <result property="jobApplyId" column="job_apply_id"/>
+        <result property="jobId" column="job_id"/>
+        <result property="applyUserId" column="apply_user_id"/>
+        <result property="applyTime" column="apply_time"/>
+        <result property="processUserId" column="process_user_id"/>
+        <result property="readTime" column="read_time"/>
+        <result property="processTime" column="process_time"/>
+        <result property="processRemark" column="process_remark"/>
+        <result property="processResultReadTime" column="process_result_read_time"/>
+    </resultMap>
+
+    <!--创建一个任务申请-->
+    <insert id="createJobApply" parameterType="com.gogoyang.rpgapi.meta.apply.entity.JobApply"
+            useGeneratedKeys="true"
+            keyProperty="ids">
+        insert into job_apply
+        (job_apply_id, job_id, apply_user_id, apply_time, content, status)
+        values
+        (#{jobApplyId}, #{jobId}, #{applyUserId}, #{applyTime}, #{content}, #{status})
+    </insert>
+
+    <!--读取一个任务申请信息-->
+    <select id="getJobApply" parameterType="map" resultMap="jobApplyMap">
+        select job_apply.ids,
+        job_apply_id,
+        job_id,
+        apply_user_id,
+        apply_user.real_name as apply_user_name,
+        apply_time,
+        process_user_id,
+        process_user.real_name as process_user_name,
+        read_time,
+        process_result,
+        process_time,
+        process_remark,
+        content,
+        process_result_read_time
+        from job_apply
+        left join user_info apply_user on job_apply_id=user_id
+        left join user_info process_user on process_user_id=process_user.user_id
+        where 1=1
+        <choose>
+            <when test="jobApplyId!=null">
+                and job_apply_id=#{jobApplyId}
+            </when>
+        </choose>
+    </select>
+    <!--批量查询任务申请-->
+    <select id="listJobApply" parameterType="map" resultMap="jobApplyMap">
+        select job_apply.ids,
+        job_apply_id,
+        job_id,
+        apply_user_id,
+        apply_user.real_name as apply_user_name,
+        apply_time,
+        process_user_id,
+        process_user.real_name as process_user_name,
+        read_time,
+        status,
+        process_time,
+        process_remark,
+        content,
+        process_result_read_time
+        from job_apply
+        left join user_info apply_user on job_apply_id=user_id
+        left join user_info process_user on process_user_id=process_user.user_id
+        where 1=1
+        <choose>
+            <when test="jobApplyId!=null">
+                and job_apply_id=#{jobApplyId}
+            </when>
+        </choose>
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="processUserId!=null">
+                and process_user_id=#{processUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="applyUserId!=null">
+                and apply_user_id=#{applyUserId}
+            </when>
+        </choose>
+        order by ids desc
+        <choose>
+            <when test="offset!=null">
+                limit #{offset}, #{size}
+            </when>
+        </choose>
+    </select>
+
+    <!--统计任务申请信息-->
+    <select id="totalJobApply" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from job_apply
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateJobApply" parameterType="com.gogoyang.rpgapi.meta.apply.entity.JobApply">
+        update job_apply
+        <set>
+            <if test="content!=null">
+                content=#{content},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="readTime!=null">
+                read_time=#{readTime},
+            </if>
+            <if test="processUserId!=null">
+                process_user_id=#{processUserId},
+            </if>
+            <if test="processTime!=null">
+                process_time=#{processTime},
+            </if>
+            <if test="processRemark!=null">
+                process_remark=#{processRemark},
+            </if>
+            <if test="processReadTime!=null">
+                process_read_time=#{processReadTime}
+            </if>
+            where job_apply_id=#{jobApplyId}
+        </set>
+    </update>
+
+</mapper>

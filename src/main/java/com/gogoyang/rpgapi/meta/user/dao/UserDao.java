@@ -1,12 +1,31 @@
 package com.gogoyang.rpgapi.meta.user.dao;
 
-import com.gogoyang.rpgapi.meta.user.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface UserDao extends JpaRepository<User, Integer> {
-    User findByUserId(Integer userId);
+import java.util.Map;
 
-    User findByToken(String token);
+@Mapper
+public interface UserDao {
+    /**
+     * create user
+     * @param userInfo
+     */
+    void createUserInfo(UserInfo userInfo);
 
-    User findByPhone(String phone);
+    /**
+     * 读取用户信息
+     * @param qIn
+     * userId
+     * phone
+     * token
+     * @return
+     */
+    UserInfo getUserInfo(Map qIn);
+
+    /**
+     * 修改用户信息
+     * @param userInfo
+     */
+    void updateUserInfo(UserInfo userInfo);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gogoyang.rpgapi.meta.job.dao.JobMapper">
+<mapper namespace="com.gogoyang.rpgapi.meta.job.dao.JobDao">
 
     <!--配置job表和Job对象的字段映射 -->
     <resultMap id="jobMap" type="com.gogoyang.rpgapi.meta.job.entity.Job">
@@ -16,6 +16,67 @@
         <result property="spotNum" column="spot_num"/>
     </resultMap>
 
+    <select id="createJob" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
+        insert into job
+        (job_id, code, task_id, title, days, price, partya_id,
+        created_time, category, status)
+        values
+        (#{jobId}, #{code}, #{taskId}, #{title}, #{days}, #{price}, #{partyAId},
+        #{createdTime}, #{category}, #{status})
+    </select>
+
+    <select id="createJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.JobDetail">
+        insert into job_detail
+        (job_id, detail)
+        values
+        (#{jobId}, #{detail})
+    </select>
+
+    <!--读取任务简要信息-->
+    <select id="getJob" parameterType="map"
+            resultMap="jobMap">
+        select job.ids,
+        job_id,
+        code,
+        task_id,
+        title,
+        days,
+        price,
+        partya_id,
+        partya.real_name as partya_name,
+        created_time,
+        category,
+        match_id,
+        status,
+        partyb_id,
+        partyb.real_name as partyb_name,
+        contract_time,
+        job_apply_num,
+        job_match_num,
+        spot_num
+        from job
+        left join user_info partya on partya_id=user_id
+        left join user_info partyb on partyb_id=partyb.user_id
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="taskId!=null">
+                and task_id=#{taskId}
+            </when>
+        </choose>
+    </select>
+
+    <!--读取任务详情-->
+    <select id="getJobDetail" parameterType="java.lang.String"
+            resultType="com.gogoyang.rpgapi.meta.job.entity.JobDetail">
+        select * from job_detail
+        where job.job_id=#{jobId}
+    </select>
+
     <select id="listMyPendingJob" parameterType="map"
             resultMap="jobMap">
         select * from job
@@ -24,5 +85,117 @@
         or status=1
         limit #{offset}, #{size}
     </select>
+
+    <!--批量查询job任务-->
+    <select id="listJob" parameterType="map"
+            resultMap="jobMap">
+        select job.ids,
+        job_id,
+        code,
+        task_id,
+        title,
+        days,
+        price,
+        partya_id,
+        partya.real_name as partya_name,
+        created_time,
+        category,
+        match_id,
+        status,
+        partyb_id,
+        partyb.real_name as partyb_name,
+        contract_time,
+        job_apply_num,
+        job_match_num,
+        spot_num
+        from job
+        left join user_info partya on partya_id=user_id
+        left join user_info partyb on partyb_id=partyb.user_id
+        where 1=1
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="statusList!=null">
+                and status in
+                <foreach item="item" collection="statusList" separator="," open="(" close=")" index="">
+                    #{item}
+                </foreach>
+            </when>
+        </choose>
+        <choose>
+            <when test="partyAId!=null">
+                and partya_id=#{partyAId}
+            </when>
+        </choose>
+        <choose>
+            <when test="partyBId!=null">
+                and partyb_id=#{partyBId}
+            </when>
+        </choose>
+        order by ids desc
+        limit #{offset}, #{size}
+    </select>
+
+    <update id="updateJob" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
+        update job
+        <set>
+            <if test="code!=null">
+                code=#{code},
+            </if>
+            <if test="title!=null">
+                title=#{title},
+            </if>
+            <if test="days!=null">
+                days=#{days},
+            </if>
+            <if test="price!=null">
+                price=#{price},
+            </if>
+            <if test="category!=null">
+                category=#{category},
+            </if>
+            <if test="matchId!=null">
+                match_id=#{matchId},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="partyBId!=null">
+                partyb_id=#{partyBId},
+            </if>
+            <if test="contractTime!=null">
+                contract_time=#{contractTime},
+            </if>
+            <if test="jobApplyNum!=null">
+                job_apply_num=#{jobApplyNum},
+            </if>
+            <if test="jobMatchNum!=null">
+                job_match_num=#{jobMatchNum},
+            </if>
+            <if test="spotNum!=null">
+                spot_num=#{spotNum}
+            </if>
+            where job_id=#{jobId}
+        </set>
+    </update>
+
+    <update id="updateJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.JobDetail">
+        update job_detail set
+        detail=#{detail}
+        where job_id=#{jobId}
+    </update>
+
+    <delete id="deleteJob" parameterType="java.lang.String">
+        delete from job
+        where job_id=#{jobId}
+    </delete>
+
+    <delete id="deleteJobDetail" parameterType="java.lang.String">
+        delete from job_detail
+        where job_id=#{jobId}
+    </delete>
 
 </mapper>

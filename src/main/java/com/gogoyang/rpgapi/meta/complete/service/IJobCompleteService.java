@@ -15,6 +15,8 @@ public interface IJobCompleteService {
      */
     void insertJobComplete(JobComplete jobComplete) throws Exception;
 
+    ArrayList<JobComplete> listJobComplete(Map qIn) throws Exception;
+
     /**
      * 获取一个任务的所有验收日志
      * @param jobId
@@ -23,26 +25,26 @@ public interface IJobCompleteService {
      * @return
      * @throws Exception
      */
-    Page<JobComplete> loadJobCompleteByJobId(Integer jobId, Integer pageIndex, Integer pageSize) throws Exception;
+    ArrayList<JobComplete> loadJobCompleteByJobId(String jobId, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 甲方读取未阅读的验收日志
      */
-    ArrayList<JobComplete> listPartyAUnread(Integer userId) throws Exception;
+    ArrayList<JobComplete> listPartyAUnread(String userId) throws Exception;
 
     /**
      * 甲方读取某个任务的未阅读的验收日志
      */
-    ArrayList<JobComplete> listPartyAUnreadJobId(Integer userId, Integer jobId) throws Exception;
+    ArrayList<JobComplete> listPartyAUnreadJobId(String userId, String jobId) throws Exception;
 
     /**
      * read all un read complete process by me
      */
-    ArrayList<JobComplete> listPartyBUnread(Integer userId) throws Exception;
+    ArrayList<JobComplete> listPartyBUnread(String userId) throws Exception;
 
-    ArrayList<JobComplete> listPartyBUnreadAccept(Integer userId) throws Exception;
+    ArrayList<JobComplete> listPartyBUnreadAccept(String userId) throws Exception;
 
-    ArrayList<JobComplete> listPartyBUnreadJobId(Integer userId, Integer jobId) throws Exception;
+    ArrayList<JobComplete> listPartyBUnreadJobId(String userId, String jobId) throws Exception;
 
     /**
      * 修改验收日志/处理验收日志申请
@@ -57,7 +59,7 @@ public interface IJobCompleteService {
      * @return
      * @throws Exception
      */
-    JobComplete getUnprocessComplete(Integer jobId) throws Exception;
+    JobComplete getUnprocessComplete(String jobId) throws Exception;
 
     /**
      * 读取验收成功的验收日志
@@ -65,11 +67,19 @@ public interface IJobCompleteService {
      * @return
      * @throws Exception
      */
-    JobComplete getCompleteByStatus(Integer jobId, LogStatus logStatus) throws Exception;
+    JobComplete getCompleteByStatus(String jobId, LogStatus logStatus) throws Exception;
 
     Integer totalUnreadComplete(Map in) throws Exception;
 
     void setJobCompleteReadTime(Map qIn) throws Exception;
 
+    /**
+     *
+     * @param qIn
+     * jobId
+     * processReadTime
+     * userId
+     * @throws Exception
+     */
     void setJobCompleteProcessReadTime(Map qIn) throws Exception;
 }

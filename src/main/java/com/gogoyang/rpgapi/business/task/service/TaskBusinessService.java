@@ -6,7 +6,6 @@ import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.service.IAccountService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import com.gogoyang.rpgapi.meta.user.entity.User;

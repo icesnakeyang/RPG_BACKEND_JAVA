@@ -1,60 +1,46 @@
 package com.gogoyang.rpgapi.meta.apply.dao;
 
-import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface JobApplyDao extends JpaRepository<JobApply, Integer> {
-    JobApply findByJobApplyId(Integer applyId);
-
-    /**
-     * 查找一个任务的所有申请
-     * @param jobId
-     * @return
-     */
-    ArrayList<JobApply> findAllByJobIdAndProcessResultIsNull(Integer jobId);
+@Mapper
+public interface JobApplyDao {
+    void createJobApply(JobApply jobApply);
 
     /**
-     * 查找一个用户申请的一个任务的申请记录
-     * @param applyUserId
-     * @param jobId
+     * 读取一个任务申请信息
+     * @param qIn
+     * jobApplyId
      * @return
      */
-    JobApply findByApplyUserIdAndJobIdAndProcessResultIsNull(Integer applyUserId, Integer jobId);
+    JobApply getJobApply(Map qIn);
 
     /**
-     * 查找所有未处理的任务申请
-     * @param pageable
+     * 批量查询任务申请
+     * @param qIn
+     * jobApplyId
+     * jobId
+     * status
+     * processUserId
+     * applyUserId
+     * offset
+     * size
      * @return
      */
-    Page<JobApply> findAllByProcessResultIsNull(Pageable pageable);
+    ArrayList<JobApply> listJobApply(Map qIn);
 
     /**
-     * 查找一个用户的所有未处理的任务申请
-     * @param userId
+     * 统计任务申请信息
+     * @param qIn
+     * jobId
+     * status
      * @return
      */
-    ArrayList<JobApply> findAllByApplyUserIdAndProcessResultIsNull(Integer userId);
+    Integer totalJobApply(Map qIn);
 
-    /**
-     * 查询一个用户的所有任务申请
-     * @param userId
-     * @param pageable
-     * @return
-     */
-    Page<JobApply> findAllByApplyUserId(Integer userId, Pageable pageable);
-
-    /**
-     * 查询一个用户的所有已处理未阅读，指定处理结果状态
-     * @param userId
-     * @param logStatus
-     * @return
-     */
-    ArrayList<JobApply> findAllByProcessResultReadTimeIsNullAndApplyUserIdAndProcessResult(Integer userId, LogStatus logStatus);
+    void updateJobApply(JobApply jobApply);
 
 }

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.email.dao.EmailDao">
+
+    <resultMap id="emailMap" type="com.gogoyang.rpgapi.meta.email.entity.Email">
+        <result property="emailId" column="email_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="createdUserId" column="created_user_id"/>
+    </resultMap>
+
+    <select id="createEmail" parameterType="com.gogoyang.rpgapi.meta.email.entity.Email">
+        insert into email
+        (email_id, user_id, email, created_time, created_user_id)
+        values
+        (#{emailId}, #{userId}, #{email}, #{createdTime}, #{createdUserId})
+    </select>
+
+    <select id="getEmail" parameterType="map" resultMap="emailMap">
+        select * from email
+        where 1=1
+        <choose>
+            <when test="email!=null">
+                and email=#{email}
+            </when>
+        </choose>
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="emailId!=null">
+                and email_id=#{emailId}
+            </when>
+        </choose>
+    </select>
+
+    <select id="listEmail" parameterType="map" resultMap="emailMap">
+        select * from email
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateEmail" parameterType="com.gogoyang.rpgapi.meta.email.entity">
+        update email
+        <set>
+            <if test="email!=null">
+                email=#{email},
+            </if>
+            <if test="userId!=null">
+                user_id=#{userId}
+            </if>
+        </set>
+        where email_id=#{emailId}
+    </update>
+</mapper>
