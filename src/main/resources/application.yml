@@ -9,6 +9,10 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
 server:
   port: 9527
+#logging:
+#  level: debug
+#  file: rpgapi.log
+loggin:
 logging:
-  level: debug
-  file: rpgapi.log
+  file:
+    name: rpgapi.log

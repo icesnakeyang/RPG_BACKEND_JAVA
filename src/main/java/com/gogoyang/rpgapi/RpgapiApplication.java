@@ -9,25 +9,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import javax.annotation.Resource;
 
 @SpringBootApplication
-public class RpgapiApplication extends WebMvcConfigurerAdapter {
+public class RpgapiApplication {
 
     @Resource
     private AuthCheckInterceptor authCheckInterceptor;
 
     public static void main(String[] args) {
         SpringApplication.run(RpgapiApplication.class, args);
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authCheckInterceptor)
-                .addPathPatterns("/**");
-        super.addInterceptors(registry);
     }
 
     private CorsConfiguration buildConfig() {
