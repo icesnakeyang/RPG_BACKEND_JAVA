@@ -10,8 +10,8 @@ public class Honor {
     private Integer ids;
     private String honorId;
     private String userId;
-    private Integer point;
-    private HonorType type;
+    private Double point;
+    private String type;
     private String jobId;
     private Date createdTime;
     private String createdUserId;

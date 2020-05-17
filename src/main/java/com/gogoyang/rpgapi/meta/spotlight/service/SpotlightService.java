@@ -20,6 +20,21 @@ public class SpotlightService implements ISpotlightService {
     }
 
     /**
+     * getSpotlight
+     * @param qIn
+     * spotlightId
+     * jobId
+     * status
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Spotlight getSpotlight(Map qIn) throws Exception {
+        Spotlight spotlight=spotlightDao.getSpotlight(qIn);
+        return spotlight;
+    }
+
+    /**
      * 批量查询申诉事件
      * @param qIn
      * jobId

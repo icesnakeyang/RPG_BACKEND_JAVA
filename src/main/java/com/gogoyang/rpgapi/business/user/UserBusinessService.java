@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.user;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
@@ -13,12 +14,11 @@ import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class UserBusinessService implements IUserBusinessService {
@@ -48,7 +48,7 @@ public class UserBusinessService implements IUserBusinessService {
      * @return
      * @throws Exception
      */
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map login(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
@@ -99,96 +99,63 @@ public class UserBusinessService implements IUserBusinessService {
      * @throws Exception
      */
     @Override
-    public Map register(Map in) throws Exception {
-        String loginName = in.get("loginName").toString();
-        String password = in.get("loginPassword").toString();
-        String realName = (String) in.get("realName");
+    public Map registerByEmail(Map in) throws Exception {
+        String email = in.get("email").toString();
+        String password = in.get("password").toString();
+        String realName = in.get("realName").toString();
 
-        String email = null;
-        String phone = null;
         //check the email
-        if (irpgFunction.checkEmail(loginName)) {
+        if (irpgFunction.checkEmail(email)) {
             //是email
-            Email oldEmail = iEmailService.getEmailByEmail(loginName);
+            Email oldEmail = iEmailService.getEmailByEmail(email);
             //email已经被注册了
             if (oldEmail != null) {
                 throw new Exception("10044");
             }
-            email = loginName;
         } else {
             //不是email，那就默认为phone
-            Phone thePhone = iPhoneService.getPhoneByPhone(loginName);
-            if (thePhone != null) {
-                //phone已经被注册了
-                throw new Exception("10046");
-            }
-            phone = loginName;
+
         }
 
         //create the user
-        User user = new User();
+        UserInfo user = new UserInfo();
+        user.setUserId(GogoTools.UUID());
         user.setLoginPassword(irpgFunction.encoderByMd5(password));
-        user.setToken(UUID.randomUUID().toString().replace("-", ""));
+        user.setToken(GogoTools.UUID());
         user.setRegisterTime(new Date());
         user.setTokenCreatedTime(new Date());
         user.setEmail(email);
-        user.setPhone(phone);
         user.setRealName(realName);
-        user = iUserService.insert(user);
+        iUserService.createUserInfo(user);
 
-        if (email != null) {
-            Email theEmail = new Email();
-            theEmail.setUserId(user.getUserId());
-            theEmail.setEmail(email);
-            theEmail.setCreatedTime(new Date());
-            theEmail.setCreatedUserId(user.getUserId());
-            theEmail.setUserId(user.getUserId());
-            theEmail.setDefault(true);
-            iEmailService.insert(theEmail);
-        }
-
-        if (phone != null) {
-            Phone thePhone = new Phone();
-            thePhone.setDefault(true);
-            thePhone.setCreatedTime(new Date());
-            thePhone.setUserId(user.getUserId());
-            thePhone.setCreatedUserId(user.getUserId());
-            thePhone.setPhone(phone);
-            thePhone.setVerify(true);
-            thePhone.setVerifyTime(new Date());
-            iPhoneService.insert(thePhone);
-        }
+        //create email
+        Email theEmail = new Email();
+        theEmail.setEmailId(GogoTools.UUID());
+        theEmail.setUserId(user.getUserId());
+        theEmail.setEmail(email);
+        theEmail.setCreatedTime(new Date());
+        theEmail.setCreatedUserId(user.getUserId());
+        theEmail.setUserId(user.getUserId());
+        iEmailService.insert(theEmail);
 
         Map out = new HashMap();
         out.put("userId", user.getUserId());
         out.put("token", user.getToken());
         out.put("email", email);
-        out.put("phone", phone);
-        if (realName != null) {
-            out.put("username", realName);
-        } else {
-            if (phone != null) {
-                out.put("username", phone);
-            } else {
-                if (email != null) {
-                    out.put("username", email);
-                }
-            }
-        }
-        out.put("roleType", RoleType.NORMAL);
+        out.put("username", realName);
         return out;
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map registerByPhone(Map in) throws Exception {
         String phoneStr = in.get("phone").toString();
         String code = in.get("code").toString();
         String password = in.get("password").toString();
-        String realName = (String) in.get("realName");
+        String realName = in.get("realName").toString();
 
         //check the phone
-        User user = iUserService.getUserByPhone(phoneStr);
+        UserInfo user = iUserService.getUserByPhone(phoneStr);
         if (user != null) {
             throw new Exception("10046");
         }
@@ -197,22 +164,23 @@ public class UserBusinessService implements IUserBusinessService {
         irpgFunction.verifyMSMCode(phoneStr, code);
 
         //create the user
-        user = new User();
+        user = new UserInfo();
+        user.setUserId(GogoTools.UUID());
         user.setLoginPassword(irpgFunction.encoderByMd5(password));
-        user.setToken(UUID.randomUUID().toString().replace("-", ""));
+        user.setToken(GogoTools.UUID());
         user.setRegisterTime(new Date());
         user.setTokenCreatedTime(new Date());
         user.setPhone(phoneStr);
         user.setRealName(realName);
-        user = iUserService.insert(user);
+        iUserService.createUserInfo(user);
 
         Phone phone = new Phone();
-        phone.setDefault(true);
+        phone.setIsDefault(true);
         phone.setCreatedTime(new Date());
         phone.setUserId(user.getUserId());
         phone.setCreatedUserId(user.getUserId());
         phone.setPhone(phoneStr);
-        phone.setVerify(true);
+        phone.setIsVerify(true);
         phone.setVerifyTime(new Date());
 
         iPhoneService.insert(phone);
@@ -241,7 +209,7 @@ public class UserBusinessService implements IUserBusinessService {
     public Map getPhone(Map in) throws Exception {
         String phoneNumber = in.get("phone").toString();
 
-        User user = iUserService.getUserByPhone(phoneNumber);
+        UserInfo user = iUserService.getUserByPhone(phoneNumber);
 
         Map out = new HashMap();
         out.put("user", user);

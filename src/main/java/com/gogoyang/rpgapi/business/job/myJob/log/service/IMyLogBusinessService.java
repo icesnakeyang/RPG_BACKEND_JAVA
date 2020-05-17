@@ -1,8 +1,8 @@
 package com.gogoyang.rpgapi.business.job.myJob.log.service;
 
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
-import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface IMyLogBusinessService {
@@ -19,7 +19,7 @@ public interface IMyLogBusinessService {
      * @return
      * @throws Exception
      */
-    Page<JobLog> loadJobLog(Map in) throws Exception;
+    ArrayList<JobLog> loadJobLog(Map in) throws Exception;
 
     void setJobLogReadTime(Map in)throws Exception;
 }

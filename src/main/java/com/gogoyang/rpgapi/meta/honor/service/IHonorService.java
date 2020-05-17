@@ -31,5 +31,5 @@ public interface IHonorService {
      * type
      * @return
      */
-    Integer sumHonor(Map qIn);
+    Double sumHonor(Map qIn);
 }

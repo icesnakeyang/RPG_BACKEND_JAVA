@@ -77,7 +77,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public ArrayList<Job> listPartyBJob(Integer userId, JobStatus jobStatus,
+    public ArrayList<Job> listPartyBJob(String userId, JobStatus jobStatus,
                                         Integer pageIndex, Integer pageSize) throws Exception;
 
     public ArrayList<Job> listMyPendingJob(String partyAId,

@@ -27,9 +27,6 @@ public class UserService implements IUserService{
 
     @Override
     public void createUserInfo(UserInfo userInfo) throws Exception {
-        if(userInfo.getUserId()!=null){
-            throw new Exception("10014");
-        }
         userDao.createUserInfo(userInfo);
     }
 

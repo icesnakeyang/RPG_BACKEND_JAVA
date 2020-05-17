@@ -3,8 +3,8 @@ package com.gogoyang.rpgapi.meta.log.service;
 import com.gogoyang.rpgapi.meta.log.dao.JobLogDao;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class JobLogService implements IJobLogService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void createJobLog(JobLog jobLog) throws Exception {
         jobLogDao.createJobLog(jobLog);
     }

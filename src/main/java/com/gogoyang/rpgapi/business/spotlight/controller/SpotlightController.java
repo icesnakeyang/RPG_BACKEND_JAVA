@@ -99,34 +99,4 @@ public class SpotlightController {
         }
         return response;
     }
-
-    /**
-     * create a spot book
-     * @param request
-     * @param httpServletRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/createSpotBook")
-    public Response createSpotBook(@RequestBody SpotlightRequest request,
-                                   HttpServletRequest httpServletRequest){
-        Response response=new Response();
-        try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
-            in.put("token", token);
-            in.put("spotId", request.getSpotId());
-            in.put("content", request.getContent());
-            iSpotlightBusinessService.createSpotBook(in);
-        }catch (Exception ex){
-            try {
-                response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
-                response.setErrorCode(10113);
-            }
-        }
-        return response;
-    }
-
-
 }

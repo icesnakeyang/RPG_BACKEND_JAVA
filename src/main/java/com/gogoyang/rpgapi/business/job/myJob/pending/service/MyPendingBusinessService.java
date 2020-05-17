@@ -1,18 +1,18 @@
 package com.gogoyang.rpgapi.business.job.myJob.pending.service;
 
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,14 +22,17 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     private final IJobService iJobService;
     private final IUserService iUserService;
     private final IJobApplyService iJobApplyService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     @Autowired
     public MyPendingBusinessService(IJobService iJobService,
                                     IUserService iUserService,
-                                    IJobApplyService iJobApplyService) {
+                                    IJobApplyService iJobApplyService,
+                                    ICommonBusinessService iCommonBusinessService) {
         this.iJobService = iJobService;
         this.iUserService = iUserService;
         this.iJobApplyService = iJobApplyService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     @Override
@@ -46,7 +49,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void updateJob(Map in) throws Exception {
         /**
          * 首先检查用户
@@ -69,7 +72,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
             throw new Exception("10004");
         }
 
-        Job job = iJobService.getJobByJobId(jobId);
+        Job job = iJobService.getJobTinyByJobId(jobId);
 
         if (job == null) {
             throw new Exception("10100");
@@ -92,36 +95,39 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deletePendingJob(Map in) throws Exception {
         String token = in.get("token").toString();
-        String jobId = (String) in.get("jobId");
+        String jobId = in.get("jobId").toString();
 
         //read current user
-        UserInfo user = iUserService.getUserByToken(token);
-        if (user == null) {
-            //no user
-            throw new Exception("10004");
-        }
-        //read common
-        Job job = iJobService.getJobByJobIdTiny(jobId);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
+        //read the job
+        Job job = iJobService.getJobTinyByJobId(jobId);
         if (job == null) {
-            //no common
-            throw new Exception("10100");
+            //no such job
+            throw new Exception("30001");
         }
-        //check the common status must be PENDING
-        if (!job.getStatus().equals(JobStatus.PENDING)) {
-            if(job.getStatus().equals(JobStatus.MATCHING)){
-                ArrayList<JobApply> jobApplies=iJobApplyService.listJobApplyByNotProcesJobId(job.getJobId());
-                if(jobApplies.size()>0){
-                    throw new Exception("10104");
-                }
-            }else {
-                throw new Exception("10104");
-            }
+        //check the job status must be PENDING or MATCHING
+        if (!job.getStatus().equals(JobStatus.PENDING) &&
+                !job.getStatus().equals(JobStatus.MATCHING)) {
+            throw new Exception("30005");
         }
-        //check the party a of this common must be current user
-        if (job.getPartyAId().intValue() != user.getUserId().intValue()) {
+
+        /**
+         * 检查是否有未处理的乙方申请
+         */
+        Map qIn = new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("status", LogStatus.PENDING.toString());
+        ArrayList<JobApply> jobApplies = iJobApplyService.listJobApply(qIn);
+        if (jobApplies.size() > 0) {
+            //存在未处理的用户申请，不能删除任务
+            throw new Exception("10104");
+        }
+        //check the party a of this job must be current user
+        if (!job.getPartyAId().equals(user.getUserId())) {
             throw new Exception("10105");
         }
         //delete
@@ -130,26 +136,16 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
 
     @Override
     public Map getMyPendingJob(Map in) throws Exception {
-        String token=in.get("token").toString();
-        Integer jobId=(Integer)in.get("jobId");
+        String token = in.get("token").toString();
+        String jobId =  in.get("jobId").toString();
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Job job=iJobService.getJobByJobId(jobId);
-
-        User userA=iUserService.getUserByUserId(job.getPartyAId());
-        if(userA.getRealName()!=null) {
-            job.setPartyAName(userA.getRealName());
-        }else{
-            job.setPartyAName(userA.getEmail());
-        }
+        Job job = iJobService.getJobDetailByJobId(jobId);
 
         job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
 
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("job", job);
         return out;
     }

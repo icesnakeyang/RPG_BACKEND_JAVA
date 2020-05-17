@@ -42,8 +42,8 @@ public class HonorService implements IHonorService {
      * @return
      */
     @Override
-    public Integer sumHonor(Map qIn) {
-        Integer sum=honorDao.sumHonor(qIn);
+    public Double sumHonor(Map qIn) {
+        Double sum=honorDao.sumHonor(qIn);
         return sum;
     }
 }

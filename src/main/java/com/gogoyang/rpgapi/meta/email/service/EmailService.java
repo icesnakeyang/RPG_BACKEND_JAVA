@@ -4,8 +4,8 @@ import com.gogoyang.rpgapi.meta.email.dao.EmailDao;
 import com.gogoyang.rpgapi.meta.email.entity.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +44,7 @@ public class EmailService implements IEmailService{
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void updateEmail(Email email) throws Exception {
         if(email.getEmailId()==null){
             throw new Exception("10114");

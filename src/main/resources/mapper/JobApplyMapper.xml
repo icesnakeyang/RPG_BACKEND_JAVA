@@ -12,6 +12,8 @@
         <result property="processTime" column="process_time"/>
         <result property="processRemark" column="process_remark"/>
         <result property="processResultReadTime" column="process_result_read_time"/>
+        <result property="applyUserName" column="apply_user_name"/>
+        <result property="processUserName" column="process_user_name"/>
     </resultMap>
 
     <!--创建一个任务申请-->

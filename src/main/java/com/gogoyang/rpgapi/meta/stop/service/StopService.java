@@ -3,13 +3,9 @@ package com.gogoyang.rpgapi.meta.stop.service;
 import com.gogoyang.rpgapi.meta.stop.dao.JobStopDao;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +20,7 @@ public class StopService implements IJobStopService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void insertJobStop(JobStop jobStop) throws Exception {
         jobStopDao.createJobStop(jobStop);
     }

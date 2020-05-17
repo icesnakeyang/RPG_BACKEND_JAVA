@@ -1,7 +1,8 @@
 package com.gogoyang.rpgapi.controller.user;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.business.user.IUserBusinessService;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ public class UserController {
 
     /**
      * 登录，loginName可以是email，或者phone
+     *
      * @param request
      * @return
      */
@@ -75,15 +77,91 @@ public class UserController {
         Map in = new HashMap();
         Map logMap = new HashMap();
         Map memoMap = new HashMap();
+
         try {
-            in.put("phone", request.getPhone());
+            /**
+             * check user input
+             * 校验用户输入
+             */
+            String phone = request.getPhone();
+            if (phone == null || phone.equals("")) {
+                response.setErrorCode(30007);
+                return response;
+            }
+
+            String realName = request.getRealName();
+            if (realName == null || realName.equals("")) {
+                response.setErrorCode(30008);
+                return response;
+            }
+
+            in.put("phone", phone);
             in.put("code", request.getCode());
             in.put("password", request.getPassword());
-            in.put("realName", request.getRealName());
+            in.put("realName", realName);
             logMap.put("GogoActType", GogoActType.REGISTER);
             memoMap.put("phone", request.getPhone());
             memoMap.put("realName", request.getRealName());
             Map out = iUserBusinessService.registerByPhone(in);
+            logMap.put("result", GogoStatus.SUCCESS);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * email注册
+     *
+     * @param request
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/registerByEmail")
+    public Response registerByEmail(@RequestBody UserRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+
+        try {
+            /**
+             * check user input
+             * 校验用户输入
+             */
+            String email = request.getEmail();
+            if (email == null) {
+                response.setErrorCode(30009);
+                return response;
+            }
+
+            String realName = request.getRealName();
+            if (realName == null) {
+                response.setErrorCode(30008);
+                return response;
+            }
+
+            in.put("email", email);
+            in.put("password", request.getPassword());
+            in.put("realName", realName);
+            logMap.put("GogoActType", GogoActType.REGISTER);
+            memoMap.put("email", email);
+            memoMap.put("realName", realName);
+            Map out = iUserBusinessService.registerByEmail(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
@@ -102,7 +180,6 @@ public class UserController {
         }
         return response;
     }
-
 
 
     @ResponseBody

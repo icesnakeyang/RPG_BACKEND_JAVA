@@ -2,9 +2,6 @@ package com.gogoyang.rpgapi.meta.stop.dao;
 
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -38,11 +35,6 @@ public interface JobStopDao{
      * @return
      */
     ArrayList<JobStop> listJobStop(Map qIn);
-
-    /**
-     * 获取一个任务的所有终止申请
-     */
-    Page<JobStop> findAllByJobId(Integer jobId, Pageable pageable);
 
     /**
      * 获取一个任务一个用户未读的终止申请

@@ -5,7 +5,8 @@ import com.gogoyang.rpgapi.meta.realname.entity.RealName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class RealNameService implements IRealNameService{
@@ -17,26 +18,23 @@ public class RealNameService implements IRealNameService{
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
     public void insert(RealName realName) throws Exception {
-        if(realName.getRealNameId()!=null){
+        if(realName.getRealName()!=null){
             throw new Exception("10047");
         }
-        realNameDao.save(realName);
+        realNameDao.createRealName(realName);
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
     public void update(RealName realName) throws Exception {
-        if(realName.getRealNameId()==null){
-            throw new Exception("10047");
-        }
-        realNameDao.save(realName);
+        realNameDao.updateRealName(realName);
     }
 
     @Override
-    public RealName getRealNameByUserId(Integer userId) throws Exception {
-        RealName realName=realNameDao.findByUserId(userId);
+    public RealName getRealNameByUserId(String userId) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        RealName realName=realNameDao.getRealName(qIn);
         return realName;
     }
 }

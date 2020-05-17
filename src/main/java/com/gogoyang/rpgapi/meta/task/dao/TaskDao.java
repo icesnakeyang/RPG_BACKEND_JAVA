@@ -1,21 +1,63 @@
 package com.gogoyang.rpgapi.meta.task.dao;
 
 import com.gogoyang.rpgapi.meta.task.entity.Task;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
+import java.util.Map;
 
-public interface TaskDao extends JpaRepository<Task, Integer> {
-    Task findByTaskId(Integer taskId);
+@Mapper
+public interface TaskDao {
 
-//    @Query(value = "select ii.image_id from issues_images ii where issue_id = ?1", nativeQuery = true) // nativeQuery = true表示使用sql自己的方言查询，想查什么查什么， 按照字段数据类型返回就行了
-//    List<BigInteger> findByIssueId(String issueId);
-    Page<Task> findAllByCreatedUserIdAndPidIsNull(Integer userId, Pageable pageable);
+    void createTask(Task task);
+    void createTaskDetail(Task task);
 
-    void deleteByTaskId(Integer taskId);
+    /**
+     * 读取一个任务的简要信息
+     * @param taskId
+     * @return
+     */
+    Task getTaskTiny(String taskId);
 
-    ArrayList findAllByPid(Integer pid);
+    /**
+     * 读取一个任务详情
+     * @param taskId
+     */
+    Task getTaskDetail(String taskId);
 
+    /**
+     * 批量读取任务
+     * @param qIn
+     * titleKey:任务标题关键字模糊查询
+     * pid：父任务jobId
+     * createdUserId:任务创建人id
+     * offset
+     * size
+     * @return
+     */
+    ArrayList<Task> listTask(Map qIn);
+
+    /**
+     * 根据taskId修改task
+     * @param task
+     */
+    void updateTaskTiny(Task task);
+
+    /**
+     * 修改一个任务的详情
+     * @param task
+     */
+    void updateTaskDetail(Task task);
+
+    /**
+     * 删除task
+     * @param taskId
+     */
+    void deleteTaskTiny(String taskId);
+
+    /**
+     * 删除task_detail
+     * @param taskId
+     */
+    void deleteTaskDetail(String taskId);
 }

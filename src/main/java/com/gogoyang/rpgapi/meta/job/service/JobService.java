@@ -3,10 +3,9 @@ package com.gogoyang.rpgapi.meta.job.service;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.dao.JobDao;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,22 +27,12 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void insertJob(Job job) throws Exception {
-        //确保jobId为null，否则为修改
-        if (job.getJobId() != null) {
-            throw new Exception("10032");
-        }
-        if (job.getTitle() == null) {
-            throw new Exception("10032");
-        }
         jobDao.createJob(job);
 
         //保存jobDetail表
-        JobDetail jobDetail = new JobDetail();
-        jobDetail.setJobId(job.getJobId());
-        jobDetail.setDetail(job.getDetail());
-        jobDao.createJobDetail(jobDetail);
+        jobDao.createJobDetail(job);
     }
 
     /**
@@ -58,7 +47,7 @@ class JobService implements IJobService {
         Map qIn = new HashMap();
         qIn.put("jobId", jobId);
         Job job = jobDao.getJob(qIn);
-        JobDetail jobDetail = jobDao.getJobDetail(jobId);
+        Job jobDetail = jobDao.getJobDetail(jobId);
         job.setDetail(jobDetail.getDetail());
         return job;
     }
@@ -121,17 +110,11 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void updateJob(Job job) throws Exception {
-        if (job.getJobId() == null) {
-            throw new Exception("10010");
-        }
         jobDao.updateJobTiny(job);
         if (job.getDetail() != null) {
-            JobDetail jobDetail = new JobDetail();
-            jobDetail.setJobId(job.getJobId());
-            jobDetail.setDetail(job.getDetail());
-            jobDao.updateJobDetail(jobDetail);
+            jobDao.updateJobDetail(job);
         }
     }
 
@@ -168,7 +151,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public ArrayList<Job> listPartyBJob(Integer userId, JobStatus jobStatus,
+    public ArrayList<Job> listPartyBJob(String userId, JobStatus jobStatus,
                                    Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         qIn.put("partyBId",userId);
@@ -197,7 +180,7 @@ class JobService implements IJobService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteJob(String jobId) throws Exception {
         jobDao.deleteJob(jobId);
         jobDao.deleteJobDetail(jobId);

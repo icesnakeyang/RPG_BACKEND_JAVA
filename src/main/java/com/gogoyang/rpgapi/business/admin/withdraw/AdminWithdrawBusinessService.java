@@ -1,10 +1,8 @@
 package com.gogoyang.rpgapi.business.admin.withdraw;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
-import com.gogoyang.rpgapi.meta.account.entity.WithdrawLedger;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.meta.account.service.IWithdrawLedgerService;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

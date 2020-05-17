@@ -1,7 +1,7 @@
 package com.gogoyang.rpgapi.business.job.myJob.complete.service;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -14,11 +14,9 @@ import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,23 +50,21 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void createJobComplete(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId =  in.get("jobId").toString();
         String content = in.get("content").toString();
 
         //job必须是progress状态
-        Job job = iJobService.getJobByJobIdTiny(jobId);
-        if (job.getStatus() != JobStatus.PROGRESS) {
+        Job job = iJobService.getJobTinyByJobId(jobId);
+        if (!job.getStatus().equals(JobStatus.PROGRESS)) {
             throw new Exception("10130");
         }
 
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
-        if (user.getUserId() != job.getPartyBId()) {
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
+        if (!user.getUserId().equals(job.getPartyBId())) {
             throw new Exception("10131");
         }
 
@@ -97,11 +93,16 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    public Page<JobComplete> listMyComplete(Map in) throws Exception {
-        Integer jobId = (Integer) in.get("jobId");
+    public ArrayList<JobComplete> listMyComplete(Map in) throws Exception {
+        String token=in.get("token").toString();
+
+        String jobId =  in.get("jobId").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
-        Page<JobComplete> completes = iJobCompleteService.loadJobCompleteByJobId(jobId, pageIndex, pageSize);
+
+        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+
+        ArrayList<JobComplete> completes = iJobCompleteService.loadJobCompleteByJobId(jobId, pageIndex, pageSize);
         return completes;
     }
 
@@ -113,7 +114,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void setCompleteReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
         Integer jobId = (Integer) in.get("jobId");
@@ -144,7 +145,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void rejectComplete(Map in) throws Exception {
         String token = in.get("token").toString();
         String jobId =  in.get("jobId").toString();
@@ -179,7 +180,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void acceptComplete(Map in) throws Exception {
         /**
          * 1、查询未处理的Complete，修改结果为Accept
@@ -241,11 +242,13 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         honor.setCreatedUserId(user.getUserId());
         honor.setJobId(job.getJobId());
         honor.setPoint(job.getPrice());
-        honor.setType(HonorType.JOB_ACCEPTED);
+        honor.setType(HonorType.JOB_ACCEPTED.toString());
         honor.setUserId(job.getPartyAId());
-        iHonorService.insertHonor(honor);
+        iHonorService.createHonor(honor);
         //刷新甲方honor
-        User userA = iUserService.getUserByUserId(job.getPartyAId());
+        UserInfo userA = iUserService.getUserByUserId(job.getPartyAId());
+        UserInfo userAEdit=new UserInfo();
+        userAEdit.setUserId(userA.getUserId());
         Double ha = 0.0;
         if (userA != null) {
             if (userA.getHonor() != null) {
@@ -253,21 +256,23 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             }
         }
         ha += job.getPrice();
-        userA.setHonor(ha);
-        userA.setHonorIn(ha);
-        iUserService.update(userA);
+        userAEdit.setHonor(ha);
+        userAEdit.setHonorIn(ha);
+        iUserService.updateUserInfo(userAEdit);
 
         //给乙方增加honor
         honor = new Honor();
         honor.setUserId(job.getPartyBId());
         honor.setPoint(job.getPrice());
-        honor.setType(HonorType.JOB_ACCEPTED);
+        honor.setType(HonorType.JOB_ACCEPTED.toString());
         honor.setJobId(job.getJobId());
         honor.setCreatedTime(new Date());
         honor.setUserId(user.getUserId());
-        iHonorService.insertHonor(honor);
+        iHonorService.createHonor(honor);
         //刷新乙方Honor
-        User userB = iUserService.getUserByUserId(job.getPartyBId());
+        UserInfo userB = iUserService.getUserByUserId(job.getPartyBId());
+        UserInfo userBEdit=new UserInfo();
+        userBEdit.setUserId(userB.getUserId());
         Double hb = 0.0;
         if (userB.getHonor() != null) {
             if (userB.getHonor() != null) {
@@ -275,9 +280,9 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             }
         }
         hb += job.getPrice();
-        userB.setHonor(hb);
-        userB.setHonorIn(hb);
-        iUserService.update(userB);
+        userBEdit.setHonor(hb);
+        userBEdit.setHonorIn(hb);
+        iUserService.updateUserInfo(userBEdit);
     }
 
     /**
@@ -293,18 +298,12 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
 
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Page<Job> jobs = iJobService.listMyPartyAAcceptJob(user.getUserId(), pageIndex, pageSize);
+        ArrayList<Job> jobs = iJobService.listMyPartyAAcceptJob(user.getUserId(), pageIndex, pageSize);
 
         ArrayList list = new ArrayList();
-        for (int i = 0; i < jobs.getContent().size(); i++) {
-            Map map = fillAcceptJobMap(jobs.getContent().get(i));
-            list.add(map);
-        }
+
         Map out = new HashMap();
         out.put("jobs", list);
         return out;
@@ -337,7 +336,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void setAcceptReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
         String completeId=in.get("completeId").toString();

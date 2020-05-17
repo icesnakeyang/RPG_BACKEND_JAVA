@@ -7,5 +7,6 @@ public enum LogStatus {
     OVERDUE,
     MATCHED,
     WAITING,
-    PENDING
+    PENDING,
+    SUBMITTED
 }

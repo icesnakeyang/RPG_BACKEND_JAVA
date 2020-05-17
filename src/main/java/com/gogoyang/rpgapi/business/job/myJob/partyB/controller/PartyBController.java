@@ -7,10 +7,10 @@ import com.gogoyang.rpgapi.meta.job.entity.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +35,7 @@ public class PartyBController {
             String token = httpServletRequest.getHeader("token");
             Map in = new HashMap();
             in.put("token", token);
-            Page<Job> jobPage = iPartyBBusinessService.listMyPartyBJob(in);
+            ArrayList<Job> jobPage = iPartyBBusinessService.listMyPartyBJob(in);
             response.setData(jobPage);
         } catch (Exception ex) {
             try {

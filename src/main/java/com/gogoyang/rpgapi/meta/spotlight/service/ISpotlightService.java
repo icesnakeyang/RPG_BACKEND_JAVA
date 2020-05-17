@@ -16,6 +16,17 @@ public interface ISpotlightService {
     void insertSpotlight(Spotlight spot) throws Exception;
 
     /**
+     * getSpotlight
+     * @param qIn
+     * spotlightId
+     * jobId
+     * status
+     * @return
+     * @throws Exception
+     */
+    Spotlight getSpotlight(Map qIn) throws Exception;
+
+    /**
      * 批量查询申诉事件
      * @param qIn
      * jobId

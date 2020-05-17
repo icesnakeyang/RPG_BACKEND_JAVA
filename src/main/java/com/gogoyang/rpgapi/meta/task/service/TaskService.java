@@ -1,33 +1,20 @@
 package com.gogoyang.rpgapi.meta.task.service;
 
 import com.gogoyang.rpgapi.meta.task.dao.TaskDao;
-import com.gogoyang.rpgapi.meta.task.dao.TaskDetailDao;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
-import com.gogoyang.rpgapi.meta.task.entity.TaskDetail;
-import com.gogoyang.rpgapi.meta.user.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class TaskService implements ITaskService {
     private final TaskDao taskDao;
-    private final TaskDetailDao taskDetailDao;
-    private final IUserService iUserService;
 
-    @Autowired
-    public TaskService(TaskDao taskDao,
-                       TaskDetailDao taskDetailDao,
-                       IUserService iUserService) {
+    public TaskService(TaskDao taskDao) {
         this.taskDao = taskDao;
-        this.taskDetailDao = taskDetailDao;
-        this.iUserService = iUserService;
     }
 
     /**
@@ -37,20 +24,10 @@ public class TaskService implements ITaskService {
      * @return
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void insertTask(Task task) throws Exception {
-        /**
-         * 首先创建一个task
-         * 然后创建一个task_detail
-         */
-        if (task.getTaskId() != null) {
-            throw new Exception("10030");
-        }
-        task = (taskDao.save(task));
-        TaskDetail taskDetail = new TaskDetail();
-        taskDetail.setTaskId(task.getTaskId());
-        taskDetail.setDetail(task.getDetail());
-        taskDetailDao.save(taskDetail);
+        taskDao.createTask(task);
+        taskDao.createTaskDetail(task);
     }
 
     /**
@@ -62,19 +39,14 @@ public class TaskService implements ITaskService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void updateTask(Task task) throws Exception {
         if (task.getTaskId() == null) {
             throw new Exception("10093");
         }
         //先保存Task
-        taskDao.save(task);
-
-        //再保存TaskDetail
-        TaskDetail taskDetail = new TaskDetail();
-        taskDetail.setTaskId(task.getTaskId());
-        taskDetail.setDetail(task.getDetail());
-        taskDetailDao.save(taskDetail);
+        taskDao.updateTaskTiny(task);
+        taskDao.updateTaskDetail(task);
     }
 
     /**
@@ -84,8 +56,8 @@ public class TaskService implements ITaskService {
      * @throws Exception
      */
     @Override
-    public Task getTaskTinyByTaskId(Integer taskId) throws Exception {
-        Task task=taskDao.findByTaskId(taskId);
+    public Task getTaskTinyByTaskId(String taskId) throws Exception {
+        Task task=taskDao.getTaskTiny(taskId);
         return task;
     }
 
@@ -96,25 +68,27 @@ public class TaskService implements ITaskService {
      * @throws Exception
      */
     @Override
-    public Task getTaskDetailByTaskId(Integer taskId) throws Exception {
-        Task task = taskDao.findByTaskId(taskId);
-        TaskDetail taskDetail = taskDetailDao.findByTaskId(taskId);
-        task.setDetail(taskDetail.getDetail());
+    public Task getTaskDetailByTaskId(String taskId) throws Exception {
+        Task task = taskDao.getTaskDetail(taskId);
         return task;
     }
 
     /**
-     * 读取用户的所有task记录。不包括任务详情。
+     * 读取用户的所有父task记录。不包括任务详情， 不包括子任务。
      *
      * @param userId
      * @return
      * @throws Exception
      */
     @Override
-    public Page<Task> listTaskByUserId(Integer userId, Integer pageIndex, Integer pageSize) throws Exception {
-        Sort sort = new Sort(Sort.Direction.DESC, "taskId");
-        Pageable pageable = new PageRequest(pageIndex, pageSize, sort);
-        Page<Task> tasks = taskDao.findAllByCreatedUserIdAndPidIsNull(userId, pageable);
+    public ArrayList<Task> listTaskByUserId(String userId, Integer pageIndex, Integer pageSize) throws Exception {
+        Map qIn=new HashMap();
+        Integer offset=(pageIndex-1)*pageSize;
+        qIn.put("createdUserId", userId);
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<Task> tasks=taskDao.listTask(qIn);
+
         return tasks;
     }
 
@@ -126,15 +100,23 @@ public class TaskService implements ITaskService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void deleteTask(Integer taskId) throws Exception {
-        taskDao.delete(taskId);
-        taskDetailDao.deleteByTaskId(taskId);
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteTask(String taskId) throws Exception {
+        taskDao.deleteTaskTiny(taskId);
+        taskDao.deleteTaskDetail(taskId);
     }
 
+    /**
+     * 根据父任务taskId查询所有下级子任务
+     * @param pid
+     * @return
+     * @throws Exception
+     */
     @Override
-    public ArrayList<Task> listTaskByPid(Integer pid) throws Exception {
-        ArrayList<Task> tasks=taskDao.findAllByPid(pid);
+    public ArrayList<Task> listTaskByPid(String pid) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("pid", pid);
+        ArrayList<Task> tasks=taskDao.listTask(qIn);
         return tasks;
     }
 

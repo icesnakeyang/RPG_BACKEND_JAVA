@@ -1,12 +1,18 @@
 package com.gogoyang.rpgapi.meta.apply.service;
 
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
-import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.Map;
 
 public interface IJobApplyService {
+    /**
+     * 读取一个任务申请信息
+     * @param qIn
+     * jobApplyId
+     * @return
+     * @throws Exception
+     */
     JobApply getJobApply(Map qIn) throws Exception;
 
     void insertJobApply(JobApply jobApply) throws Exception;
@@ -23,10 +29,7 @@ public interface IJobApplyService {
      * size
      * @return
      */
-    ArrayList<JobApply> listJobApply(Map qIn);
-
-
-    boolean isApplied(Integer userId, Integer jobId) throws Exception;
+    ArrayList<JobApply> listJobApply(Map qIn) throws Exception;
 
     Integer countApplyUsers(String jobId) throws Exception;
 
@@ -35,7 +38,4 @@ public interface IJobApplyService {
     void matchJobApply(JobApply jobApply) throws Exception;
 
     void updateJobApply(JobApply jobApply) throws Exception;
-
-
-    ArrayList<JobApply> listPartyBNewJob(Integer userId) throws Exception;
 }

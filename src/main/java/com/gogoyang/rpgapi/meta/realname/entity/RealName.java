@@ -1,90 +1,17 @@
 package com.gogoyang.rpgapi.meta.realname.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import lombok.Data;
+
 import java.util.Date;
 
-@Entity
+@Data
 public class RealName {
-    @Id
-    @GeneratedValue
-    @Column(name = "real_name_id")
-    private Integer realNameId;
-
-    @Column(name = "user_id")
-    private Integer userId;
-
-    @Column(name = "real_name")
+    private Integer ids;
+    private String userId;
     private String realName;
-
-    @Column(name = "created_time")
     private Date createdTime;
-
-    @Column(name = "is_verified")
-    private Boolean isVerified;
-
-    @Column(name = "idcard_no")
+    private String status;
     private String idcardNo;
-
-    @Column(name = "sex")
-    private Boolean sex;
-    //////////////////////////////////////////////////////////////////////////////////////////
-
-    public Integer getRealNameId() {
-        return realNameId;
-    }
-
-    public void setRealNameId(Integer realNameId) {
-        this.realNameId = realNameId;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    public Boolean getVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(Boolean verified) {
-        isVerified = verified;
-    }
-
-    public String getIdcardNo() {
-        return idcardNo;
-    }
-
-    public void setIdcardNo(String idcardNo) {
-        this.idcardNo = idcardNo;
-    }
-
-    public Boolean getSex() {
-        return sex;
-    }
-
-    public void setSex(Boolean sex) {
-        this.sex = sex;
-    }
+    private String sex;
+    private String verify;
 }

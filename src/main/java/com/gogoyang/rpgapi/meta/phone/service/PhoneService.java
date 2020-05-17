@@ -4,8 +4,8 @@ import com.gogoyang.rpgapi.meta.phone.dao.PhoneDao;
 import com.gogoyang.rpgapi.meta.phone.entity.Phone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class PhoneService implements IPhoneService{
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void insert(Phone phone) throws Exception {
         if(phone.getPhoneId()!=null){
             throw new Exception("10115");

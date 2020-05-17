@@ -1,8 +1,8 @@
 package com.gogoyang.rpgapi.business.task.service;
 
 import com.gogoyang.rpgapi.meta.task.entity.Task;
-import org.springframework.data.domain.Page;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface ITaskBusinessService {
@@ -12,7 +12,7 @@ public interface ITaskBusinessService {
     void deleteTask(Map in) throws Exception;
     Map getTaskDetailByTaskId(Map in) throws Exception;
     Map getTaskTinyByTaskId(Map in) throws Exception;
-    Page<Task> listTaskByUserId(Map in) throws Exception;
+    Map listTaskByUserId(Map in) throws Exception;
     Map totalSubTask(Map in) throws Exception;
     Map listTaskByPid(Map in) throws Exception;
     Map listTaskBreadcrumb(Map in) throws Exception;

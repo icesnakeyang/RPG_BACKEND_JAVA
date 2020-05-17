@@ -1,17 +1,22 @@
 package com.gogoyang.rpgapi.business.user.profile.service;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GenderType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
+import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.email.entity.Email;
 import com.gogoyang.rpgapi.meta.email.service.IEmailService;
 import com.gogoyang.rpgapi.meta.phone.entity.Phone;
 import com.gogoyang.rpgapi.meta.phone.service.IPhoneService;
 import com.gogoyang.rpgapi.meta.realname.entity.RealName;
 import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,65 +28,25 @@ public class ProfileBusinessService implements IProfileBusinessService {
     private final IEmailService iEmailService;
     private final IPhoneService iPhoneService;
     private final IRealNameService iRealNameService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     @Autowired
     public ProfileBusinessService(IEmailService iEmailService,
                                   IUserService iUserService,
                                   IPhoneService iPhoneService,
-                                  IRealNameService iRealNameService) {
+                                  IRealNameService iRealNameService,
+                                  ICommonBusinessService iCommonBusinessService) {
         this.iEmailService = iEmailService;
         this.iUserService = iUserService;
         this.iPhoneService = iPhoneService;
         this.iRealNameService = iRealNameService;
-    }
-
-    /**
-     * 同时保存用户的realname， email， phone等信息，并设置为默认。
-     *
-     * @param in
-     * @throws Exception
-     */
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void saveUserContactInfo(Map in) throws Exception {
-        /**
-         * 用户在申请任务时会提交一个联系信息，包括email, phone, realname
-         * 分别保存并记录日志
-         */
-        String strEmail = null;
-        if (in.get("email") != null) {
-            strEmail = in.get("email").toString();
-        }
-        String strPhone = null;
-        if (in.get("phone") != null) {
-            strPhone = in.get("phone").toString();
-        }
-        String strRealName = null;
-        if (in.get("realName") != null) {
-            strRealName = in.get("realName").toString();
-        }
-        String token = in.get("token").toString();
-
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
-
-        if (strEmail != null && !strEmail.equals("")) {
-            saveEmail(strEmail, user);
-        }
-        if (strPhone != null && !strPhone.equals("")) {
-            savePhone(strPhone, user);
-        }
-        if (strRealName != null && !strRealName.equals("")) {
-            saveRealName(strRealName, user);
-        }
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     @Override
     public Map getUserInfo(Map in) throws Exception {
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
+        UserInfo user = iUserService.getUserByToken(token);
         Map out = new HashMap();
         out.put("user", user);
         return out;
@@ -90,10 +55,8 @@ public class ProfileBusinessService implements IProfileBusinessService {
     @Override
     public Map listPhoneOfUser(Map in) throws Exception {
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
         ArrayList<Phone> phones = iPhoneService.listPhoneByUserId(user.getUserId());
 
         Map out = new HashMap();
@@ -104,10 +67,7 @@ public class ProfileBusinessService implements IProfileBusinessService {
     @Override
     public Map listEmailOfUser(Map in) throws Exception {
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         ArrayList<Email> emails=iEmailService.listEmailByUserId(user.getUserId());
 
@@ -120,10 +80,7 @@ public class ProfileBusinessService implements IProfileBusinessService {
     public Map getUserProfile(Map in) throws Exception {
         String token=in.get("token").toString();
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
-        }
+        UserInfo user=iCommonBusinessService.getUserByToken(token);
 
         RealName realName=iRealNameService.getRealNameByUserId(user.getUserId());
 
@@ -133,17 +90,14 @@ public class ProfileBusinessService implements IProfileBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void saveRealName(Map in) throws Exception {
         String token=in.get("token").toString();
         String realname=in.get("realname").toString();
         String idcardNo=(String)in.get("idcardNo");
-        Boolean sex=(Boolean)in.get("sex");
+        String sex=in.get("sex").toString();
 
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
-        }
+        UserInfo user=iCommonBusinessService.getUserByToken(token);
 
         RealName realName=iRealNameService.getRealNameByUserId(user.getUserId());
         if(realName==null){
@@ -153,187 +107,119 @@ public class ProfileBusinessService implements IProfileBusinessService {
             realName.setUserId(user.getUserId());
             realName.setRealName(realname);
             realName.setIdcardNo(idcardNo);
-            realName.setSex(sex);
+            if(sex.equals(GenderType.Male.toString())){
+                realName.setSex(GenderType.Male.toString());
+            }else{
+                if(sex.equals(GenderType.Female.toString())){
+                    realName.setSex(GenderType.Female.toString());
+                }
+            }
+            //新增时的状态只能是等待审核
+            realName.setStatus(LogStatus.PENDING.toString());
             iRealNameService.insert(realName);
         }else{
-            //update
+            /**
+             * update
+             * 已经认证的实名信息不能修改，所以只有PENDING状态的可以修改
+             */
+            if(!realName.getStatus().equals(LogStatus.PENDING.toString())){
+                throw new Exception("30004");
+            }
             realName.setRealName(realname);
             realName.setIdcardNo(idcardNo);
-            realName.setSex(sex);
+            if(sex.equals(GenderType.Male.toString())) {
+                realName.setSex(sex);
+            }else{
+                if(sex.equals(GenderType.Female.toString())){
+                    realName.setSex(sex);
+                }
+            }
             iRealNameService.update(realName);
         }
 
-        //update user
-        user.setRealName(realname);
-        iUserService.update(user);
+        /**
+         * update user
+         * 修改userInfo表的real_name
+         */
+        UserInfo userInfoEdit=new UserInfo();
+        userInfoEdit.setUserId(user.getUserId());
+        userInfoEdit.setRealName(realname);
+        iUserService.updateUserInfo(userInfoEdit);
     }
 
     /**
-     * save email
-     * will handle set this email to default
-     * this function will not update the common
+     * 用户申请任务时填写的联系信息
+     * @param in
+     * @throws Exception
      */
-    @Transactional(rollbackOn = Exception.class)
-    protected void saveEmail(String strEmail, User user) throws Exception {
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void saveUserContactInfo(Map in) throws Exception {
         /**
-         * 保存Email
-         *  * 检查数据库里是否已经有该email。
-         *  *      有：检查是否被当前用户使用。
-         *  *          是：是否默认
-         *  *              是：do nothing
-         *  *              否：default=true，把其他的default=false
-         *  *          否：返回错误，10044
-         *  *       否：查询当前用户的所有Email
-         *  *          是否有其他email
-         *  *              有：全部default=false
-         *  *       新增email
-         *  *       把default=true
+         * 通常来说，用户注册时不会去填写太多信息
+         * 在中国市场来说，用户一般选择手机号码注册，且注册时已经进行了短信验证。这个在中国市场已经形成了大家比较能接受的流程。
+         * 用户查看到可以承接的任务，点击申请后，会弹出一个页面，让用户填写申请说明，以及真实姓名，电话和email
+         * 此时的逻辑是，如果用户已经进行实名认证，则此时姓名是不能更改的。但没有认证时，可随意更改。
+         * 同样，电话和email无论是否认证，都可以更改，因为用户可能希望留下另一个联系电话和email
+         * 此时，只要用户填写的email或者电话和注册时不一致，则重新创建一个email或电话记录，绑定到该用户。
+         * 同时，jobApply申请表里需要增加phone，或者email的记录，以说明该用户使用哪个电话或email来进行该任务的联系
+         *
          */
-        //读取数据库里是否有该邮箱
-        Email email = iEmailService.getEmailByEmail(strEmail);
-        if (email != null) {
-            //数据库里有该邮箱
-            if (email.getUserId() == user.getUserId()) {
-                //是当前用户
-                if (email.getDefault()) {
-                    //是默认邮箱，无需处理
-                    return;
-                } else {
-                    //不是默认邮箱，读取该用户下所有邮箱
-                    ArrayList<Email> myEmails = iEmailService.listEmailByUserId(user.getUserId());
-                    for (int i = 0; i < myEmails.size(); i++) {
-                        if (!myEmails.get(i).getEmail().equals(strEmail)) {
-                            //如果原邮箱不等于当前邮箱，设置为非默认
-                            myEmails.get(i).setDefault(false);
-                            iEmailService.updateEmail(myEmails.get(i));
-                        } else {
-                            //是当前邮箱，设置为默认
-                            myEmails.get(i).setDefault(true);
-                            iEmailService.updateEmail(myEmails.get(i));
+        String token=in.get("token").toString();
+        String phoneStr=(String)in.get("phone");
+        String emailStr=(String)in.get("email");
+        String realNameStr=(String)in.get("realName");
 
-                            //修改user的默认email
-                            if (!user.getEmail().equals(myEmails.get(i).getEmail())) {
-                                user.setEmail(myEmails.get(i).getEmail());
-                                iUserService.update(user);
-                            }
-                        }
-                    }
-                    return;
+        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+
+        if(phoneStr!=null){
+            Phone phone=iPhoneService.getPhoneByPhone(phoneStr);
+            if(phone==null){
+                phone=new Phone();
+                phone.setPhoneId(GogoTools.UUID());
+                phone.setPhone(phoneStr);
+                phone.setCreatedTime(new Date());
+                phone.setCreatedUserId(userInfo.getUserId());
+                phone.setUserId(userInfo.getUserId());
+                iPhoneService.insert(phone);
+            }
+        }
+
+        if(emailStr!=null){
+            Email email=iEmailService.getEmailByEmail(emailStr);
+            if(emailStr==null){
+                email=new Email();
+                email.setEmailId(GogoTools.UUID());
+                email.setEmail(emailStr);
+                email.setUserId(userInfo.getUserId());
+                email.setCreatedTime(new Date());
+                email.setCreatedUserId(userInfo.getUserId());
+                iEmailService.insert(email);
+            }
+        }
+
+        if(realNameStr!=null){
+            RealName realName=iRealNameService.getRealNameByUserId(userInfo.getUserId());
+            if(realName==null){
+                //当前用户没有实名，先创建一个再说
+                realName=new RealName();
+                realName.setRealName(realNameStr);
+                realName.setUserId(userInfo.getUserId());
+                realName.setVerify(LogStatus.PENDING.toString());
+                iRealNameService.insert(realName);
+            }else{
+                //有实名，检查是否已经验证
+                if(realName.getVerify().equals(GogoStatus.VERIFIED.toString())){
+                    //已认证，不能修改
+                    throw new Exception("30010");
+                }else{
+                    //修改实名
+                    RealName realNameEdit=new RealName();
+                    realNameEdit.setUserId(userInfo.getUserId());
+                    realNameEdit.setRealName(realNameStr);
+                    iRealNameService.update(realNameEdit);
                 }
             }
-            //不是当前用户，即该邮箱被其他用户使用了，报错
-            throw new Exception("10044");
-        }
-
-        //新的邮箱，先读取当前用户下的邮箱，设置默认为false，然后新增该邮箱，设置默认为true
-        ArrayList<Email> myEmails = iEmailService.listEmailByUserId(user.getUserId());
-        for (int i = 0; i < myEmails.size(); i++) {
-            if (!myEmails.get(i).getEmail().equals(strEmail)) {
-                myEmails.get(i).setDefault(false);
-                iEmailService.updateEmail(myEmails.get(i));
-            }
-        }
-        email = new Email();
-        email.setEmail(strEmail);
-        email.setDefault(true);
-        email.setCreatedTime(new Date());
-        email.setUserId(user.getUserId());
-        email.setCreatedUserId(user.getUserId());
-        iEmailService.insert(email);
-        user.setEmail(email.getEmail());
-        iUserService.update(user);
-    }
-
-    @Transactional(rollbackOn = Exception.class)
-    protected void savePhone(String strPhone, User user) throws Exception {
-        /**
-         * 保存Phone
-         *  * 检查数据库里是否已经有该phone
-         *  *      有：检查是否被当前用户使用。
-         *  *          是：是否默认
-         *  *              是：do nothing
-         *  *              否：default=true，把其他的default=false
-         *  *          否：返回错误，10044
-         *  *       否：查询当前用户的所有phone
-         *  *          是否有其他phone
-         *  *              有：全部default=false
-         *  *       新增phone
-         *  *       把default=true
-         */
-        Phone phone = iPhoneService.getPhoneByPhone(strPhone);
-        if (phone != null) {
-            if (phone.getUserId() == user.getUserId()) {
-                if (phone.getDefault()) {
-                    return;
-                } else {
-                    ArrayList<Phone> myPhones = iPhoneService.listPhoneByUserId(user.getUserId());
-                    for (int i = 0; i < myPhones.size(); i++) {
-                        if (!myPhones.get(i).getPhone().equals(strPhone)) {
-                            myPhones.get(i).setDefault(false);
-                            iPhoneService.updatePhone(myPhones.get(i));
-                        } else {
-                            myPhones.get(i).setDefault(true);
-                            iPhoneService.updatePhone(myPhones.get(i));
-                            user.setPhone(strPhone);
-                            iUserService.update(user);
-                        }
-                    }
-                    return;
-                }
-            }
-            throw new Exception("10046");
-        }
-
-        ArrayList<Phone> myPhones = iPhoneService.listPhoneByUserId(user.getUserId());
-        for (int i = 0; i < myPhones.size(); i++) {
-            if (!myPhones.get(i).getPhone().equals(strPhone)) {
-                myPhones.get(i).setDefault(false);
-                iPhoneService.updatePhone(myPhones.get(i));
-            }
-        }
-        phone = new Phone();
-        phone.setPhone(strPhone);
-        phone.setDefault(true);
-        phone.setCreatedTime(new Date());
-        phone.setUserId(user.getUserId());
-        phone.setCreatedUserId(user.getUserId());
-        iPhoneService.insert(phone);
-        user.setPhone(phone.getPhone());
-        iUserService.update(user);
-    }
-
-    @Transactional(rollbackOn = Exception.class)
-    protected void saveRealName(String strRealName, User user) throws Exception {
-        /**
-         * 查询用户是否已经有认证的实名，如果有就退出。
-         * 如果没有就直接修改实名
-         */
-        RealName realName = iRealNameService.getRealNameByUserId(user.getUserId());
-        if (realName == null) {
-            //如果为null，则说明用户当前没有实名，直接添加一个就行了
-            realName = new RealName();
-            realName.setCreatedTime(new Date());
-            realName.setRealName(strRealName);
-            realName.setUserId(user.getUserId());
-            iRealNameService.insert(realName);
-            user.setRealName(realName.getRealName());
-            iUserService.update(user);
-        } else {
-            //如果不为空，则检查用户实名是否认证，若未认证则则直接修改
-            if (realName.getRealName().equals(strRealName)) {
-                return;
-            }
-            if (realName.getVerified() != null) {
-                if (realName.getVerified()) {
-                    throw new Exception("10117");
-                }
-            }
-            realName.setCreatedTime(new Date());
-            realName.setRealName(strRealName);
-            realName.setUserId(user.getUserId());
-            iRealNameService.update(realName);
-            user.setRealName(strRealName);
-            iUserService.update(user);
         }
     }
 }

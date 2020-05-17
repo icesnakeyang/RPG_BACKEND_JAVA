@@ -5,13 +5,9 @@ import com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +15,10 @@ import java.util.Map;
 @Service
 public class JobCompleteService implements IJobCompleteService {
     private final JobCompleteDao jobCompleteDao;
-    private final IUserService iUserService;
 
     @Autowired
-    public JobCompleteService(JobCompleteDao jobCompleteDao,
-                              IUserService iUserService) {
+    public JobCompleteService(JobCompleteDao jobCompleteDao) {
         this.jobCompleteDao = jobCompleteDao;
-        this.iUserService = iUserService;
     }
 
     /**
@@ -35,7 +28,7 @@ public class JobCompleteService implements IJobCompleteService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void insertJobComplete(JobComplete jobComplete) throws Exception {
         if (jobComplete.getCompleteId() != null) {
             throw new Exception("10057");

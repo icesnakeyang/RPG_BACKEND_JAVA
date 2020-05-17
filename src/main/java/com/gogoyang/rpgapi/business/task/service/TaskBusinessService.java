@@ -1,20 +1,22 @@
 package com.gogoyang.rpgapi.business.task.service;
 
 import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.service.IAccountService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
-import com.gogoyang.rpgapi.meta.user.entity.User;
+import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,34 +29,36 @@ public class TaskBusinessService implements ITaskBusinessService {
     private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
     private final IJobService iJobService;
     private final IAccountService iAccountService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
                                IUserService iUserService,
                                IMyJobCommonBusinessService iMyJobCommonBusinessService,
-                               IJobService iJobService, IAccountService iAccountService) {
+                               IJobService iJobService, IAccountService iAccountService,
+                               ICommonBusinessService iCommonBusinessService) {
         this.iTaskService = iTaskService;
         this.iUserService = iUserService;
         this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
         this.iJobService = iJobService;
         this.iAccountService = iAccountService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void createTask(Map in) throws Exception {
         String token = in.get("token").toString();
-        String detail = in.get("detail").toString();
-        String code = in.get("code").toString();
+        String detail = (String)in.get("detail");
+        String code = (String)in.get("code");
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
         Double price = (Double) in.get("price");
 
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
         Task task = new Task();
+        task.setTaskId(GogoTools.UUID());
         task.setCreatedUserId(user.getUserId());
         task.setDetail(detail);
         task.setCreatedTime(new Date());
@@ -66,19 +70,26 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void createSubTask(Map in) throws Exception {
         String token = in.get("token").toString();
         String code = in.get("code").toString();
-        Integer pid = (Integer) in.get("pid");
+        String pid = in.get("pid").toString();
         String title = in.get("title").toString();
         Double price = (Double) in.get("price");
 
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
+        /**
+         * 读取父任务
+         */
+        Task pTask = iTaskService.getTaskTinyByTaskId(pid);
+        if (pTask == null) {
+            throw new Exception("30006");
         }
+
         Task task = new Task();
+        task.setTaskId(GogoTools.UUID());
         task.setCreatedUserId(user.getUserId());
         task.setCreatedTime(new Date());
         task.setCode(code);
@@ -89,11 +100,11 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void updateTask(Map in) throws Exception {
-        Integer taskId = (Integer) in.get("taskId");
-        String detail = (String)in.get("detail");
-        String code = (String)in.get("code");
+        String taskId = in.get("taskId").toString();
+        String detail = (String) in.get("detail");
+        String code = (String) in.get("code");
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
         Double price = (Double) in.get("price");
@@ -108,7 +119,7 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteTask(Map in) throws Exception {
         /**
          * check user
@@ -116,12 +127,11 @@ public class TaskBusinessService implements ITaskBusinessService {
          * the task only can be deleted when there is no sub task
          */
         String token = in.get("token").toString();
-        Integer taskId = (Integer) in.get("taskId");
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
+        String taskId =  in.get("taskId").toString();
 
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
+        //检查是否有子任务
         ArrayList<Task> tasks = iTaskService.listTaskByPid(taskId);
         if (tasks.size() > 0) {
             throw new Exception("10097");
@@ -135,19 +145,10 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        User userInfo = iUserService.getUserByToken(token);
-        if (userInfo == null) {
-            throw new Exception("10004");
-        }
-        Integer taskId = (Integer) in.get("taskId");
-        Task task = iTaskService.getTaskDetailByTaskId(taskId);
+        String taskId =  in.get("taskId").toString();
 
-        User createUser = iUserService.getUserByUserId(task.getCreatedUserId());
-        if (createUser.getRealName() != null) {
-            task.setCreatedUserName(createUser.getRealName());
-        } else {
-            task.setCreatedUserName(createUser.getEmail());
-        }
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
+        Task task = iTaskService.getTaskDetailByTaskId(taskId);
 
         /**
          * 增加一个jobId, 如果task已经发布，就返回这个发布的jobId
@@ -168,11 +169,10 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            throw new Exception("10004");
-        }
-        Integer taskId = (Integer) in.get("taskId");
+        String taskId =  in.get("taskId").toString();
+
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
         Task task = iTaskService.getTaskTinyByTaskId(taskId);
         Map out = new HashMap();
         out.put("task", task);
@@ -180,26 +180,24 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
-    public Page<Task> listTaskByUserId(Map in) throws Exception {
+    public Map listTaskByUserId(Map in) throws Exception {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         String token = in.get("token").toString();
-        User user = iUserService.getUserByToken(token);
-        Page<Task> tasks = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
-        for (int i = 0; i < tasks.getContent().size(); i++) {
-            User createdUser = iUserService.getUserByUserId(tasks.getContent().get(i).getCreatedUserId());
-            if (createdUser.getRealName() != null) {
-                tasks.getContent().get(i).setCreatedUserName(createdUser.getRealName());
-            } else {
-                tasks.getContent().get(i).setCreatedUserName(createdUser.getEmail());
-            }
-        }
-        return tasks;
+
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
+
+        ArrayList<Task> tasks = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
+
+        Map out=new HashMap();
+        out.put("tasks", tasks);
+
+        return out;
     }
 
     @Override
     public Map totalSubTask(Map in) throws Exception {
-        Integer pid = (Integer) in.get("pid");
+        String pid =  in.get("pid").toString();
         if (pid == null) {
             throw new Exception("10095");
         }
@@ -212,7 +210,7 @@ public class TaskBusinessService implements ITaskBusinessService {
 
     @Override
     public Map listTaskByPid(Map in) throws Exception {
-        Integer pid = (Integer) in.get("pid");
+        String pid = in.get("pid").toString();
         if (pid == null) {
             throw new Exception("10095");
         }
@@ -224,8 +222,10 @@ public class TaskBusinessService implements ITaskBusinessService {
 
     @Override
     public Map listTaskBreadcrumb(Map in) throws Exception {
-        Integer taskId = (Integer) in.get("taskId");
+        String taskId =  in.get("taskId").toString();
+
         Task task = iTaskService.getTaskTinyByTaskId(taskId);
+
         ArrayList breadList = new ArrayList();
         while (task.getPid() != null) {
             Map map = new HashMap();
@@ -250,7 +250,7 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void publishNewJob(Map in) throws Exception {
         /**
          *  1、根据token读取用户，检查用户
@@ -263,64 +263,66 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer days = (Integer) in.get("days");
         String detail = in.get("detail").toString();
         Double price = (Double) in.get("price");
-        Integer taskId = (Integer) in.get("taskId");
+        String taskId =  in.get("taskId").toString();
         String title = in.get("title").toString();
 
         //读取当前用户
-        User user = iUserService.getUserByToken(token);
-        if (user == null) {
-            //当前用户不存在
-            throw new Exception("10004");
-        }
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         //根据taskId读取job
         Job job = iJobService.getJobByTaskId(taskId);
         if (job != null) {
             //该task已经发布过了，且，发布的任务正在进行中
-            if (job.getStatus() == JobStatus.PROGRESS) {
+            if (job.getStatus().equals(JobStatus.PROGRESS.toString())) {
                 throw new Exception("10092");
             }
             //该Task已经发布过了在，且，目前该任务正在匹配中
-            if (job.getStatus() == JobStatus.MATCHING) {
+            if (job.getStatus().equals(JobStatus.MATCHING.toString())) {
                 throw new Exception("10092");
             }
             //该Task已经发布过了，且，正在等待匹配中
-            if (job.getStatus() == JobStatus.PENDING) {
+            if (job.getStatus().equals(JobStatus.PENDING.toString())) {
                 throw new Exception("10092");
             }
         }
 
         //创建Job
         job = new Job();
+        job.setJobId(GogoTools.UUID());
         job.setPartyAId(user.getUserId());
         job.setCreatedTime(new Date());
         job.setCode(code);
         job.setDays(days);
         job.setPrice(price);
-        job.setStatus(JobStatus.PENDING);
+        job.setStatus(JobStatus.PENDING.toString());
         job.setTaskId(taskId);
         job.setTitle(title);
         job.setDetail(detail);
-        job = iJobService.insertJob(job);
+        iJobService.insertJob(job);
 
         //新增account记录，publish任务时在甲方账户扣除对应的任务金额
         Account account = new Account();
+        account.setAccountId(GogoTools.UUID());
         account.setUserId(job.getPartyAId());
         account.setAmount(job.getPrice());
         account.setCreatedTime(new Date());
-        account.setType(AccountType.PUBLISH);
-        iAccountService.insertNewAccount(account);
+        account.setType(AccountType.PUBLISH.toString());
+        iAccountService.createAccount(account);
 
         //计算甲方账户的balance余额
-        Map accountMap = iAccountService.loadAccountBalance(job.getPartyAId());
+        Map qIn=new HashMap();
+        qIn.put("userId",job.getPartyAId());
+        Map accountMap = iCommonBusinessService.sumUserAccount(job.getPartyAId());
         Double balance = (Double) accountMap.get("balance");
         Double income = (Double) accountMap.get("income");
         Double outgoing = (Double) accountMap.get("outgoing");
 
         //更新甲方的账户统计信息
-        user.setAccount(balance);
-        user.setAccountIn(income);
-        user.setAccountOut(outgoing);
-        iUserService.update(user);
+        UserInfo userUpdate=new UserInfo();
+        userUpdate.setUserId(user.getUserId());
+        userUpdate.setAccount(balance);
+        userUpdate.setAccountIn(income);
+        userUpdate.setAccountOut(outgoing);
+        iUserService.updateUserInfo(userUpdate);
     }
 }

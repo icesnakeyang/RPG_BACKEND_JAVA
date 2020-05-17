@@ -54,7 +54,7 @@
     </select>
 
     <!--统计一个用户的荣誉值，可按type分类统计-->
-    <select id="sumHonor" parameterType="map" resultType="java.lang.Integer">
+    <select id="sumHonor" parameterType="map" resultType="java.lang.Double">
         select sum(point) as sum from honor
         where 1=1
         <choose>

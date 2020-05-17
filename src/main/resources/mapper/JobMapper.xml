@@ -25,7 +25,7 @@
         #{createdTime}, #{category}, #{status})
     </select>
 
-    <select id="createJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.JobDetail">
+    <select id="createJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
         insert into job_detail
         (job_id, detail)
         values
@@ -72,9 +72,9 @@
 
     <!--读取任务详情-->
     <select id="getJobDetail" parameterType="java.lang.String"
-            resultType="com.gogoyang.rpgapi.meta.job.entity.JobDetail">
+            resultType="com.gogoyang.rpgapi.meta.job.entity.Job">
         select * from job_detail
-        where job.job_id=#{jobId}
+        where job_id=#{jobId}
     </select>
 
     <select id="listMyPendingJob" parameterType="map"
@@ -182,7 +182,7 @@
         </set>
     </update>
 
-    <update id="updateJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.JobDetail">
+    <update id="updateJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
         update job_detail set
         detail=#{detail}
         where job_id=#{jobId}

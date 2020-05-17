@@ -3,9 +3,7 @@ package com.gogoyang.rpgapi.business.job.myJob.partyA.controller;
 import com.gogoyang.rpgapi.business.job.myJob.partyA.service.IPartyABusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.framework.vo.Response;
-import com.gogoyang.rpgapi.meta.job.entity.Job;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

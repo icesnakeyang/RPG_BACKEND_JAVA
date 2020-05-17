@@ -6,10 +6,10 @@ import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,10 +36,10 @@ public class MyLogBusinessService implements IMyLogBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void createLog(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId =  in.get("jobId").toString();
         String content = in.get("content").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
@@ -61,12 +61,12 @@ public class MyLogBusinessService implements IMyLogBusinessService {
      * @throws Exception
      */
     @Override
-    public Page<JobLog> loadJobLog(Map in) throws Exception {
-        Integer jobId = (Integer) in.get("jobId");
+    public ArrayList<JobLog> loadJobLog(Map in) throws Exception {
+        String jobId =  in.get("jobId").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
 
-        Page<JobLog> jobLogs = iJobLogService.loadJobLogByJobId(jobId, pageIndex, pageSize);
+        ArrayList<JobLog> jobLogs = iJobLogService.loadJobLogByJobId(jobId, pageIndex, pageSize);
         return jobLogs;
     }
 
@@ -77,12 +77,12 @@ public class MyLogBusinessService implements IMyLogBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void setJobLogReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
         Integer jobId = (Integer) in.get("jobId");
 
-        User user = iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         Map qIn = new HashMap();
         qIn.put("readTime", new Date());

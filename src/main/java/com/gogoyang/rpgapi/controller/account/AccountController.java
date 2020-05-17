@@ -5,10 +5,10 @@ import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +41,8 @@ public class AccountController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Page<Account> accountList = iAccountBusinessService.listMyAccount(in);
+            ArrayList<Account> accountList = iAccountBusinessService.listMyAccount(in);
+
             response.setData(accountList);
         } catch (Exception ex) {
             try {

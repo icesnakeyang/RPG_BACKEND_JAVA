@@ -8,8 +8,6 @@ import java.util.Date;
 public class UserActionLog {
     private Integer ids;
 
-    private String userActionLogId;
-
     private String userId;
 
     private Date createTime;
@@ -17,4 +15,6 @@ public class UserActionLog {
     private String actType;
 
     private String memo;
+
+    private String result;
 }

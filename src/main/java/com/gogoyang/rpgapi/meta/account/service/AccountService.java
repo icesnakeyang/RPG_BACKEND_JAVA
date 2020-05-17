@@ -42,8 +42,8 @@ public class AccountService implements IAccountService {
      * @return
      */
     @Override
-    public Map sumAccountByType(Map qIn) {
-        Map out=accountDao.sumAccountByType(qIn);
+    public ArrayList sumAccountByType(Map qIn) {
+        ArrayList out=accountDao.sumAccountByType(qIn);
         return out;
     }
 }

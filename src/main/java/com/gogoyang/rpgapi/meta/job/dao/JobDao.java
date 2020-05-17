@@ -1,7 +1,6 @@
 package com.gogoyang.rpgapi.meta.job.dao;
 
 import com.gogoyang.rpgapi.meta.job.entity.Job;
-import com.gogoyang.rpgapi.meta.job.entity.JobDetail;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public interface JobDao {
      * @param jobId
      * @return
      */
-    JobDetail getJobDetail(String jobId);
+    Job getJobDetail(String jobId);
 
     /**
      * 批量查询job任务
@@ -43,11 +42,11 @@ public interface JobDao {
 
     void createJob(Job job);
 
-    void createJobDetail(JobDetail jobDetail);
+    void createJobDetail(Job job);
 
     void updateJobTiny(Job job);
 
-    void updateJobDetail(JobDetail jobDetail);
+    void updateJobDetail(Job job);
 
     void deleteJob(String jobId);
 

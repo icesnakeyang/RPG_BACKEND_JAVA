@@ -46,7 +46,7 @@
         </choose>
     </select>
 
-    <update id="updateEmail" parameterType="com.gogoyang.rpgapi.meta.email.entity">
+    <update id="updateEmail" parameterType="com.gogoyang.rpgapi.meta.email.entity.Email">
         update email
         <set>
             <if test="email!=null">

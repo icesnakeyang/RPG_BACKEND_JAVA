@@ -5,8 +5,8 @@ import com.gogoyang.rpgapi.meta.apply.dao.JobApplyDao;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +27,7 @@ public class JobApplyService implements IJobApplyService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void insertJobApply(JobApply jobApply) throws Exception {
         if(jobApply.getJobApplyId()!=null){
             throw new Exception("10026");
@@ -35,6 +35,13 @@ public class JobApplyService implements IJobApplyService {
         jobApplyDao.createJobApply(jobApply);
     }
 
+    /**
+     * 读取一个任务申请信息
+     * @param qIn
+     * jobApplyId
+     * @return
+     * @throws Exception
+     */
     @Override
     public JobApply getJobApply(Map qIn) throws Exception {
         JobApply jobApply=jobApplyDao.getJobApply(qIn);
@@ -42,7 +49,7 @@ public class JobApplyService implements IJobApplyService {
     }
 
     @Override
-    ArrayList<JobApply> listJobApply(Map qIn) throws Exception{
+    public ArrayList<JobApply> listJobApply(Map qIn) throws Exception{
         ArrayList<JobApply> jobApplies=jobApplyDao.listJobApply(qIn);
         return jobApplies;
     }
@@ -64,7 +71,17 @@ public class JobApplyService implements IJobApplyService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    public ArrayList<JobApply> listMyApplies(Integer userId) throws Exception {
+        return null;
+    }
+
+    @Override
+    public void matchJobApply(JobApply jobApply) throws Exception {
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateJobApply(JobApply jobApply) throws Exception {
         if(jobApply.getJobApplyId()==null){
             throw new Exception("10010");

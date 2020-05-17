@@ -3,9 +3,7 @@ package com.gogoyang.rpgapi.business.job.myJob.stop.controller;
 import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.stop.vo.StopRequest;
 import com.gogoyang.rpgapi.framework.vo.Response;
-import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,7 +70,7 @@ public class StopController {
             in.put("jobId", request.getJobId());
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Page<JobStop> out = iStopBusinessService.loadStopList(in);
+            Map out = iStopBusinessService.loadStopList(in);
             response.setData(out);
         } catch (Exception ex) {
             try {

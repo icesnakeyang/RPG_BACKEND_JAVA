@@ -21,7 +21,7 @@
         #{roleType}, #{createdTime}, #{createdAdminId}, #{phone}, #{adminName})
     </select>
 
-    <select id="getAdmin" parameterType="map" resultType="adminMap">
+    <select id="getAdmin" parameterType="map" resultMap="adminMap">
         select * from admin
         where 1=1
         <choose>
@@ -51,7 +51,7 @@
         </choose>
     </select>
 
-    <select id="listAdmin" parameterType="map" resultType="adminMap">
+    <select id="listAdmin" parameterType="map" resultMap="adminMap">
         select * from admin
         where 1=1
                 <choose>

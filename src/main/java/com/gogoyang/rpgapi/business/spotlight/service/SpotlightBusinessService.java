@@ -1,30 +1,22 @@
 package com.gogoyang.rpgapi.business.spotlight.service;
 
-import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
-import com.gogoyang.rpgapi.meta.spotlight.entity.Spot;
-import com.gogoyang.rpgapi.meta.spotlight.service.ISpotService;
-import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
+import com.gogoyang.rpgapi.meta.spotlight.entity.Spotlight;
+import com.gogoyang.rpgapi.meta.spotlight.service.ISpotlightService;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class SpotlightBusinessService implements ISpotlightBusinessService{
-    private final ISpotService iSpotService;
-    private final IUserService iUserService;
+    private final ISpotlightService iSpotlightService;
 
     @Autowired
-    public SpotlightBusinessService(ISpotService iSpotService,
-                                    IUserService iUserService,
-                                    IRealNameService iRealNameService) {
-        this.iSpotService = iSpotService;
-        this.iUserService = iUserService;
+    public SpotlightBusinessService(ISpotlightService iSpotlightService) {
+        this.iSpotlightService = iSpotlightService;
     }
 
     @Override
@@ -36,16 +28,12 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
          */
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
-        Page<Spot> spots=iSpotService.listSpotlight(pageIndex, pageSize);
 
-        for(int i=0;i<spots.getContent().size();i++){
-            UserInfo user=iUserService.getUserByUserId(spots.getContent().get(i).getCreatedUserId());
-            if(user.getRealName()!=null){
-                spots.getContent().get(i).setCreatedUserName(user.getRealName());
-            }else {
-                spots.getContent().get(i).setCreatedUserName(user.getEmail());
-            }
-        }
+        Map qIn=new HashMap();
+        Integer offset=(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<Spotlight> spots=iSpotlightService.listSpotlight(qIn);
 
         Map out=new HashMap();
         out.put("spotlightList", spots);
@@ -69,33 +57,11 @@ public class SpotlightBusinessService implements ISpotlightBusinessService{
          */
         Integer spotId=(Integer)in.get("spotId");
 
-        Spot spot=iSpotService.getSpotlightBySpotId(spotId);
+        Map qIn=new HashMap();
+        qIn.put("spotlightId", spotId);
+        Spotlight spot=iSpotlightService.getSpotlight(qIn);
         Map out=new HashMap();
         out.put("spot", spot);
         return out;
-    }
-
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void createSpotBook(Map in) throws Exception {
-        /**
-         * 创建一个申诉事件的用户留言
-         * 用户必须登录
-         */
-        String token=in.get("token").toString();
-        Integer spotId=(Integer)in.get("spotId");
-        String content=in.get("content").toString();
-
-        User user=iUserService.getUserByToken(token);
-        if(user==null){
-            throw new Exception("10004");
-        }
-
-        SpotBook spotBook=new SpotBook();
-        spotBook.setContent(content);
-        spotBook.setCreatedTime(new Date());
-        spotBook.setCreatedUserId(user.getUserId());
-        spotBook.setSpotId(spotId);
-        iSpotService.insertSpotBook(spotBook);
     }
 }

@@ -1,8 +1,9 @@
 package com.gogoyang.rpgapi.business.job.publicJob.controller;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.business.job.publicJob.service.IPublicJobBusinessService;
 import com.gogoyang.rpgapi.business.job.publicJob.vo.PublicJobRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import org.slf4j.Logger;
@@ -38,22 +39,22 @@ public class PublicJobController {
         Map logMap = new HashMap();
         Map memoMap = new HashMap();
         try {
+            String token = httpServletRequest.getHeader("token");
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            logMap.put("token", token);
             logMap.put("GogoActType", GogoActType.LIST_PUBLIC_JOB);
-            String token = httpServletRequest.getHeader("token");
-            if (token != null) {
-                memoMap.put("token", token);
-            }
             Map out = iPublicJobBusinessService.listPublicJob(in);
             response.setData(out);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10026);
+                response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
             memoMap.put("error", ex.getMessage());
         }
         try {

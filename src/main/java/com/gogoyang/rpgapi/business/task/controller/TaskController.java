@@ -2,10 +2,13 @@ package com.gogoyang.rpgapi.business.task.controller;
 
 import com.gogoyang.rpgapi.business.task.service.ITaskBusinessService;
 import com.gogoyang.rpgapi.business.task.vo.TaskRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
-import com.gogoyang.rpgapi.meta.task.entity.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,10 +19,15 @@ import java.util.Map;
 @RequestMapping("/rpgapi/task")
 public class TaskController {
     private final ITaskBusinessService iTaskBusinessService;
+    private final ICommonBusinessService iCommonBusinessService;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public TaskController(ITaskBusinessService iTaskBusinessService) {
+    public TaskController(ITaskBusinessService iTaskBusinessService,
+                          ICommonBusinessService iCommonBusinessService) {
         this.iTaskBusinessService = iTaskBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -30,9 +38,11 @@ public class TaskController {
     public Response createTask(@RequestBody TaskRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("title", request.getTitle());
             in.put("detail", request.getDetail());
@@ -40,20 +50,34 @@ public class TaskController {
             in.put("days", request.getDays());
             in.put("pid", request.getPid());
             in.put("price", request.getPrice());
+
+            logMap.put("GogoActType", GogoActType.CREATE_TASK);
+            logMap.put("token", token);
+            memoMap.put("title", request.getTitle());
             iTaskBusinessService.createTask(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10030);
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
         }
         return response;
     }
 
     /**
      * 创建子任务
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -61,23 +85,40 @@ public class TaskController {
     @ResponseBody
     @PostMapping("/createSubTask")
     public Response createSubTask(@RequestBody TaskRequest request,
-                                   HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                  HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in =new HashMap();
+            String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("pid", request.getPid());
             in.put("code", request.getCode());
             in.put("title", request.getTitle());
             in.put("price", request.getPrice());
+
+            logMap.put("GogoActType", GogoActType.CREATE_SUB_TASK);
+            logMap.put("token", token);
+            memoMap.put("pid", request.getPid());
+            memoMap.put("title", request.getTitle());
             iTaskBusinessService.createSubTask(in);
-        }catch (Exception ex){
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
-                response.setErrorCode(10096);
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -88,10 +129,10 @@ public class TaskController {
     @ResponseBody
     @PostMapping("/getTaskDetailByTaskId")
     public Response getTaskDetailByTaskId(@RequestBody TaskRequest request,
-                                HttpServletRequest httpServletRequest) {
+                                          HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
+            String token = httpServletRequest.getHeader("token");
             Map in = new HashMap();
             in.put("token", token);
             in.put("taskId", request.getTaskId());
@@ -117,7 +158,7 @@ public class TaskController {
                                     HttpServletRequest httpServletRequest) {
         Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
+            String token = httpServletRequest.getHeader("token");
             Map in = new HashMap();
             in.put("token", token);
             in.put("taskId", request.getTaskId());
@@ -142,22 +183,35 @@ public class TaskController {
     public Response listMyTasks(@RequestBody TaskRequest request,
                                 HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            Page<Task> tasks = iTaskBusinessService.listTaskByUserId(in);
-            response.setData(tasks);
+
+            logMap.put("token", token);
+            logMap.put("GogoActType", GogoActType.LIST_MY_TASK);
+            Map out = iTaskBusinessService.listTaskByUserId(in);
+            response.setData(out);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10031);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -174,9 +228,11 @@ public class TaskController {
     public Response updateTask(@RequestBody TaskRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
@@ -184,15 +240,27 @@ public class TaskController {
             in.put("detail", request.getDetail());
             in.put("days", request.getDays());
             in.put("price", request.getPrice());
+
+            logMap.put("GogoActType", GogoActType.UPDATE_TASK);
+            logMap.put("token", token);
+            memoMap.put("title", request.getTitle());
             iTaskBusinessService.updateTask(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10093);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -206,26 +274,41 @@ public class TaskController {
     public Response deleteTask(@RequestBody TaskRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("taskId", request.getTaskId());
+
+            logMap.put("GogoActType", GogoActType.DELETE_TASK);
+            logMap.put("token", token);
+            memoMap.put("taskId", request.getTaskId());
             iTaskBusinessService.deleteTask(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10094);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
         }
         return response;
     }
 
     /**
      * 统计子任务的数量
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -233,19 +316,19 @@ public class TaskController {
     @ResponseBody
     @PostMapping("/countSubTask")
     public Response countSubTask(@RequestBody TaskRequest request,
-                                 HttpServletRequest httpServletRequest){
-        Response response=new Response();
-        try{
-            Map in=new HashMap();
-            String token=httpServletRequest.getHeader("token");
+                                 HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        try {
+            Map in = new HashMap();
+            String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("pid", request.getPid());
-            Map out=iTaskBusinessService.totalSubTask(in);
+            Map out = iTaskBusinessService.totalSubTask(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10095);
             }
         }
@@ -254,6 +337,7 @@ public class TaskController {
 
     /**
      * 读取子任务列表
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -261,19 +345,19 @@ public class TaskController {
     @ResponseBody
     @PostMapping("/listSubTask")
     public Response listSubTask(@RequestBody TaskRequest request,
-                                HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("pid", request.getPid());
-            Map out=iTaskBusinessService.listTaskByPid(in);
+            Map out = iTaskBusinessService.listTaskByPid(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10095);
             }
         }
@@ -282,6 +366,7 @@ public class TaskController {
 
     /**
      * 查询一个私有任务的所有父任务的标题，返回一个面包屑导航组
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -289,33 +374,41 @@ public class TaskController {
     @ResponseBody
     @PostMapping("/listTaskBreadcrumb")
     public Response listTaskBreadcrumb(@RequestBody TaskRequest request,
-                                       HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                       HttpServletRequest httpServletRequest) {
+        Response response = new Response();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
+            Map in = new HashMap();
             in.put("token", token);
             in.put("taskId", request.getTaskId());
-            Map out=iTaskBusinessService.listTaskBreadcrumb(in);
+            Map out = iTaskBusinessService.listTaskBreadcrumb(in);
             response.setData(out);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10095);
             }
         }
         return response;
     }
 
+    /**
+     * 用户发布任务
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
     @ResponseBody
     @PostMapping("/publishNewJob")
     public Response publishNewJob(@RequestBody TaskRequest request,
-                                  HttpServletRequest httpServletRequest){
-        Response response=new Response();
+                                  HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
-            String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
+            String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("code", request.getCode());
             in.put("days", request.getDays());
@@ -324,13 +417,28 @@ public class TaskController {
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
             in.put("detail", request.getDetail());
+
+            logMap.put("GogoActType", GogoActType.PUBLISH_TASK);
+            logMap.put("token", token);
+            logMap.put("taskId", request.getTaskId());
+            logMap.put("title", request.getTitle());
             iTaskBusinessService.publishNewJob(in);
-        }catch (Exception ex){
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10032);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }

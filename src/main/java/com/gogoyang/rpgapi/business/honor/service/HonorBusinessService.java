@@ -1,6 +1,6 @@
 package com.gogoyang.rpgapi.business.honor.service;
 
-import com.gogoyang.rpgapi.business.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.meta.honor.entity.Honor;
 import com.gogoyang.rpgapi.meta.honor.service.IHonorService;
@@ -9,7 +9,6 @@ import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,20 +85,20 @@ public class HonorBusinessService implements IHonorBusinessService{
         Map qIn=new HashMap();
         qIn.put("userId", userId);
         qIn.put("type", HonorType.JOB_ACCEPTED);
-        Integer totalAcceptance=iHonorService.sumHonor(qIn);
+        Double totalAcceptance=iHonorService.sumHonor(qIn);
 
         qIn.put("type", HonorType.CREATE_SPOTLIGHT);
-        Integer totalSpotlight=iHonorService.sumHonor(qIn);
+        Double totalSpotlight=iHonorService.sumHonor(qIn);
 
         if(totalAcceptance==null){
-            totalAcceptance=0;
+            totalAcceptance=0.0;
         }
         if(totalSpotlight==null){
-            totalSpotlight=0;
+            totalSpotlight=0.0;
         }
-        Integer honorIn=totalAcceptance;
-        Integer honorOut=totalSpotlight;
-        Integer honor=honorIn-honorOut;
+        Double honorIn=totalAcceptance;
+        Double honorOut=totalSpotlight;
+        Double honor=honorIn-honorOut;
 
         Map out = new HashMap();
         out.put("honor", honor);

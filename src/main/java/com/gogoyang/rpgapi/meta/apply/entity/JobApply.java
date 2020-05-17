@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.meta.apply.entity;
 
-import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import lombok.Data;
 
 import java.util.Date;
@@ -19,4 +18,7 @@ public class JobApply {
     private Date processTime;
     private String processRemark;
     private Date processReadTime;
+
+    private String applyUserName;
+    private String processUserName;
 }

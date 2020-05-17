@@ -18,10 +18,9 @@ import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.apache.tomcat.util.digester.ArrayStack;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -120,7 +119,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void agreeApply(Map in) throws Exception {
         /**
          * check authority
@@ -204,7 +203,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void rejectApply(Map in) throws Exception {
         /**
          * check authority
@@ -289,31 +288,33 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         Integer pageSize=(Integer)in.get("pageSize");
         Integer userId=(Integer)in.get("userId");
 
-        Admin admin=iAdminService.getAdminByToken(token);
-        if(admin==null){
-            throw new Exception("10004");
-        }
+        Admin admin=iCommonBusinessService.getAdminByToken(token);
 
-        Page<JobApply> jobApplies=iJobApplyService.listJobapplybyUserId(userId, pageIndex, pageSize);
+        Map qIn=new HashMap();
+        qIn.put("jobApplyId", userId);
+        Integer offset=(pageIndex-1)*pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        ArrayList<JobApply> jobApplies=iJobApplyService.listJobApply(qIn);
 
         ArrayList<Map<String, Object>> list=new ArrayStack<Map<String, Object>>();
-        for(int i=0;i<jobApplies.getContent().size();i++){
-            JobApply jobApply=jobApplies.getContent().get(i);
+        for(int i=0;i<jobApplies.size();i++){
+            JobApply jobApply=jobApplies.get(i);
             Map map=new HashMap();
             map.put("jobId", jobApply.getJobId());
             map.put("applyId", jobApply.getJobApplyId());
             map.put("applyUserId", jobApply.getApplyUserId());
-            User user=iUserService.getUserByUserId(jobApply.getApplyUserId());
+            UserInfo user=iUserService.getUserByUserId(jobApply.getApplyUserId());
             if(user.getRealName()!=null) {
-                map.put("username", user.getRealName());
+                map.put("username", jobApply.getApplyUserName());
             }else {
                 map.put("username", user.getEmail());
             }
             map.put("applyTime", jobApply.getApplyTime());
             map.put("processUserId", jobApply.getProcessUserId());
-            map.put("processResult", jobApply.getProcessResult());
+            map.put("processResult", jobApply.getStatus());
             map.put("processTime", jobApply.getProcessTime());
-            Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
+            Job job=iJobService.getJobTinyByJobId(jobApply.getJobId());
             map.put("title", job.getTitle());
             map.put("price", job.getPrice());
             map.put("jobStatus",job.getStatus());
@@ -329,24 +330,25 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     @Override
     public Map getApplyDetail(Map in) throws Exception {
         String token=in.get("token").toString();
-        Integer applyId=(Integer)in.get("applyId");
+        String applyId=in.get("applyId").toString();
 
         Admin admin=iAdminService.getAdminByToken(token);
         if(admin==null){
             throw new Exception("10004");
         }
 
-        JobApply jobApply=iJobApplyService.getJobApplyByApplyId(applyId);
+        Map qIn=new HashMap();
+        qIn.put("jobApplyId", applyId);
+        JobApply jobApply=iJobApplyService.getJobApply(qIn);
 
-        Job job=iJobService.getJobByJobIdTiny(jobApply.getJobId());
-        User user=iUserService.getUserByUserId(jobApply.getApplyUserId());
+        Job job=iJobService.getJobTinyByJobId(jobApply.getJobId());
 
         Map out=new HashMap();
         out.put("title", job.getTitle());
         out.put("applyTime", jobApply.getApplyTime());
-        out.put("applyUser", user.getRealName());
+        out.put("applyUser", jobApply.getApplyUserName());
         out.put("content", jobApply.getContent());
-        out.put("processResult", jobApply.getProcessResult());
+        out.put("status", jobApply.getStatus());
         out.put("processRemark", jobApply.getProcessRemark());
         out.put("processUserId", jobApply.getProcessUserId());
         out.put("processTime", jobApply.getProcessTime());

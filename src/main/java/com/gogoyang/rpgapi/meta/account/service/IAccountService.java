@@ -36,5 +36,5 @@ public interface IAccountService {
      * userId
      * @return
      */
-    Map sumAccountByType(Map qIn);
+    ArrayList sumAccountByType(Map qIn);
 }

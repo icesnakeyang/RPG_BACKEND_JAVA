@@ -39,5 +39,5 @@ public interface AccountDao {
      * userId
      * @return
      */
-    Map sumAccountByType(Map qIn);
+    ArrayList sumAccountByType(Map qIn);
 }

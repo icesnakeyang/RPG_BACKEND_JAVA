@@ -84,7 +84,7 @@ public class RPGFunction implements IRPGFunction {
         }
 
         if (!smsLog.getStatus().equals(LogStatus.WAITING.toString())) {
-            throw new Exception("10109");
+            throw new Exception("10108");
         }
 
         /**
@@ -97,7 +97,7 @@ public class RPGFunction implements IRPGFunction {
         long diff = (currentTime - theTime) / 1000 / 60;
 
         if (diff > 15) {
-            throw new Exception("10109");
+            throw new Exception("30012");
         }
     }
 
@@ -109,7 +109,11 @@ public class RPGFunction implements IRPGFunction {
             Object key = entry.getKey();
             outStr += key.toString() + ":";
             Object val = entry.getValue();
-            outStr += val.toString() + "/";
+            if(val!=null) {
+                outStr += val.toString() + "/";
+            }else{
+                outStr+="null/";
+            }
         }
         return outStr;
     }

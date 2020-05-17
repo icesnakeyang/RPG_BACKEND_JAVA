@@ -16,9 +16,9 @@
             keyProperty="ids"
             parameterType="com.gogoyang.rpgapi.meta.userAction.entity.UserActionLog">
         insert into user_action_log
-        (log_id, create_time, user_id, act_type, memo)
+        (create_time, user_id, act_type, memo, result)
         values
-        (#{userActionLogId}, #{createTime}, #{userId}, #{actType}, #{memo})
+        (#{createTime}, #{userId}, #{actType}, #{memo}, #{result})
     </insert>
 
     <!--查询用户行为记录-->

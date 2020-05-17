@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.admin.admin.service;
 
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
@@ -9,9 +10,8 @@ import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
 import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.relation.Role;
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
@@ -19,14 +19,17 @@ public class AdminBusinessService implements IAdminBusinessService {
     private final IRPGFunction irpgFunction;
     private final IAdminService iAdminService;
     private final ISMSLogService ismsLogService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     @Autowired
     public AdminBusinessService(IRPGFunction irpgFunction,
                                 IAdminService iAdminService,
-                                ISMSLogService ismsLogService) {
+                                ISMSLogService ismsLogService,
+                                ICommonBusinessService iCommonBusinessService) {
         this.irpgFunction = irpgFunction;
         this.iAdminService = iAdminService;
         this.ismsLogService = ismsLogService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -38,14 +41,16 @@ public class AdminBusinessService implements IAdminBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public Map createRootAdmin(Map in) throws Exception {
+        String loginName = in.get("loginName").toString();
+        String password = in.get("password").toString();
+        String roleType = in.get("roleType").toString();
+
         Map out = new HashMap();
 
         Admin rootAdmin = new Admin();
-        String loginName = in.get("loginName").toString();
-        String password = in.get("password").toString();
-        RoleType roleType = (RoleType) in.get("roleType");
+
         rootAdmin.setLoginName(loginName);
         rootAdmin.setPassword(password);
         rootAdmin.setCreatedTime(new Date());
@@ -66,7 +71,7 @@ public class AdminBusinessService implements IAdminBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public Map createSuperAdmin(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
         String token = in.get("token").toString();
@@ -83,7 +88,7 @@ public class AdminBusinessService implements IAdminBusinessService {
         if (rootAdmin == null) {
             throw new Exception("10004");
         }
-        if (rootAdmin.getRoleType().ordinal() != RoleType.ROOT_ADMIN.ordinal()) {
+        if (!rootAdmin.getRoleType().equals(RoleType.ROOT_ADMIN.ordinal())) {
             throw new Exception("10008");
         }
 
@@ -92,7 +97,7 @@ public class AdminBusinessService implements IAdminBusinessService {
         newAdmin.setLoginName(loginName);
         newAdmin.setPassword(password);
         newAdmin.setPassword(irpgFunction.encoderByMd5(newAdmin.getPassword()));
-        newAdmin.setRoleType(RoleType.SUPER_ADMIN);
+        newAdmin.setRoleType(RoleType.SUPER_ADMIN.toString());
         newAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
         newAdmin = iAdminService.createAdmin(newAdmin);
 
@@ -109,7 +114,7 @@ public class AdminBusinessService implements IAdminBusinessService {
      * @throws Exception
      */
     @Override
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public Map createAdministrator(Map in) throws Exception {
         String loginName = in.get("loginName").toString();
         String token = in.get("token").toString();
@@ -126,7 +131,7 @@ public class AdminBusinessService implements IAdminBusinessService {
         if (superAdmin == null) {
             throw new Exception("10004");
         }
-        if (!(superAdmin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal())) {
+        if (!superAdmin.getRoleType().equals(RoleType.SUPER_ADMIN.toString())) {
             throw new Exception("10008");
         }
         Admin newAdmin = new Admin();
@@ -134,7 +139,7 @@ public class AdminBusinessService implements IAdminBusinessService {
         newAdmin.setLoginName(loginName);
         newAdmin.setPassword(password);
         newAdmin.setPassword(irpgFunction.encoderByMd5(newAdmin.getPassword()));
-        newAdmin.setRoleType(RoleType.ADMINISTRATOR);
+        newAdmin.setRoleType(RoleType.ADMINISTRATOR.toString());
         newAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
         newAdmin = iAdminService.createAdmin(newAdmin);
 
@@ -178,41 +183,10 @@ public class AdminBusinessService implements IAdminBusinessService {
     public Map loadAdmin(Map in) throws Exception {
         String token = in.get("token").toString();
 
-        Admin admin = iAdminService.getAdminByToken(token);
-        if (admin == null) {
-            throw new Exception("10004");
-        }
-        ArrayList adminList = new ArrayList();
+        Admin admin=iCommonBusinessService.getAdminByToken(token);
 
-        if (admin.getRoleType().ordinal() < RoleType.SECRETARY.ordinal()) {
-            ArrayList<Admin> list = iAdminService.listAdminByRoleType(RoleType.SECRETARY);
-            if (list.size() > 0) {
-                Map map = new HashMap();
-                map.put("role", RoleType.SECRETARY);
-                map.put("admin", list);
-                adminList.add(map);
-            }
-        }
-        if (admin.getRoleType().ordinal() < RoleType.ADMINISTRATOR.ordinal()) {
-            ArrayList<Admin> list = iAdminService.listAdminByRoleType(RoleType.ADMINISTRATOR);
-            if (list.size() > 0) {
-                Map map = new HashMap();
-                map.put("role", RoleType.ADMINISTRATOR);
-                map.put("admin", list);
-                adminList.add(map);
-            }
-        }
-        if (admin.getRoleType().ordinal() < RoleType.SUPER_ADMIN.ordinal()) {
-            ArrayList<Admin> list = iAdminService.listAdminByRoleType(RoleType.SUPER_ADMIN);
-            if (list.size() > 0) {
-                Map map = new HashMap();
-                map.put("role", RoleType.SUPER_ADMIN);
-                map.put("admin", list);
-                adminList.add(map);
-            }
-        }
         Map out = new HashMap();
-        out.put("admins", adminList);
+
         return out;
     }
 
@@ -221,7 +195,7 @@ public class AdminBusinessService implements IAdminBusinessService {
         return null;
     }
 
-    @Transactional(rollbackOn = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void resetPassword(Map in) throws Exception {
         String code = in.get("code").toString();
