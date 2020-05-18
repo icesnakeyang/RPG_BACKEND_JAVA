@@ -142,9 +142,9 @@ public class TaskController {
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10031);
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
         }
         return response;

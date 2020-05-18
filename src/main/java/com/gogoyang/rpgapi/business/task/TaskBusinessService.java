@@ -153,9 +153,15 @@ public class TaskBusinessService implements ITaskBusinessService {
         Map jobIn = new HashMap();
         jobIn.put("taskId", taskId);
 
-        Map jobOut = iJobCommonBusinessService.getJobTinyByJobId(in);
+//        Map jobOut = iJobCommonBusinessService.getJobTinyByJobId(in);
+        Job job=iJobService.getJobByTaskId(taskId);
+
         Map out = new HashMap();
-        out.put("job", jobOut.get("common"));
+
+        if(job!=null){
+            out.put("job", job);
+        }
+
         out.put("task", task);
         return out;
     }
