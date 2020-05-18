@@ -3,6 +3,7 @@ package com.gogoyang.rpgapi.meta.stop.service;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface IJobStopService {
     /**
@@ -45,4 +46,21 @@ public interface IJobStopService {
      * @throws Exception
      */
     void updateJobStop(JobStop jobStop) throws Exception;
+
+    /**
+     * 统计所有未阅读的任务终止日志
+     * @param qIn
+     * userId
+     * jobId
+     * @return
+     */
+    Integer totalUnreadStop(Map qIn);
+
+    /**
+     * 统计一个任务的终止日志数
+     * @param qIn
+     * jobId
+     * @return
+     */
+    Integer totalStop(Map qIn);
 }

@@ -38,10 +38,12 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     @Override
     public Map listMyPendingJob(Map in) throws Exception {
         String token = in.get("token").toString();
-        UserInfo user = iUserService.getUserByToken(token);
-        String partyAId = user.getUserId();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+
+        UserInfo user = iUserService.getUserByToken(token);
+
+        String partyAId = user.getUserId();
         ArrayList<Job> jobs = iJobService.listMyPendingJob(partyAId, pageIndex, pageSize);
         Map out = new HashMap();
         out.put("jobs", jobs);
@@ -110,7 +112,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
             throw new Exception("30001");
         }
         //check the job status must be PENDING or MATCHING
-        if (!job.getStatus().equals(JobStatus.PENDING) &&
+        if (!job.getStatus().equals(JobStatus.PENDING.toString()) &&
                 !job.getStatus().equals(JobStatus.MATCHING)) {
             throw new Exception("30005");
         }
@@ -143,7 +145,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
 
         Job job = iJobService.getJobDetailByJobId(jobId);
 
-        job.setJobApplyNum(iJobApplyService.countApplyUsers(job.getJobId()));
+        job.setTotalApply(iJobApplyService.countApplyUsers(job.getJobId()));
 
         Map out = new HashMap();
         out.put("job", job);

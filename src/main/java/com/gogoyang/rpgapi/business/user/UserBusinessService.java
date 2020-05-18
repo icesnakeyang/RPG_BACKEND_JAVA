@@ -98,6 +98,7 @@ public class UserBusinessService implements IUserBusinessService {
      * @return
      * @throws Exception
      */
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map registerByEmail(Map in) throws Exception {
         String email = in.get("email").toString();
@@ -174,7 +175,11 @@ public class UserBusinessService implements IUserBusinessService {
         user.setRealName(realName);
         iUserService.createUserInfo(user);
 
+        /**
+         * create phone record
+         */
         Phone phone = new Phone();
+        phone.setPhoneId(GogoTools.UUID());
         phone.setIsDefault(true);
         phone.setCreatedTime(new Date());
         phone.setUserId(user.getUserId());
@@ -201,7 +206,6 @@ public class UserBusinessService implements IUserBusinessService {
         } else {
             out.put("username", phoneStr);
         }
-        out.put("roleType", RoleType.NORMAL);
         return out;
     }
 
@@ -213,6 +217,18 @@ public class UserBusinessService implements IUserBusinessService {
 
         Map out = new HashMap();
         out.put("user", user);
+        return out;
+    }
+
+    @Override
+    public Map getEmail(Map in) throws Exception {
+        String emailAddress = in.get("email").toString();
+
+        UserInfo user = iUserService.getuserbyEmail(emailAddress);
+
+        Map out = new HashMap();
+        out.put("user", user);
+
         return out;
     }
 }

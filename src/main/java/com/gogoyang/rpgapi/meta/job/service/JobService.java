@@ -173,8 +173,8 @@ class JobService implements IJobService {
         qIn.put("statusList", statusList);
         qIn.put("partyAId", partyAId);
         Integer offset =(pageIndex-1)*pageSize;
-        qIn.put("offset", pageIndex);
-        qIn.put("sieze", pageSize);
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
         return jobs;
     }
@@ -195,6 +195,7 @@ class JobService implements IJobService {
         ArrayList statusList=new ArrayList();
         statusList.add(JobStatus.PENDING);
         statusList.add(JobStatus.MATCHING);
+        qIn.put("statusList", statusList);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
         return jobs;
     }

@@ -46,20 +46,36 @@ public class Job {
     /**
      * 申请的总人数
      */
-    private Integer jobApplyNum;
+    private Integer totalApply;
+    private Integer totalApplyUnread;
 
     /**
      * 任务被分配的人数
      */
-    private Integer jobMatchNum;
+    private Integer totalMatch;
+    private Integer totalMatchUnread;
 
     /**
      * 我未阅读的日志总数
      */
-    private Integer unRead;
+    private Integer totalLog;
+    private Integer totalLogUnread;
+
+    /**
+     * 统计完成日志
+     */
+    private Integer totalComplete;
+    private Integer totalCompleteUnread;
+
+    /**
+     * 统计终止日志
+     */
+    private Integer totalStop;
+    private Integer totalStopUnread;
 
     /**
      * 申诉次数
      */
-    private Integer spotNum;
+    private Integer totalSpotlight;
+    private Integer totalSpotlightUnread;
 }

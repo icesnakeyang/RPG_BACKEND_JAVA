@@ -30,9 +30,6 @@ public class JobCompleteService implements IJobCompleteService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertJobComplete(JobComplete jobComplete) throws Exception {
-        if (jobComplete.getCompleteId() != null) {
-            throw new Exception("10057");
-        }
         jobCompleteDao.createJobComplete(jobComplete);
     }
 
@@ -102,7 +99,11 @@ public class JobCompleteService implements IJobCompleteService {
 
     @Override
     public ArrayList<JobComplete> listPartyBUnreadAccept(String userId) throws Exception {
-        return null;
+        Map qIn=new HashMap();
+        qIn.put("createUserUnread",true);
+        qIn.put("createdUserId", userId);
+        ArrayList<JobComplete> jobCompletes=jobCompleteDao.listJobComplete(qIn);
+        return jobCompletes;
     }
 
     /**
@@ -154,6 +155,8 @@ public class JobCompleteService implements IJobCompleteService {
     /**
      * 统计所有未阅读的任务完成日志
      * @param qIn
+     * userId
+     * jobId
      * @return
      * @throws Exception
      */
@@ -179,5 +182,17 @@ public class JobCompleteService implements IJobCompleteService {
     @Override
     public void setJobCompleteProcessReadTime(Map qIn) throws Exception {
         jobCompleteDao.setJobCompleteProcessReadTime(qIn);
+    }
+
+    /**
+     * 统计任务的完成验收日志数量
+     * @param qIn
+     * jobId
+     * @return
+     */
+    @Override
+    public Integer totalJobComplete(Map qIn) {
+        Integer total=jobCompleteDao.totalJobComplete(qIn);
+        return total;
     }
 }

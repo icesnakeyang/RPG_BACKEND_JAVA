@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.job.myJob.apply.service;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -111,8 +112,8 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
         /**
          * 检查任务状态，只有PENGIND和MATCHING状态的任务才能申请
          */
-        if (!job.getStatus().equals(JobStatus.MATCHING) &&
-                !job.getStatus().equals(JobStatus.PENDING)) {
+        if (!job.getStatus().equals(JobStatus.MATCHING.toString()) &&
+                !job.getStatus().equals(JobStatus.PENDING.toString())) {
             throw new Exception("10006");
         }
 
@@ -134,6 +135,7 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
 
         //保存任务申请日志
         JobApply jobApply = new JobApply();
+        jobApply.setJobApplyId(GogoTools.UUID());
         jobApply.setApplyTime(new Date());
         jobApply.setApplyUserId(user.getUserId());
         jobApply.setJobId(jobId);
@@ -145,9 +147,9 @@ public class MyApplyBusinessService implements IMyApplyBusinessService {
         Job job2 = new Job();
         job2.setJobId(job.getJobId());
         Integer applyNum = iJobApplyService.countApplyUsers(jobId);
-        job2.setJobApplyNum(applyNum);
+        job2.setTotalApply(applyNum);
         job2.setStatus(JobStatus.MATCHING.toString());
-        iJobService.updateJob(job);
+        iJobService.updateJob(job2);
     }
 
     @Override

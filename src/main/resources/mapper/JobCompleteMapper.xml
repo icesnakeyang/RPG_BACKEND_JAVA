@@ -3,21 +3,28 @@
 <mapper namespace="com.gogoyang.rpgapi.meta.complete.dao.JobCompleteDao">
 
     <resultMap id="jobCompleteMap" type="com.gogoyang.rpgapi.meta.complete.entity.JobComplete">
-        <result property="jobLogId" column="job_log_id"/>
         <result property="jobId" column="job_id"/>
         <result property="createdUserId" column="created_user_id"/>
-        <result property="createdUserName" column="real_name"/>
+        <result property="createdUserName" column="created_user_name"/>
         <result property="createdTime" column="created_time"/>
         <result property="readTime" column="read_time"/>
+        <result property="processUserId" column="process_user_id"/>
+        <result property="processUserName" column="process_user_name"/>
+        <result property="processReadTime" column="process_read_time"/>
+        <result property="processRemark" column="process_remark"/>
+        <result property="completeId" column="complete_id"/>
+        <result property="processTime" column="process_time"/>
     </resultMap>
 
     <select id="createJobComplete" parameterType="com.gogoyang.rpgapi.meta.complete.entity.JobComplete">
         insert into job_complete
         (complete_id, job_id, created_user_id, created_time, content,
-        status, process_user_id)
+        status, process_user_id, read_time, process_time,
+        process_remark)
         values
         (#{completeId}, #{jobId}, #{createdUserId}, #{createdTime}, #{content},
-        #{status}, #{processUserId})
+        #{status}, #{processUserId}, #{readTime}, #{processTime},
+        #{processRemark})
     </select>
 
     <select id="getJobComplete" parameterType="map" resultMap="jobCompleteMap">
@@ -26,11 +33,27 @@
     </select>
 
     <select id="listJobComplete" parameterType="map" resultMap="jobCompleteMap">
-        select * from job_complete
+        select job_complete.ids,
+        complete_id,
+        job_id,
+        created_user_id,
+        create_user.real_name as created_user_name,
+        created_time,
+        content,
+        read_time,
+        status,
+        process_time,
+        process_remark,
+        process_user_id,
+        process_user.real_name as process_user_name,
+        process_read_time
+        from job_complete
+        left join user_info create_user on created_user_id=user_id
+        left join user_info process_user on process_user_id=process_user.user_id
         where 1=1
         <choose>
             <when test="jobId!=null">
-                and jobId=#{jobId}
+                and job_id=#{jobId}
             </when>
         </choose>
         <choose>
@@ -85,8 +108,14 @@
     <update id="updateJobComplete" parameterType="com.gogoyang.rpgapi.meta.complete.entity.JobComplete">
         update job_complete
         <set>
-            <if test="readTime!=null">
-                read_time=#{readTime}
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="processTime!=null">
+                process_time=#{processTime},
+            </if>
+            <if test="processRemark!=null">
+                process_remark=#{processRemark}
             </if>
         </set>
         where complete_id=#{completeId}
@@ -115,11 +144,18 @@
         where 1=1
         and process_read_time is null
         and created_user_id=#{userId}
+        and process_time is not null
         <choose>
             <when test="jobId!=null">
                 and job_id=#{jobId}
             </when>
         </choose>
     </update>
+
+    <!--统计任务的完成验收日志数量-->
+    <select id="totalJobComplete" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from job_complete
+        where job_id=#{jobId}
+    </select>
 
 </mapper>

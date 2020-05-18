@@ -47,4 +47,21 @@ public interface JobStopDao{
     JobStop findByJobIdAndResultIsNull(Integer jobId);
 
     void updateJobStop(JobStop jobStop);
+
+    /**
+     * 统计所有未阅读的任务终止日志
+     * @param qIn
+     * userId
+     * jobId
+     * @return
+     */
+    Integer totalUnreadStop(Map qIn);
+
+    /**
+     * 统计一个任务的终止日志数
+     * @param qIn
+     * jobId
+     * @return
+     */
+    Integer totalStop(Map qIn);
 }

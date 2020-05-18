@@ -19,9 +19,6 @@ public class RealNameService implements IRealNameService{
 
     @Override
     public void insert(RealName realName) throws Exception {
-        if(realName.getRealName()!=null){
-            throw new Exception("10047");
-        }
         realNameDao.createRealName(realName);
     }
 

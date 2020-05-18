@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.gogoyang.rpgapi.meta.log.dao.JobLogMapper">
+<mapper namespace="com.gogoyang.rpgapi.meta.log.dao.JobLogDao">
 
     <!--配置job_log表和JobLog对象的字段映射 -->
     <resultMap id="jobLogMap" type="com.gogoyang.rpgapi.meta.log.entity.JobLog">
         <result property="jobLogId" column="job_log_id"/>
         <result property="jobId" column="job_id"/>
         <result property="createdUserId" column="created_user_id"/>
+        <result property="createdUserName" column="created_user_name"/>
         <result property="createdUserName" column="real_name"/>
         <result property="createdTime" column="created_time"/>
         <result property="readTime" column="read_time"/>
         <result property="partyAId" column="partya_id"/>
+        <result property="partyAName" column="partya_name"/>
         <result property="partyBId" column="partyb_id"/>
+        <result property="partyBName" column="partyb_name"/>
     </resultMap>
 
     <select id="createJobLog" parameterType="com.gogoyang.rpgapi.meta.log.entity.JobLog">
@@ -106,7 +109,7 @@
             resultType="java.lang.Integer">
         select count(*) as total_unread_log
         from job_log
-        left join user on created_user_id = user_id
+        left join user_info on created_user_id = user_id
         where 1 = 1
         <choose>
             <when test="jobId!=null">
@@ -115,12 +118,12 @@
         </choose>
         <choose>
             <when test="partyAId!=null">
-                partya_id=#{partyAId}
+                and partya_id=#{partyAId}
             </when>
         </choose>
         <choose>
             <when test="partyBId!=null">
-                partyb_id=#{partyBId}
+                and partyb_id=#{partyBId}
             </when>
         </choose>
         and read_time is null
@@ -140,5 +143,17 @@
         ]]>
         and job_id=#{jobId}
     </update>
+
+    <!--统计任务日志总数-->
+    <select id="totalJobLog" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from job_log
+        where 1 = 1
+        <choose>
+            <when test="jobId!=null">
+                and job_id = #{jobId}
+            </when>
+        </choose>
+    </select>
 
 </mapper>

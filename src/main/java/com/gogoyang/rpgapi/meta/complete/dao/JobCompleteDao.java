@@ -13,6 +13,18 @@ public interface JobCompleteDao {
 
     JobComplete getJobComplete(Map qIn);
 
+    /**
+     *
+     * @param qIn
+     * jobId
+     * status
+     * createUserUnread
+     * createdUserId
+     * processUserUnread
+     * processUserId
+     * offset
+     * @return
+     */
     ArrayList<JobComplete> listJobComplete(Map qIn);
 
     /**
@@ -41,4 +53,12 @@ public interface JobCompleteDao {
     void setJobCompleteProcessReadTime(Map qIn);
 
     void updateJobComplete(JobComplete jobComplete);
+
+    /**
+     * 统计任务的完成验收日志数量
+     * @param qIn
+     * jobId
+     * @return
+     */
+    Integer totalJobComplete(Map qIn);
 }

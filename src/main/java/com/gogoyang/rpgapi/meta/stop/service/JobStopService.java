@@ -2,7 +2,6 @@ package com.gogoyang.rpgapi.meta.stop.service;
 
 import com.gogoyang.rpgapi.meta.stop.dao.JobStopDao;
 import com.gogoyang.rpgapi.meta.stop.entity.JobStop;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class StopService implements IJobStopService {
+public class JobStopService implements IJobStopService {
     private final JobStopDao jobStopDao;
 
-    @Autowired
-    public StopService(JobStopDao jobStopDao) {
+    public JobStopService(JobStopDao jobStopDao) {
         this.jobStopDao = jobStopDao;
     }
 
@@ -59,5 +57,23 @@ public class StopService implements IJobStopService {
             throw new Exception("10072");
         }
         jobStopDao.updateJobStop(jobStop);
+    }
+
+    @Override
+    public Integer totalUnreadStop(Map qIn) {
+        Integer total=jobStopDao.totalUnreadStop(qIn);
+        return total;
+    }
+
+    /**
+     * 统计一个任务的终止日志数
+     * @param qIn
+     * jobId
+     * @return
+     */
+    @Override
+    public Integer totalStop(Map qIn) {
+        Integer total=jobStopDao.totalStop(qIn);
+        return total;
     }
 }

@@ -53,4 +53,12 @@ public interface JobLogDao {
      * jobId：必填
      */
     void setJobLogReadTime(Map qIn);
+
+    /**
+     * 统计任务日志总数
+     * @param qIn
+     * jobId
+     * @return
+     */
+    Integer totalJobLog(Map qIn);
 }

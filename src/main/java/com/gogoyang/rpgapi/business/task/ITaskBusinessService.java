@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.task.service;
+package com.gogoyang.rpgapi.business.task;
 
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 
@@ -16,5 +16,12 @@ public interface ITaskBusinessService {
     Map totalSubTask(Map in) throws Exception;
     Map listTaskByPid(Map in) throws Exception;
     Map listTaskBreadcrumb(Map in) throws Exception;
-    void publishNewJob(Map in) throws Exception;
+
+    /**
+     * 发布任务，并返回jobId
+     * @param in
+     * @return
+     * @throws Exception
+     */
+    Map publishNewJob(Map in) throws Exception;
 }

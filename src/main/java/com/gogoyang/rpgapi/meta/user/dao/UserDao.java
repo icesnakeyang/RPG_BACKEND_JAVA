@@ -19,6 +19,7 @@ public interface UserDao {
      * userId
      * phone
      * token
+     * email
      * @return
      */
     UserInfo getUserInfo(Map qIn);

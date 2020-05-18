@@ -1,6 +1,5 @@
 package com.gogoyang.rpgapi.meta.complete.entity;
 
-import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import lombok.Data;
 
 import java.util.Date;
@@ -14,10 +13,11 @@ public class JobComplete {
     private String content;
     private Date createdTime;
     private Date readTime;
-    private LogStatus status;
+    private String status;
     private Date processTime;
     private String processRemark;
     private String processUserId;
     private Date processReadTime;
     private String createdUserName;
+    private String processUserName;
 }

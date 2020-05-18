@@ -6,7 +6,7 @@
         <result property="honorId" column="honor_id"/>
         <result property="userId" column="user_id"/>
         <result property="jobId" column="job_id"/>
-        <result property="createdTime" column="create_time"/>
+        <result property="createdTime" column="created_time"/>
         <result property="readTime" column="read_time"/>
         <result property="createdUserId" column="create_user_id"/>
         <result property="userName" column="user_name"/>
@@ -65,6 +65,18 @@
         <choose>
             <when test="type!=null">
                 and type=#{type}
+            </when>
+        </choose>
+    </select>
+
+    <!--统计荣誉记录总数-->
+    <select id="totalHonor" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from honor
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and honor.user_id=#{userId}
             </when>
         </choose>
     </select>

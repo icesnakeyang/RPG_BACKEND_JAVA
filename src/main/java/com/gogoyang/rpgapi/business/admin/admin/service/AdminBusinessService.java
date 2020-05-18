@@ -1,5 +1,6 @@
 package com.gogoyang.rpgapi.business.admin.admin.service;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -50,13 +51,14 @@ public class AdminBusinessService implements IAdminBusinessService {
         Map out = new HashMap();
 
         Admin rootAdmin = new Admin();
-
+        rootAdmin.setAdminId(GogoTools.UUID());
         rootAdmin.setLoginName(loginName);
         rootAdmin.setPassword(password);
         rootAdmin.setCreatedTime(new Date());
         rootAdmin.setPassword(irpgFunction.encoderByMd5(rootAdmin.getPassword()));
         rootAdmin.setRoleType(roleType);
         rootAdmin.setToken(UUID.randomUUID().toString().replace("-", ""));
+        rootAdmin.setTokenTime(new Date());
         rootAdmin = iAdminService.createAdmin(rootAdmin);
 
         out.put("admin", rootAdmin);

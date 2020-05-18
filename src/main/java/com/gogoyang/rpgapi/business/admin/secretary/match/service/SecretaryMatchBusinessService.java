@@ -85,7 +85,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
     @Override
     public Map listApplyByJobId(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId =  in.get("jobId").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
 
@@ -93,7 +93,7 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
          * 当前操作用户必须是RPG秘书权限
          */
         Admin admin = iCommonBusinessService.getAdminByToken(token);
-        if (!admin.getRoleType().equals(RoleType.SECRETARY)) {
+        if (!admin.getRoleType().equals(RoleType.SECRETARY.toString())) {
             throw new Exception("10040");
         }
 
@@ -137,8 +137,8 @@ public class SecretaryMatchBusinessService implements ISecretaryMatchBusinessSer
         if(admin==null){
             throw new Exception("10004");
         }
-        if(!admin.getRoleType().equals(RoleType.SECRETARY)){
-            throw new Exception("10034");
+        if(!admin.getRoleType().equals(RoleType.SECRETARY.toString())){
+            throw new Exception("10040");
         }
 
         //读取申请，保存为成功

@@ -10,4 +10,6 @@ public interface IUserBusinessService {
     Map registerByPhone(Map in) throws Exception;
 
     Map getPhone(Map in) throws Exception;
+
+    Map getEmail(Map in) throws Exception;
 }

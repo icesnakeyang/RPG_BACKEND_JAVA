@@ -25,25 +25,31 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account getAccount(String accountId) {
-        Account account=accountDao.getAccount(accountId);
+        Account account = accountDao.getAccount(accountId);
         return account;
     }
 
     @Override
     public ArrayList<Account> listAccount(Map qIn) {
-        ArrayList<Account> accounts=accountDao.listAccount(qIn);
+        ArrayList<Account> accounts = accountDao.listAccount(qIn);
         return accounts;
     }
 
     /**
      * 分类汇总账户总额
-     * @param qIn
-     * userId
+     *
+     * @param qIn userId
      * @return
      */
     @Override
     public ArrayList sumAccountByType(Map qIn) {
-        ArrayList out=accountDao.sumAccountByType(qIn);
+        ArrayList out = accountDao.sumAccountByType(qIn);
         return out;
+    }
+
+    @Override
+    public Integer totalAccount(Map qIn) {
+        Integer total = accountDao.totalAccount(qIn);
+        return total;
     }
 }

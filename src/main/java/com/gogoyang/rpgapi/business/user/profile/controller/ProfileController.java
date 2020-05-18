@@ -3,6 +3,8 @@ package com.gogoyang.rpgapi.business.user.profile.controller;
 import com.gogoyang.rpgapi.business.user.profile.service.IProfileBusinessService;
 import com.gogoyang.rpgapi.business.user.profile.vo.ProfileRequest;
 import com.gogoyang.rpgapi.framework.vo.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,8 @@ import java.util.Map;
 @RequestMapping("/rpgapi/user/profile")
 public class ProfileController {
     private final IProfileBusinessService iProfileBusinessService;
+
+    private Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ProfileController(IProfileBusinessService iProfileBusinessService) {
@@ -64,9 +68,9 @@ public class ProfileController {
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10048);
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
         }
         return response;

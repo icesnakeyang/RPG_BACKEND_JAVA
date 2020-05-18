@@ -89,4 +89,12 @@ public interface IJobCompleteService {
      * @throws Exception
      */
     void setJobCompleteProcessReadTime(Map qIn) throws Exception;
+
+    /**
+     * 统计任务的完成验收日志数量
+     * @param qIn
+     * jobId
+     * @return
+     */
+    Integer totalJobComplete(Map qIn);
 }

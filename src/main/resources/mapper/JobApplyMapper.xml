@@ -37,11 +37,11 @@
         process_user_id,
         process_user.real_name as process_user_name,
         read_time,
-        process_result,
+        status,
         process_time,
         process_remark,
         content,
-        process_result_read_time
+        process_read_time
         from job_apply
         left join user_info apply_user on job_apply_id=user_id
         left join user_info process_user on process_user_id=process_user.user_id
@@ -67,9 +67,9 @@
         process_time,
         process_remark,
         content,
-        process_result_read_time
+        process_read_time
         from job_apply
-        left join user_info apply_user on job_apply_id=user_id
+        left join user_info apply_user on apply_user_id=user_id
         left join user_info process_user on process_user_id=process_user.user_id
         where 1=1
         <choose>
@@ -145,8 +145,8 @@
             <if test="processReadTime!=null">
                 process_read_time=#{processReadTime}
             </if>
-            where job_apply_id=#{jobApplyId}
         </set>
+        where job_apply_id=#{jobApplyId}
     </update>
 
 </mapper>

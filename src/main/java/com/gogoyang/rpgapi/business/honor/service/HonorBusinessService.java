@@ -43,8 +43,12 @@ public class HonorBusinessService implements IHonorBusinessService{
         qIn.put("size", pageSize);
         ArrayList<Honor> honors=iHonorService.listHonor(qIn);
 
+        //统计记录总数
+        Integer total=iHonorService.totalHonor(qIn);
+
         Map out=new HashMap();
         out.put("honors", honors);
+        out.put("totalHonors", total);
         return out;
     }
 

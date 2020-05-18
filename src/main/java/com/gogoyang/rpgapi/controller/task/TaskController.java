@@ -1,7 +1,6 @@
-package com.gogoyang.rpgapi.business.task.controller;
+package com.gogoyang.rpgapi.controller.task;
 
-import com.gogoyang.rpgapi.business.task.service.ITaskBusinessService;
-import com.gogoyang.rpgapi.business.task.vo.TaskRequest;
+import com.gogoyang.rpgapi.business.task.ITaskBusinessService;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import com.gogoyang.rpgapi.framework.constant.GogoStatus;
@@ -15,15 +14,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 个人任务 Task Api接口
+ */
 @RestController
 @RequestMapping("/rpgapi/task")
 public class TaskController {
     private final ITaskBusinessService iTaskBusinessService;
     private final ICommonBusinessService iCommonBusinessService;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger logger= LoggerFactory.getLogger(getClass());
 
-    @Autowired
     public TaskController(ITaskBusinessService iTaskBusinessService,
                           ICommonBusinessService iCommonBusinessService) {
         this.iTaskBusinessService = iTaskBusinessService;
@@ -422,13 +423,14 @@ public class TaskController {
             logMap.put("token", token);
             logMap.put("taskId", request.getTaskId());
             logMap.put("title", request.getTitle());
-            iTaskBusinessService.publishNewJob(in);
+            Map out=iTaskBusinessService.publishNewJob(in);
             logMap.put("result", GogoStatus.SUCCESS);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10032);
+                response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
             logMap.put("result", GogoStatus.FAIL);
@@ -442,5 +444,4 @@ public class TaskController {
         }
         return response;
     }
-
 }

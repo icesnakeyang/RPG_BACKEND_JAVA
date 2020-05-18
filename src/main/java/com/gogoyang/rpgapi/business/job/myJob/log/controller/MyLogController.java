@@ -2,6 +2,9 @@ package com.gogoyang.rpgapi.business.job.myJob.log.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.log.vo.LogRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import org.slf4j.Logger;
@@ -18,12 +21,15 @@ import java.util.Map;
 @RequestMapping("/rpgapi/job/log")
 public class MyLogController {
     private final IMyLogBusinessService iMyLogBusinessService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public MyLogController(IMyLogBusinessService iMyLogBusinessService) {
+    public MyLogController(IMyLogBusinessService iMyLogBusinessService,
+                           ICommonBusinessService iCommonBusinessService) {
         this.iMyLogBusinessService = iMyLogBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -38,23 +44,36 @@ public class MyLogController {
     public Response createLog(@RequestBody LogRequest request,
                               HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("content", request.getContent());
 
+            logMap.put("GogoActType", GogoActType.CREATE_JOB_LOG);
+            logMap.put("token", token);
+            memoMap.put("jobId", request.getJobId());
             iMyLogBusinessService.createLog(in);
 
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10052);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -67,27 +86,42 @@ public class MyLogController {
      * @return
      */
     @ResponseBody
-    @PostMapping("/jobLog")
-    public Response loadJobLog(@RequestBody LogRequest request,
+    @PostMapping("/listJobLog")
+    public Response listJobLog(@RequestBody LogRequest request,
                                HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+
+            logMap.put("GogoActType", GogoActType.LIST_JOB_LOG);
+            logMap.put("token", token);
+            memoMap.put("jobId", request.getJobId());
             ArrayList<JobLog> jobLogs = iMyLogBusinessService.loadJobLog(in);
             response.setData(jobLogs);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10054);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -107,7 +141,7 @@ public class MyLogController {
         Response response = new Response();
         try {
             String token = httpServletRequest.getHeader("token");
-            Integer jobId = request.getJobId();
+            String jobId = request.getJobId();
             Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", jobId);
@@ -116,7 +150,7 @@ public class MyLogController {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10055);
+                response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
         }

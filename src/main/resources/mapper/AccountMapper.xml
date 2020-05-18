@@ -80,4 +80,20 @@
         group by type
     </select>
 
+    <!--统计用户账户总数-->
+    <select id="totalAccount" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from account
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+    </select>
+
 </mapper>

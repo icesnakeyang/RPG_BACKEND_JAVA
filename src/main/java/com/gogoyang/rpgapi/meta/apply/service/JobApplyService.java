@@ -29,9 +29,6 @@ public class JobApplyService implements IJobApplyService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertJobApply(JobApply jobApply) throws Exception {
-        if(jobApply.getJobApplyId()!=null){
-            throw new Exception("10026");
-        }
         jobApplyDao.createJobApply(jobApply);
     }
 

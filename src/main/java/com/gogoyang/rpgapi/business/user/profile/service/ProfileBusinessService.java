@@ -206,6 +206,7 @@ public class ProfileBusinessService implements IProfileBusinessService {
                 realName.setRealName(realNameStr);
                 realName.setUserId(userInfo.getUserId());
                 realName.setVerify(LogStatus.PENDING.toString());
+                realName.setStatus(GogoStatus.ACTIVE.toString());
                 iRealNameService.insert(realName);
             }else{
                 //有实名，检查是否已经验证

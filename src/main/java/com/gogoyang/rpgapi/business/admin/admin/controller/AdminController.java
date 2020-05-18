@@ -45,7 +45,8 @@ public class AdminController {
         try {
             String token = httpServletRequest.getHeader("token");
             token = irpgFunction.encoderByMd5(token);
-            if (!token.equals("NnGCAFR5YVztS4DjtoIdpg==")) {
+            if (!token.equals("4Z1c1a8DeNoF9j+JHHRnrw==")) {
+                response.setErrorCode(30013);
                 response.setErrorMsg("Don't call me Daddy");
                 return response;
             }
@@ -56,8 +57,12 @@ public class AdminController {
             Map out = iAdminBusinessService.createRootAdmin(in);
             response.setData(out);
         } catch (Exception ex) {
-            response.setErrorMsg(ex.getMessage());
-            return response;
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
         }
         return response;
     }
@@ -230,18 +235,18 @@ public class AdminController {
 
     @ResponseBody
     @PostMapping("resetPassword")
-    public Response resetPassword(@RequestBody SMSRequest request){
-        Response response=new Response();
-        Map in=new HashMap();
+    public Response resetPassword(@RequestBody SMSRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
         try {
             in.put("code", request.getCode());
             in.put("phone", request.getPhone());
             in.put("newPassword", request.getNewPass());
             iAdminBusinessService.resetPassword(in);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-            }catch (Exception ex2){
+            } catch (Exception ex2) {
                 response.setErrorCode(10107);
                 logger.error(ex.getMessage());
             }

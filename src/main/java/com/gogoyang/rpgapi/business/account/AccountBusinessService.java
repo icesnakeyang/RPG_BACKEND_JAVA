@@ -34,7 +34,7 @@ public class AccountBusinessService implements IAccountBusinessService {
     }
 
     @Override
-    public ArrayList<Account> listMyAccount(Map in) throws Exception {
+    public Map listMyAccount(Map in) throws Exception {
         String token = in.get("token").toString();
         Integer pageIndex=(Integer)in.get("pageIndex");
         Integer pageSize=(Integer)in.get("pageSize");
@@ -47,7 +47,14 @@ public class AccountBusinessService implements IAccountBusinessService {
         qIn.put("size", pageSize);
         ArrayList<Account> accounts = iAccountService.listAccount(qIn);
 
-        return accounts;
+        Map out=new HashMap();
+        out.put("accounts", accounts);
+
+        //查询记录总数
+        Integer total=iAccountService.totalAccount(qIn);
+        out.put("totalAccounts", total);
+
+        return out;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.business.job.myJob.complete.service;
 
 import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.constant.HonorType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
@@ -58,7 +59,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         //job必须是progress状态
         Job job = iJobService.getJobTinyByJobId(jobId);
-        if (!job.getStatus().equals(JobStatus.PROGRESS)) {
+        if (!job.getStatus().equals(JobStatus.PROGRESS.toString())) {
             throw new Exception("10130");
         }
 
@@ -78,10 +79,13 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         jobComplete = new JobComplete();
+        jobComplete.setCompleteId(GogoTools.UUID());
         jobComplete.setContent(content);
         jobComplete.setCreatedTime(new Date());
         jobComplete.setCreatedUserId(user.getUserId());
         jobComplete.setJobId(jobId);
+        jobComplete.setProcessUserId(job.getPartyAId());
+        jobComplete.setStatus(LogStatus.PENDING.toString());
         iJobCompleteService.insertJobComplete(jobComplete);
     }
 
@@ -117,7 +121,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void setCompleteReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId =  in.get("jobId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
@@ -153,7 +157,8 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         //job status must be progress
         Job job = iCommonBusinessService.getJobTinyByJobId(jobId);
-        if (!job.getStatus().equals(JobStatus.PROGRESS)) {
+        //任务必须是progress状态，才能进行完成处理
+        if (!job.getStatus().equals(JobStatus.PROGRESS.toString())) {
             throw new Exception("10063");
         }
 
@@ -166,11 +171,15 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
-        jobComplete.setStatus(LogStatus.REJECT);
-        jobComplete.setProcessRemark(processRemark);
-        jobComplete.setProcessTime(new Date());
-        jobComplete.setProcessUserId(user.getUserId());
-        iJobCompleteService.updateJobComplete(jobComplete);
+        if(jobComplete==null){
+            throw new Exception("30015");
+        }
+        JobComplete jobComplete1=new JobComplete();
+        jobComplete1.setCompleteId(jobComplete.getCompleteId());
+        jobComplete1.setStatus(LogStatus.REJECT.toString());
+        jobComplete1.setProcessRemark(processRemark);
+        jobComplete1.setProcessTime(new Date());
+        iJobCompleteService.updateJobComplete(jobComplete1);
     }
 
     /**
@@ -195,8 +204,9 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         //首先判断任务状态，只有PROGRESS的任务可以操作完成
         Job job=iCommonBusinessService.getJobTinyByJobId(jobId);
-        if (!job.getStatus().equals(JobStatus.PROGRESS)) {
-            throw new Exception("10063");
+        if (!job.getStatus().equals(JobStatus.PROGRESS.toString())) {
+            //只能验收任务状态为进行中的任务
+            throw new Exception("30016");
         }
 
         //读取当前用户
@@ -220,11 +230,11 @@ public class CompleteBusinessService implements ICompleteBusinessService {
             jobComplete.setProcessUserId(user.getUserId());
             jobComplete.setProcessTime(new Date());
             jobComplete.setProcessRemark(processRemark);
-            jobComplete.setStatus(LogStatus.ACCEPT);
+            jobComplete.setStatus(LogStatus.ACCEPT.toString());
             iJobCompleteService.insertJobComplete(jobComplete);
         } else {
             //乙方已经申请，直接处理
-            jobComplete.setStatus(LogStatus.ACCEPT);
+            jobComplete.setStatus(LogStatus.ACCEPT.toString());
             jobComplete.setProcessRemark(processRemark);
             jobComplete.setProcessTime(new Date());
             jobComplete.setProcessUserId(user.getUserId());
@@ -232,8 +242,10 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         //把job设置为accept
-        job.setStatus(JobStatus.ACCEPTANCE.toString());
-        iJobService.updateJob(job);
+        Job job1=new Job();
+        job1.setJobId(job.getJobId());
+        job1.setStatus(JobStatus.ACCEPTANCE.toString());
+        iJobService.updateJob(job1);
 
         //给甲方增加honor
         Honor honor = new Honor();
@@ -262,6 +274,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         //给乙方增加honor
         honor = new Honor();
+        honor.setHonorId(GogoTools.UUID());
         honor.setUserId(job.getPartyBId());
         honor.setPoint(job.getPrice());
         honor.setType(HonorType.JOB_ACCEPTED.toString());

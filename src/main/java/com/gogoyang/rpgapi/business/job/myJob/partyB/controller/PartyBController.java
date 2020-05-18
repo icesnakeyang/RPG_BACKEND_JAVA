@@ -35,13 +35,15 @@ public class PartyBController {
             String token = httpServletRequest.getHeader("token");
             Map in = new HashMap();
             in.put("token", token);
+            in.put("pageIndex", request.getPageIndex());
+            in.put("pageSize", request.getPageSize());
             ArrayList<Job> jobPage = iPartyBBusinessService.listMyPartyBJob(in);
             response.setData(jobPage);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10051);
+                response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
         }

@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.job.publicJob.controller;
+package com.gogoyang.rpgapi.controller.job.publicJob;
 
 import com.gogoyang.rpgapi.business.job.publicJob.service.IPublicJobBusinessService;
 import com.gogoyang.rpgapi.business.job.publicJob.vo.PublicJobRequest;
@@ -68,35 +68,39 @@ public class PublicJobController {
 
     /**
      * 读取一条任务，包含详情
-     * @param request
+     * @param jobId
      * @param httpServletRequest
      * @return
      */
     @ResponseBody
     @GetMapping("getJobDetail/{jobId}")
-    public Response getJobDetail(@PathVariable Integer jobId,
+    public Response getJobDetail(@PathVariable String jobId,
                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
         Map logMap = new HashMap();
         Map memoMap = new HashMap();
         try {
-            in.put("jobId", jobId);
-            logMap.put("GogoActType", GogoActType.LOAD_JOB_DETAIL);
-            memoMap.put("jobId", jobId);
             String token = httpServletRequest.getHeader("token");
-            if (token != null) {
-                memoMap.put("token", token);
-            }
+            in.put("token", token);
+            in.put("jobId", jobId);
+
+            logMap.put("GogoActType", GogoActType.LOAD_JOB_DETAIL);
+            logMap.put("token", token);
+            memoMap.put("jobId", jobId);
+
             Map out = iPublicJobBusinessService.getJobDetail(in);
             response.setData(out);
+
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10026);
+                response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
             memoMap.put("error", ex.getMessage());
         }
         try {

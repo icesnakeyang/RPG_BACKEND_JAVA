@@ -37,4 +37,13 @@ public interface IAccountService {
      * @return
      */
     ArrayList sumAccountByType(Map qIn);
+
+    /**
+     * 统计用户账户总数
+     * @param qIn
+     * userId
+     * jobId
+     * @return
+     */
+    Integer totalAccount(Map qIn);
 }

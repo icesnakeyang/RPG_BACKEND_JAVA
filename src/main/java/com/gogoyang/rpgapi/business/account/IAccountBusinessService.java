@@ -1,12 +1,10 @@
 package com.gogoyang.rpgapi.business.account;
 
-import com.gogoyang.rpgapi.meta.account.entity.Account;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public interface IAccountBusinessService {
-    ArrayList<Account> listMyAccount(Map in) throws Exception;
+    Map listMyAccount(Map in) throws Exception;
 
     Map loadAccountBalance(Map in) throws Exception;
 

@@ -3,6 +3,9 @@ package com.gogoyang.rpgapi.business.job.myJob.complete.controller;
 import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusinessService;
 import com.gogoyang.rpgapi.business.job.myJob.complete.vo.JobCompleteRequest;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import com.gogoyang.rpgapi.meta.complete.entity.JobComplete;
 import org.slf4j.Logger;
@@ -19,12 +22,15 @@ import java.util.Map;
 @RequestMapping("/rpgapi/job/complete")
 public class CompleteController {
     private final ICompleteBusinessService iCompleteBusinessService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public CompleteController(ICompleteBusinessService iCompleteBusinessService) {
+    public CompleteController(ICompleteBusinessService iCompleteBusinessService,
+                              ICommonBusinessService iCommonBusinessService) {
         this.iCompleteBusinessService = iCompleteBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -39,21 +45,35 @@ public class CompleteController {
     public Response createComplete(@RequestBody JobCompleteRequest request,
                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("content", request.getContent());
+
+            logMap.put("GogoActType", GogoActType.CREATE_JOB_COMPLETE);
+            logMap.put("token", token);
+            memoMap.put("jobId", request.getJobId());
             iCompleteBusinessService.createJobComplete(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10057);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo",memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -82,10 +102,9 @@ public class CompleteController {
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10056);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
         }
         return response;
@@ -133,22 +152,35 @@ public class CompleteController {
     public Response rejectComplete(@RequestBody JobCompleteRequest request,
                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("processRemark", request.getProcessRemark());
+
+            logMap.put("", GogoActType.REJECT_JOB_COMPLETE);
+            logMap.put("token", token);
+            memoMap.put("jobId", request.getJobId());
             iCompleteBusinessService.rejectComplete(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-
             } catch (Exception ex2) {
-                response.setErrorCode(10060);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }
@@ -166,22 +198,35 @@ public class CompleteController {
     public Response acceptComplete(@RequestBody JobCompleteRequest request,
                                    HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("processRemark", request.getProcessRemark());
+
+            logMap.put("GogoActType", GogoActType.ACCEPT_JOB);
+            logMap.put("token", token);
+            memoMap.put("jobId", request.getJobId());
             iCompleteBusinessService.acceptComplete(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
-
             } catch (Exception ex2) {
-                response.setErrorCode(10061);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }

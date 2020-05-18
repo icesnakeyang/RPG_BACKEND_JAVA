@@ -32,4 +32,12 @@ public interface HonorDao{
      * @return
      */
     Double sumHonor(Map qIn);
+
+    /**
+     * 统计荣誉记录总数
+     * @param qIn
+     * userId
+     * @return
+     */
+    Integer totalHonor(Map qIn);
 }

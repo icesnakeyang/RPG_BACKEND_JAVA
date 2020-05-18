@@ -14,4 +14,6 @@ public interface IUserService {
     void updateUserInfo(UserInfo userInfo) throws Exception;
 
     UserInfo getUserByPhone(String phoneNumber) throws Exception;
+
+    UserInfo getuserbyEmail(String emailAddress) throws Exception;
 }

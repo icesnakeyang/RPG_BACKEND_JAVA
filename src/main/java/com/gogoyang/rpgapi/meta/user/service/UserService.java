@@ -50,4 +50,12 @@ public class UserService implements IUserService{
         UserInfo user=userDao.getUserInfo(qIn);
         return user;
     }
+
+    @Override
+    public UserInfo getuserbyEmail(String emailAddress) throws Exception {
+        Map qIn=new HashMap();
+        qIn.put("email", emailAddress);
+        UserInfo user=userDao.getUserInfo(qIn);
+        return user;
+    }
 }

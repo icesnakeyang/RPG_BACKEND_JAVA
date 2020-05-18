@@ -46,4 +46,16 @@ public class HonorService implements IHonorService {
         Double sum=honorDao.sumHonor(qIn);
         return sum;
     }
+
+    /**
+     * 统计荣誉记录总数
+     * @param qIn
+     * userId
+     * @return
+     */
+    @Override
+    public Integer totalHonor(Map qIn) {
+        Integer total=honorDao.totalHonor(qIn);
+        return total;
+    }
 }

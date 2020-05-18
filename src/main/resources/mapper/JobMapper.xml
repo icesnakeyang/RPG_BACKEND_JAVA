@@ -7,13 +7,15 @@
         <result property="jobId" column="job_id"/>
         <result property="taskId" column="task_id"/>
         <result property="partyAId" column="partya_id"/>
+        <result property="partyAName" column="partya_name"/>
         <result property="createdTime" column="created_time"/>
         <result property="matchId" column="match_id"/>
         <result property="partyBId" column="partyb_id"/>
+        <result property="partyBName" column="partyb_name"/>
         <result property="contractTime" column="contract_time"/>
-        <result property="jobApplyNum" column="job_apply_num"/>
-        <result property="jobMatchNum" column="job_match_num"/>
-        <result property="spotNum" column="spot_num"/>
+        <result property="totalApply" column="job_apply_num"/>
+        <result property="totalMatch" column="job_match_num"/>
+        <result property="totalSpotlight" column="spot_num"/>
     </resultMap>
 
     <select id="createJob" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
@@ -169,17 +171,17 @@
             <if test="contractTime!=null">
                 contract_time=#{contractTime},
             </if>
-            <if test="jobApplyNum!=null">
-                job_apply_num=#{jobApplyNum},
+            <if test="totalApply!=null">
+                job_apply_num=#{totalApply},
             </if>
-            <if test="jobMatchNum!=null">
-                job_match_num=#{jobMatchNum},
+            <if test="totalMatch!=null">
+                job_match_num=#{totalMatch},
             </if>
-            <if test="spotNum!=null">
-                spot_num=#{spotNum}
+            <if test="totalSpotlight!=null">
+                spot_num=#{totalSpotlight}
             </if>
-            where job_id=#{jobId}
         </set>
+        where job_id=#{jobId}
     </update>
 
     <update id="updateJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">

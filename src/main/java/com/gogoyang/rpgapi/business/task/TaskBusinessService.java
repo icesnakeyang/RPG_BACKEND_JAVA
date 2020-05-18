@@ -1,6 +1,6 @@
-package com.gogoyang.rpgapi.business.task.service;
+package com.gogoyang.rpgapi.business.task;
 
-import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
+import com.gogoyang.rpgapi.business.job.common.IJobCommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
@@ -25,24 +25,21 @@ import java.util.Map;
 @Service
 public class TaskBusinessService implements ITaskBusinessService {
     private final ITaskService iTaskService;
-    private final IUserService iUserService;
-    private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
     private final IJobService iJobService;
     private final IAccountService iAccountService;
     private final ICommonBusinessService iCommonBusinessService;
+    private final IJobCommonBusinessService iJobCommonBusinessService;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
-                               IUserService iUserService,
-                               IMyJobCommonBusinessService iMyJobCommonBusinessService,
                                IJobService iJobService, IAccountService iAccountService,
-                               ICommonBusinessService iCommonBusinessService) {
+                               ICommonBusinessService iCommonBusinessService,
+                               IJobCommonBusinessService iJobCommonBusinessService) {
         this.iTaskService = iTaskService;
-        this.iUserService = iUserService;
-        this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
         this.iJobService = iJobService;
         this.iAccountService = iAccountService;
         this.iCommonBusinessService = iCommonBusinessService;
+        this.iJobCommonBusinessService = iJobCommonBusinessService;
     }
 
     @Override
@@ -156,7 +153,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Map jobIn = new HashMap();
         jobIn.put("taskId", taskId);
 
-        Map jobOut = iMyJobCommonBusinessService.getJobTinyByTaskId(in);
+        Map jobOut = iJobCommonBusinessService.getJobTinyByJobId(in);
         Map out = new HashMap();
         out.put("job", jobOut.get("common"));
         out.put("task", task);
@@ -251,7 +248,7 @@ public class TaskBusinessService implements ITaskBusinessService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void publishNewJob(Map in) throws Exception {
+    public Map publishNewJob(Map in) throws Exception {
         /**
          *  1、根据token读取用户，检查用户
          *  2、根据taskId读取job，检查job是否已经发布
@@ -309,20 +306,14 @@ public class TaskBusinessService implements ITaskBusinessService {
         account.setType(AccountType.PUBLISH.toString());
         iAccountService.createAccount(account);
 
-        //计算甲方账户的balance余额
+        //刷新甲方账户的balance余额
         Map qIn=new HashMap();
         qIn.put("userId",job.getPartyAId());
-        Map accountMap = iCommonBusinessService.sumUserAccount(job.getPartyAId());
-        Double balance = (Double) accountMap.get("balance");
-        Double income = (Double) accountMap.get("income");
-        Double outgoing = (Double) accountMap.get("outgoing");
+        iCommonBusinessService.sumUserAccount(job.getPartyAId());
 
-        //更新甲方的账户统计信息
-        UserInfo userUpdate=new UserInfo();
-        userUpdate.setUserId(user.getUserId());
-        userUpdate.setAccount(balance);
-        userUpdate.setAccountIn(income);
-        userUpdate.setAccountOut(outgoing);
-        iUserService.updateUserInfo(userUpdate);
+        Map out=new HashMap();
+        out.put("jobId", job.getJobId());
+
+        return out;
     }
 }

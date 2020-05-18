@@ -44,6 +44,11 @@
                 and phone=#{phone}
             </when>
         </choose>
+        <choose>
+            <when test="email!=null">
+                and email=#{email}
+            </when>
+        </choose>
     </select>
 
     <update id="updateUserInfo" parameterType="com.gogoyang.rpgapi.meta.user.entity.UserInfo">
@@ -85,8 +90,8 @@
             <if test="realName!=null">
                 real_name=#{realName}
             </if>
-            where user_id=#{userId}
         </set>
+        where user_id=#{userId}
     </update>
 
 </mapper>

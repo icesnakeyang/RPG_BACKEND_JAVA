@@ -1,6 +1,8 @@
 package com.gogoyang.rpgapi.business.job.myJob.log.service;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
@@ -42,13 +44,35 @@ public class MyLogBusinessService implements IMyLogBusinessService {
         String jobId =  in.get("jobId").toString();
         String content = in.get("content").toString();
 
+        //检查当前用户是否存在
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
+        //检查job是否存在
+        Job job=iCommonBusinessService.getJobTinyByJobId(jobId);
+
+        //检查当前用户是否甲方，或者乙方
+        String partyAId=null;
+        String partyBId=null;
+        if(user.getUserId().equals(job.getPartyAId())){
+            partyAId=user.getUserId();
+        }
+        if(user.getUserId().equals(job.getPartyBId())){
+            partyBId=user.getUserId();
+        }
+        if(partyAId==null && partyBId==null){
+            //您没有创建任务日志的权限
+            throw new Exception("30014");
+        }
+
+        //创建日志
         JobLog jobLog = new JobLog();
+        jobLog.setJobLogId(GogoTools.UUID());
         jobLog.setContent(content);
         jobLog.setCreatedTime(new Date());
         jobLog.setCreatedUserId(user.getUserId());
         jobLog.setJobId(jobId);
+        jobLog.setPartyAId(partyAId);
+        jobLog.setPartyBId(partyBId);
         iJobLogService.createJobLog(jobLog);
     }
 
@@ -80,7 +104,7 @@ public class MyLogBusinessService implements IMyLogBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void setJobLogReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer jobId = (Integer) in.get("jobId");
+        String jobId =  in.get("jobId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 

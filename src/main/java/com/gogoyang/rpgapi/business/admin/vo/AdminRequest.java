@@ -12,11 +12,11 @@ public class AdminRequest {
     private String loginName;
     private String password;
     private RoleType roleType;
-    private Integer jobId;
-    private Integer userId;
+    private String jobId;
+    private String userId;
     private Integer pageIndex;
     private Integer pageSize;
-    private Integer applyId;
+    private String applyId;
     private String remark;
     private String phone;
 }

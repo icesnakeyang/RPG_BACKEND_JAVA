@@ -2,7 +2,12 @@ package com.gogoyang.rpgapi.business.job.myJob.apply.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.apply.service.IMyApplyBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +19,15 @@ import java.util.Map;
 @RequestMapping("/rpgapi/job/myApply")
 public class MyApplyController {
     private final IMyApplyBusinessService iMyApplyBusinessService;
+    private final ICommonBusinessService iCommonBusinessService;
+
+    private Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public MyApplyController(IMyApplyBusinessService iMyApplyBusinessService) {
+    public MyApplyController(IMyApplyBusinessService iMyApplyBusinessService,
+                             ICommonBusinessService iCommonBusinessService) {
         this.iMyApplyBusinessService = iMyApplyBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -88,21 +98,35 @@ public class MyApplyController {
     public Response applyJob(@RequestBody JobRequest request,
                              HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("content", request.getContent());
+
+            logMap.put("GogoActType", GogoActType.APPLY_JOB);
+            logMap.put("token", token);
+            memoMap.put("jobId", request.getJobId());
             iMyApplyBusinessService.applyJob(in);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
-                return response;
             } catch (Exception ex2) {
-                response.setErrorCode(10033);
-                return response;
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }

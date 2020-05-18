@@ -60,5 +60,13 @@ public interface IJobLogService {
      */
     void setJobLogReadTime(Map qIn) throws Exception;
 
+    /**
+     * 统计任务日志总数
+     * @param qIn
+     * jobId
+     * @return
+     */
+    Integer totalJobLog(Map qIn);
+
 
 }

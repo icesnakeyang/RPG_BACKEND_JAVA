@@ -1,4 +1,4 @@
-package com.gogoyang.rpgapi.business.task.vo;
+package com.gogoyang.rpgapi.controller.task;
 
 import lombok.Data;
 

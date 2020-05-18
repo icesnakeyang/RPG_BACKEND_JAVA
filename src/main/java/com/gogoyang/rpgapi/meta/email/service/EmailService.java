@@ -29,9 +29,6 @@ public class EmailService implements IEmailService{
 
     @Override
     public void insert(Email email) throws Exception {
-        if(email.getEmailId()!=null){
-            throw new Exception("10023");
-        }
         emailDao.createEmail(email);
     }
 

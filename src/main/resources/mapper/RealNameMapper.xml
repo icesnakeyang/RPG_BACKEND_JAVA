@@ -13,10 +13,10 @@
     <insert id="createRealName" parameterType="com.gogoyang.rpgapi.meta.realname.entity.RealName">
         insert into real_name
         (user_id, real_name, created_time,
-        status, idcard_no, sex)
+        status, idcard_no, sex, verify)
         values
-        (#{userId}, #{realName}, #{createTime},
-         #{status}, #{idcardNo}, #{sex})
+        (#{userId}, #{realName}, #{createdTime},
+         #{status}, #{idcardNo}, #{sex}, #{verify})
     </insert>
 
     <!--查询一个实名认证信息-->

@@ -22,9 +22,6 @@ public class PhoneService implements IPhoneService{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(Phone phone) throws Exception {
-        if(phone.getPhoneId()!=null){
-            throw new Exception("10115");
-        }
         phoneDao.createPhone(phone);
     }
 

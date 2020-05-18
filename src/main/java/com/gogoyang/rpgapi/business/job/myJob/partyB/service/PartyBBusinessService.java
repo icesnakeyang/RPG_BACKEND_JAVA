@@ -1,17 +1,11 @@
 package com.gogoyang.rpgapi.business.job.myJob.partyB.service;
 
-import com.gogoyang.rpgapi.business.job.myJob.common.service.IMyJobCommonBusinessService;
-import com.gogoyang.rpgapi.business.job.myJob.complete.service.ICompleteBusinessService;
-import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
-import com.gogoyang.rpgapi.business.job.myJob.stop.service.IStopBusinessService;
+import com.gogoyang.rpgapi.business.job.common.IJobCommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
-import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
-import com.gogoyang.rpgapi.meta.realname.service.IRealNameService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,32 +16,49 @@ import java.util.Map;
 @Service
 public class PartyBBusinessService implements IPartyBBusinessService {
     private final IJobService iJobService;
-    private final IMyJobCommonBusinessService iMyJobCommonBusinessService;
     private final ICommonBusinessService iCommonBusinessService;
+    private final IJobCommonBusinessService iJobCommonBusinessService;
 
     @Autowired
     public PartyBBusinessService(IJobService iJobService,
-                                 IMyJobCommonBusinessService iMyJobCommonBusinessService,
-                                 ICommonBusinessService iCommonBusinessService) {
+                                 ICommonBusinessService iCommonBusinessService,
+                                 IJobCommonBusinessService iJobCommonBusinessService) {
         this.iJobService = iJobService;
-        this.iMyJobCommonBusinessService = iMyJobCommonBusinessService;
         this.iCommonBusinessService = iCommonBusinessService;
+        this.iJobCommonBusinessService = iJobCommonBusinessService;
     }
 
+    /**
+     * 查询所有我是乙方的任务
+     * @param in
+     * @return
+     * @throws Exception
+     */
     @Override
     public ArrayList<Job> listMyPartyBJob(Map in) throws Exception {
         String token = in.get("token").toString();
+        Integer pageIndex=(Integer)in.get("pageIndex");
+        Integer pageSize=(Integer)in.get("pageSize");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Job> jobList = iJobService.listPartyBJob(user.getUserId(), JobStatus.PROGRESS, 0, 100);
+        ArrayList<Job> jobList = iJobService.listPartyBJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
 
+        /**
+         * 逐条统计未读日志数
+         */
         for(int i=0;i<jobList.size();i++){
-            Integer unread=0;
-            unread=iMyJobCommonBusinessService.totalUnreadOneJob(token, jobList.get(i).getJobId());
-            jobList.get(i).setUnRead(unread);
+            Map qIn=new HashMap();
+            qIn.put("jobId", jobList.get(i).getJobId());
+            qIn.put("token", token);
+            Map qOut=iJobCommonBusinessService.totalMyUnread(qIn);
+            Integer totalUnreadLog=(Integer)qOut.get("totalUnreadLog");
+            Integer totalUnreadComplete=(Integer)qOut.get("totalUnreadComplete");
+            Integer totalUnreadStop=(Integer)qOut.get("totalUnreadStop");
+            jobList.get(i).setTotalLogUnread(totalUnreadLog);
+            jobList.get(i).setTotalCompleteUnread(totalUnreadComplete);
+            jobList.get(i).setTotalStopUnread(totalUnreadStop);
         }
-
         return jobList;
     }
 
@@ -59,6 +70,25 @@ public class PartyBBusinessService implements IPartyBBusinessService {
         UserInfo user=iCommonBusinessService.getUserByToken(token);
 
         Job job=iJobService.getJobDetailByJobId(jobId);
+
+        /**
+         * 增加统计信息
+         * 1、日志总数
+         * 2、完成总数
+         * 3、终止总数
+         * 4、申诉总数
+         */
+
+        Map qIn=new HashMap();
+        qIn.put("jobId", jobId);
+        qIn.put("token", token);
+        Map qOut=iJobCommonBusinessService.totalMyLog(qIn);
+        Integer totalJobLog=(Integer)qOut.get("totalJobLog");
+        job.setTotalLog(totalJobLog);
+        Integer totalComplete=(Integer)qOut.get("totalComplete");
+        job.setTotalComplete(totalComplete);
+        Integer totalStop=(Integer)qOut.get("totalStop");
+        job.setTotalStop(totalStop);
 
         Map out=new HashMap();
         out.put("job",job);

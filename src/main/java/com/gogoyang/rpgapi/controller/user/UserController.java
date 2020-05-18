@@ -167,7 +167,7 @@ public class UserController {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10014);
+                response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
             memoMap.put("error", ex.getMessage());
@@ -187,16 +187,36 @@ public class UserController {
     public Response getPhone(@RequestBody UserRequest request) {
         Response response = new Response();
         Map in = new HashMap();
-        Map out = new HashMap();
         try {
             in.put("phone", request.getPhone());
-            out = iUserBusinessService.getPhone(in);
+            Map out = iUserBusinessService.getPhone(in);
             response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10124);
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+    @ResponseBody
+    @PostMapping("/getEmailByEmail")
+    public Response getEmailByEmail(@RequestBody UserRequest request) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            in.put("email", request.getEmail());
+            Map out = iUserBusinessService.getEmail(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
         }
         return response;
