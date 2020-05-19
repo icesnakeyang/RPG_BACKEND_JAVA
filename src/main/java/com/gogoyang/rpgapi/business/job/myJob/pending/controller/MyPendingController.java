@@ -2,7 +2,9 @@ package com.gogoyang.rpgapi.business.job.myJob.pending.controller;
 
 import com.gogoyang.rpgapi.business.job.myJob.pending.service.IMyPendingBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import lombok.extern.flogger.Flogger;
 import org.slf4j.Logger;
@@ -21,11 +23,15 @@ import java.util.Map;
 @RequestMapping("/rpgapi/mypending")
 public class MyPendingController {
     private final IMyPendingBusinessService iMyPendingBusinessService;
+    private final ICommonBusinessService iCommonBusinessService;
+
     private Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
-    public MyPendingController(IMyPendingBusinessService iMyPendingBusinessService) {
+    public MyPendingController(IMyPendingBusinessService iMyPendingBusinessService,
+                               ICommonBusinessService iCommonBusinessService) {
         this.iMyPendingBusinessService = iMyPendingBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -90,9 +96,12 @@ public class MyPendingController {
     public Response updatePendingJob(@RequestBody JobRequest request,
                                      HttpServletRequest httpServletRequest){
         Response response=new Response();
+
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token=httpServletRequest.getHeader("token");
-            Map in=new HashMap();
             in.put("token", token);
             in.put("jobId", request.getJobId());
             in.put("title", request.getTitle());
@@ -100,13 +109,27 @@ public class MyPendingController {
             in.put("days", request.getDays());
             in.put("price", request.getPrice());
             in.put("jobDetail",request.getJobDetail());
+
+            logMap.put("GogoActType", GogoActType.UPDATE_JOB);
+            logMap.put("token", token);
+            logMap.put("jobId",request.getJobId());
             iMyPendingBusinessService.updateJob(in);
+            memoMap.put("result", GogoStatus.SUCCESS);
         }catch (Exception ex){
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             }catch (Exception ex2){
-                response.setErrorCode(10099);
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }

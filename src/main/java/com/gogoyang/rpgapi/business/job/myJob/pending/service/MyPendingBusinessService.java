@@ -80,7 +80,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
             throw new Exception("10100");
         }
 
-        if (!job.getStatus().equals(JobStatus.PENDING)) {
+        if (!job.getStatus().equals(JobStatus.PENDING.toString())) {
             throw new Exception("10101");
         }
 

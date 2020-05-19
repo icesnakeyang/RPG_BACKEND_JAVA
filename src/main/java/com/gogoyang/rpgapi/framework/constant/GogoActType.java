@@ -37,5 +37,6 @@ public enum GogoActType {
     CREATE_JOB_COMPLETE,
     REJECT_JOB_COMPLETE,
     ACCEPT_JOB,
-    LIST_ACCOUNT
+    LIST_ACCOUNT,
+    UPDATE_JOB
 }
