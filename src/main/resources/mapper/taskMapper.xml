@@ -9,6 +9,8 @@
         <result property="createdUserName" column="created_user_name"/>
         <result property="jobId" column="job_id"/>
         <result property="jobTitle" column="job_title"/>
+        <result property="partyBId" column="partyb_id"/>
+        <result property="partyBName" column="partyb_name"/>
     </resultMap>
 
     <!--创建一个私人任务-->
@@ -63,16 +65,19 @@
         task.days,
         task.price,
         created_user_id,
-        real_name as created_user_name,
+        create_user.real_name as created_user_name,
         task.created_time,
         pid,
         task.code,
         job_id,
-        job.title as job_title
+        job.title             as job_title,
+        job.partyb_id,
+        partyb.real_name as partyb_name
         from task
-        left join user_info create_user on created_user_id=user_id
-        left join job on job.task_id=task.task_id
-        where 1=1
+        left join user_info create_user on created_user_id = user_id
+        left join job on job.task_id = task.task_id
+        left join user_info partyb on partyb_id = partyb.user_id
+        where 1 = 1
         <choose>
             <when test="titleKey!=null">
                 and task.title like '%'+#{titleKey}+'%'

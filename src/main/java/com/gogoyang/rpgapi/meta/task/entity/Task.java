@@ -21,4 +21,6 @@ public class Task {
     private Integer totalSubTask;
     private String jobId;
     private String jobTitle;
+    private String partyBId;
+    private String partyBName;
 }

@@ -334,7 +334,16 @@ public class TaskBusinessService implements ITaskBusinessService {
             Map map = new HashMap();
             Task task = subTaskList.get(i);
             map.put("taskId", task.getTaskId());
-            map.put("title", task.getTitle());
+
+            String title=task.getTitle();
+            if(task.getJobId()!=null){
+                title+=" && "+task.getJobTitle();
+            }
+            if(task.getPartyBId()!=null){
+                title+=" && "+task.getPartyBName();
+            }
+
+            map.put("title", title);
             if (task.getJobId() != null) {
                 map.put("publish", true);
             } else {
