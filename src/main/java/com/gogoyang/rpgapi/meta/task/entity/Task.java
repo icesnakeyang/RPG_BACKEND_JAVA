@@ -17,4 +17,8 @@ public class Task {
     private String code;
     private String createdUserName;
     private String detail;
+
+    private Integer totalSubTask;
+    private String jobId;
+    private String jobTitle;
 }

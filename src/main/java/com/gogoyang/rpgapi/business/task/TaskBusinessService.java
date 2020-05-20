@@ -46,8 +46,8 @@ public class TaskBusinessService implements ITaskBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void createTask(Map in) throws Exception {
         String token = in.get("token").toString();
-        String detail = (String)in.get("detail");
-        String code = (String)in.get("code");
+        String detail = (String) in.get("detail");
+        String code = (String) in.get("code");
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
         Double price = (Double) in.get("price");
@@ -124,7 +124,7 @@ public class TaskBusinessService implements ITaskBusinessService {
          * the task only can be deleted when there is no sub task
          */
         String token = in.get("token").toString();
-        String taskId =  in.get("taskId").toString();
+        String taskId = in.get("taskId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
@@ -142,7 +142,7 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        String taskId =  in.get("taskId").toString();
+        String taskId = in.get("taskId").toString();
 
         UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
@@ -154,11 +154,11 @@ public class TaskBusinessService implements ITaskBusinessService {
         jobIn.put("taskId", taskId);
 
 //        Map jobOut = iJobCommonBusinessService.getJobTinyByJobId(in);
-        Job job=iJobService.getJobByTaskId(taskId);
+        Job job = iJobService.getJobByTaskId(taskId);
 
         Map out = new HashMap();
 
-        if(job!=null){
+        if (job != null) {
             out.put("job", job);
         }
 
@@ -172,7 +172,7 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 检查token，检查userInfo
          */
         String token = in.get("token").toString();
-        String taskId =  in.get("taskId").toString();
+        String taskId = in.get("taskId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
@@ -192,7 +192,7 @@ public class TaskBusinessService implements ITaskBusinessService {
 
         ArrayList<Task> tasks = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
 
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("tasks", tasks);
 
         return out;
@@ -200,7 +200,7 @@ public class TaskBusinessService implements ITaskBusinessService {
 
     @Override
     public Map totalSubTask(Map in) throws Exception {
-        String pid =  in.get("pid").toString();
+        String pid = in.get("pid").toString();
         if (pid == null) {
             throw new Exception("10095");
         }
@@ -213,19 +213,22 @@ public class TaskBusinessService implements ITaskBusinessService {
 
     @Override
     public Map listTaskByPid(Map in) throws Exception {
+        String token = in.get("token").toString();
         String pid = in.get("pid").toString();
-        if (pid == null) {
-            throw new Exception("10095");
-        }
-        ArrayList<Task> tasks = iTaskService.listTaskByPid(pid);
+
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
+
+        ArrayList list = loadTaskTree(pid);
+
         Map out = new HashMap();
-        out.put("task", tasks);
+        out.put("tasks", list);
+
         return out;
     }
 
     @Override
     public Map listTaskBreadcrumb(Map in) throws Exception {
-        String taskId =  in.get("taskId").toString();
+        String taskId = in.get("taskId").toString();
 
         Task task = iTaskService.getTaskTinyByTaskId(taskId);
 
@@ -266,7 +269,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Integer days = (Integer) in.get("days");
         String detail = in.get("detail").toString();
         Double price = (Double) in.get("price");
-        String taskId =  in.get("taskId").toString();
+        String taskId = in.get("taskId").toString();
         String title = in.get("title").toString();
 
         //读取当前用户
@@ -313,13 +316,37 @@ public class TaskBusinessService implements ITaskBusinessService {
         iAccountService.createAccount(account);
 
         //刷新甲方账户的balance余额
-        Map qIn=new HashMap();
-        qIn.put("userId",job.getPartyAId());
+        Map qIn = new HashMap();
+        qIn.put("userId", job.getPartyAId());
         iCommonBusinessService.sumUserAccount(job.getPartyAId());
 
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("jobId", job.getJobId());
 
         return out;
+    }
+
+    private ArrayList loadTaskTree(String taskId) throws Exception {
+        //读取子任务
+        ArrayList<Task> subTaskList = iTaskService.listTaskByPid(taskId);
+        ArrayList list = new ArrayList();
+        for (int i = 0; i < subTaskList.size(); i++) {
+            Map map = new HashMap();
+            Task task = subTaskList.get(i);
+            map.put("taskId", task.getTaskId());
+            map.put("title", task.getTitle());
+            if (task.getJobId() != null) {
+                map.put("publish", true);
+            } else {
+                map.put("publish", false);
+            }
+            ArrayList<Task> childTasks = loadTaskTree(task.getTaskId());
+            if (childTasks.size() > 0) {
+                map.put("expand", true);
+                map.put("children", childTasks);
+            }
+            list.add(map);
+        }
+        return list;
     }
 }

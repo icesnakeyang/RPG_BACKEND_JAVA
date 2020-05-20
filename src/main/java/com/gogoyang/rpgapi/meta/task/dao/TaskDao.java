@@ -60,4 +60,12 @@ public interface TaskDao {
      * @param taskId
      */
     void deleteTaskDetail(String taskId);
+
+    /**
+     * 统计任务数量
+     * @param qIn
+     * pid
+     * @return
+     */
+    Integer totalTask(Map qIn);
 }

@@ -348,19 +348,35 @@ public class TaskController {
     public Response listSubTask(@RequestBody TaskRequest request,
                                 HttpServletRequest httpServletRequest) {
         Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
-            Map in = new HashMap();
             in.put("token", token);
             in.put("pid", request.getPid());
+
+            logMap.put("GogoActType",GogoActType.LIST_SUB_TASK);
+            logMap.put("token", token);
+            memoMap.put("pid", request.getPid());
             Map out = iTaskBusinessService.listTaskByPid(in);
             response.setData(out);
+            logMap.put("result", GogoStatus.SUCCESS);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
-                response.setErrorCode(10095);
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
             }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }
