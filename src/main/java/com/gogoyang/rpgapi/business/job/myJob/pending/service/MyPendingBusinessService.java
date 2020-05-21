@@ -81,7 +81,12 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         }
 
         if (!job.getStatus().equals(JobStatus.PENDING.toString())) {
-            throw new Exception("10101");
+            if(job.getStatus().equals(JobStatus.MATCHING.toString())){
+                //任务已经有人申请了，不能修改了。
+                throw new Exception("30017");
+            }
+            //任务不是等待申请状态，不能修改了
+            throw new Exception("30018");
         }
 
         if (!user.getUserId().equals(job.getPartyAId())) {
