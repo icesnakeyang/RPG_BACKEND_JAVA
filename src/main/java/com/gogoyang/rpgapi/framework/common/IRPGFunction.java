@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.framework.common;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IRPGFunction {
@@ -16,4 +17,16 @@ public interface IRPGFunction {
     UUID UUID() throws Exception;
 
     boolean checkEmail(String email) throws Exception;
+
+    /**
+     * 把base64图片数据转成图片文件
+     * @param imgStr
+     * @return
+     * @throws Exception
+     */
+    Map GenerateImage(String imgStr, Integer fileIndex) throws Exception;
+
+    Map processRichTextPics(String detail) throws Exception;
+
+    void deleteOSSFile(String fileName) throws Exception;
 }

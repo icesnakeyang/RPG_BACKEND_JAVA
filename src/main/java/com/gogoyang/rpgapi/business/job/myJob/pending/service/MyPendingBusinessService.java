@@ -1,12 +1,16 @@
 package com.gogoyang.rpgapi.business.job.myJob.pending.service;
 
+import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.meta.apply.entity.JobApply;
 import com.gogoyang.rpgapi.meta.apply.service.IJobApplyService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.resource.entity.ResourceFile;
+import com.gogoyang.rpgapi.meta.resource.service.IResourceFileService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,16 +28,22 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
     private final IUserService iUserService;
     private final IJobApplyService iJobApplyService;
     private final ICommonBusinessService iCommonBusinessService;
+    private final IResourceFileService iResourceFileService;
+    private final IRPGFunction irpgFunction;
 
     @Autowired
     public MyPendingBusinessService(IJobService iJobService,
                                     IUserService iUserService,
                                     IJobApplyService iJobApplyService,
-                                    ICommonBusinessService iCommonBusinessService) {
+                                    ICommonBusinessService iCommonBusinessService,
+                                    IResourceFileService iResourceFileService,
+                                    IRPGFunction irpgFunction) {
         this.iJobService = iJobService;
         this.iUserService = iUserService;
         this.iJobApplyService = iJobApplyService;
         this.iCommonBusinessService = iCommonBusinessService;
+        this.iResourceFileService = iResourceFileService;
+        this.irpgFunction = irpgFunction;
     }
 
     @Override
@@ -66,7 +77,7 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
         Double price = (Double) in.get("price");
-        String jobDetail = in.get("jobDetail").toString();
+        Map detailMap =(Map) in.get("detailMap");
 
         UserInfo user = iUserService.getUserByToken(token);
 
@@ -93,12 +104,61 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
             throw new Exception("10102");
         }
 
+        //修改job
         job.setTitle(title);
         job.setCode(code);
         job.setDays(days);
         job.setPrice(price);
-        job.setDetail(jobDetail);
+        job.setDetail(detailMap.get("detail").toString());
         iJobService.updateJob(job);
+
+        /**
+         * 如果有新的删除原来的资源文件，重新保存资源文件
+         */
+
+        //读取原来的资源文件
+        Map qIn = new HashMap();
+        qIn.put("jobId", job.getJobId());
+        ArrayList<ResourceFile> resourceFiles = iResourceFileService.listResourceFile(qIn);
+
+        for (int i = 0; i < resourceFiles.size(); i++) {
+            //判断该文件是否还在detail，没有就删除oss服务器上的文件
+            String fileName = resourceFiles.get(i).getFileName();
+            if (fileName != null) {
+                Integer fileIndex = job.getDetail().indexOf(fileName);
+                if (fileIndex == -1) {
+                    //检查task detail里是否引用了该图片
+                    if(resourceFiles.get(i).getTaskId()==null) {
+                        //图片已经没有了，删除
+                        irpgFunction.deleteOSSFile(fileName);
+                        //删除资源文件库
+                        qIn=new HashMap();
+                        qIn.put("fileId", resourceFiles.get(i).getFileId());
+                        iResourceFileService.deleteResourceFile(qIn);
+                    }else {
+                        //task里还有该图片，把jobId设置为null，删除task里的图片时，就可以删除该资源了
+                        qIn=new HashMap();
+                        qIn.put("jobIdNull", true);
+                        qIn.put("fileId", resourceFiles.get(i).getFileId());
+                        iResourceFileService.updateResourceFile(qIn);
+                    }
+                }
+            }
+        }
+
+        //如果有新的图片，就添加资源库
+        ArrayList fileList = (ArrayList) detailMap.get("fileList");
+        for (int i = 0; i < fileList.size(); i++) {
+            String url = ((Map) fileList.get(i)).get("url").toString();
+            String fileName = ((Map) fileList.get(i)).get("fileName").toString();
+            ResourceFile resourceFile = new ResourceFile();
+            resourceFile.setCreateTime(new Date());
+            resourceFile.setFileId(GogoTools.UUID());
+            resourceFile.setFileName(fileName);
+            resourceFile.setJobId(job.getJobId());
+            resourceFile.setUrl(url);
+            iResourceFileService.createResourceFile(resourceFile);
+        }
     }
 
     @Override
@@ -139,6 +199,27 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         }
         //delete
         iJobService.deleteJob(jobId);
+
+        /**
+         * 删除原来的资源文件，重新保存资源文件
+         */
+        //读取原来的资源文件
+        qIn=new HashMap();
+        qIn.put("jobId", job.getJobId());
+        ArrayList<ResourceFile> resourceFiles=iResourceFileService.listResourceFile(qIn);
+
+        for(int i=0;i<resourceFiles.size();i++){
+            //删除oss服务器上的文件
+            String fileName=resourceFiles.get(i).getFileName();
+            if(fileName!=null){
+                irpgFunction.deleteOSSFile(fileName);
+            }
+            //删除资源文件库
+            if(resourceFiles.get(i).getTaskId()==null) {
+                //如果taskId不为空，则改资源也被task引用，不能删除
+                iResourceFileService.deleteResourceFile(qIn);
+            }
+        }
     }
 
     @Override

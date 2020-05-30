@@ -1,18 +1,19 @@
 package com.gogoyang.rpgapi.business.task;
 
-import com.gogoyang.rpgapi.business.job.common.IJobCommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.service.IAccountService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.resource.entity.ResourceFile;
+import com.gogoyang.rpgapi.meta.resource.service.IResourceFileService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
-import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,25 +29,28 @@ public class TaskBusinessService implements ITaskBusinessService {
     private final IJobService iJobService;
     private final IAccountService iAccountService;
     private final ICommonBusinessService iCommonBusinessService;
-    private final IJobCommonBusinessService iJobCommonBusinessService;
+    private final IResourceFileService iResourceFileService;
+    private final IRPGFunction irpgFunction;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
                                IJobService iJobService, IAccountService iAccountService,
                                ICommonBusinessService iCommonBusinessService,
-                               IJobCommonBusinessService iJobCommonBusinessService) {
+                               IResourceFileService iResourceFileService,
+                               IRPGFunction irpgFunction) {
         this.iTaskService = iTaskService;
         this.iJobService = iJobService;
         this.iAccountService = iAccountService;
         this.iCommonBusinessService = iCommonBusinessService;
-        this.iJobCommonBusinessService = iJobCommonBusinessService;
+        this.iResourceFileService = iResourceFileService;
+        this.irpgFunction = irpgFunction;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void createTask(Map in) throws Exception {
         String token = in.get("token").toString();
-        String detail = (String) in.get("detail");
+        Map detailMap = (Map) in.get("detailMap");
         String code = (String) in.get("code");
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
@@ -57,13 +61,29 @@ public class TaskBusinessService implements ITaskBusinessService {
         Task task = new Task();
         task.setTaskId(GogoTools.UUID());
         task.setCreatedUserId(user.getUserId());
-        task.setDetail(detail);
+        task.setDetail(detailMap.get("detail").toString());
         task.setCreatedTime(new Date());
         task.setCode(code);
         task.setDays(days);
         task.setTitle(title);
         task.setPrice(price);
         iTaskService.insertTask(task);
+
+        /**
+         * 保存资源文件
+         */
+        ArrayList fileList = (ArrayList) detailMap.get("fileList");
+        for (int i = 0; i < fileList.size(); i++) {
+            String url = ((Map) fileList.get(i)).get("url").toString();
+            String fileName = ((Map) fileList.get(i)).get("fileName").toString();
+            ResourceFile resourceFile = new ResourceFile();
+            resourceFile.setCreateTime(new Date());
+            resourceFile.setFileId(GogoTools.UUID());
+            resourceFile.setFileName(fileName);
+            resourceFile.setTaskId(task.getTaskId());
+            resourceFile.setUrl(url);
+            iResourceFileService.createResourceFile(resourceFile);
+        }
     }
 
     @Override
@@ -100,7 +120,7 @@ public class TaskBusinessService implements ITaskBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void updateTask(Map in) throws Exception {
         String taskId = in.get("taskId").toString();
-        String detail = (String) in.get("detail");
+        Map detailMap = (Map) in.get("detailMap");
         String code = (String) in.get("code");
         Integer days = (Integer) in.get("days");
         String title = in.get("title").toString();
@@ -109,10 +129,49 @@ public class TaskBusinessService implements ITaskBusinessService {
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
         task.setCode(code);
         task.setTitle(title);
-        task.setDetail(detail);
+        task.setDetail(detailMap.get("detail").toString());
         task.setDays(days);
         task.setPrice(price);
         iTaskService.updateTask(task);
+
+        /**
+         * 如果有新的删除原来的资源文件，重新保存资源文件
+         */
+
+        //读取原来的资源文件
+        Map qIn = new HashMap();
+        qIn.put("taskId", task.getTaskId());
+        ArrayList<ResourceFile> resourceFiles = iResourceFileService.listResourceFile(qIn);
+
+        for (int i = 0; i < resourceFiles.size(); i++) {
+            //判断该文件是否还在detail，没有就删除oss服务器上的文件
+            String fileName = resourceFiles.get(i).getFileName();
+            if (fileName != null) {
+                Integer fileIndex = task.getDetail().indexOf(fileName);
+                if (fileIndex == -1) {
+                    //图片已经没有了，删除
+                    irpgFunction.deleteOSSFile(fileName);
+                    //删除资源文件库
+                    qIn=new HashMap();
+                    qIn.put("fileId", resourceFiles.get(i).getFileId());
+                    iResourceFileService.deleteResourceFile(qIn);
+                }
+            }
+        }
+
+        //如果有新的图片，就添加资源库
+        ArrayList fileList = (ArrayList) detailMap.get("fileList");
+        for (int i = 0; i < fileList.size(); i++) {
+            String url = ((Map) fileList.get(i)).get("url").toString();
+            String fileName = ((Map) fileList.get(i)).get("fileName").toString();
+            ResourceFile resourceFile = new ResourceFile();
+            resourceFile.setCreateTime(new Date());
+            resourceFile.setFileId(GogoTools.UUID());
+            resourceFile.setFileName(fileName);
+            resourceFile.setTaskId(task.getTaskId());
+            resourceFile.setUrl(url);
+            iResourceFileService.createResourceFile(resourceFile);
+        }
     }
 
     @Override
@@ -134,6 +193,24 @@ public class TaskBusinessService implements ITaskBusinessService {
             throw new Exception("10097");
         }
         iTaskService.deleteTask(taskId);
+
+        /**
+         * 删除原来的资源文件，重新保存资源文件
+         */
+        //读取原来的资源文件
+        Map qIn = new HashMap();
+        qIn.put("taskId", taskId);
+        ArrayList<ResourceFile> resourceFiles = iResourceFileService.listResourceFile(qIn);
+
+        for (int i = 0; i < resourceFiles.size(); i++) {
+            //删除oss服务器上的文件
+            String fileName = resourceFiles.get(i).getFileName();
+            if (fileName != null) {
+                irpgFunction.deleteOSSFile(fileName);
+            }
+            //删除资源文件库
+            iResourceFileService.deleteResourceFile(qIn);
+        }
     }
 
     @Override
@@ -267,7 +344,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         String token = in.get("token").toString();
         String code = in.get("code").toString();
         Integer days = (Integer) in.get("days");
-        String detail = in.get("detail").toString();
+        Map detailMap = (Map) in.get("detailMap");
         Double price = (Double) in.get("price");
         String taskId = in.get("taskId").toString();
         String title = in.get("title").toString();
@@ -303,8 +380,54 @@ public class TaskBusinessService implements ITaskBusinessService {
         job.setStatus(JobStatus.PENDING.toString());
         job.setTaskId(taskId);
         job.setTitle(title);
-        job.setDetail(detail);
+        job.setDetail(detailMap.get("detail").toString());
         iJobService.insertJob(job);
+
+        /**
+         * 如果有新的删除原来的资源文件，重新保存资源文件
+         */
+
+        //读取原来的资源文件
+        Map qIn = new HashMap();
+        qIn.put("taskId", taskId);
+        ArrayList<ResourceFile> resourceFiles = iResourceFileService.listResourceFile(qIn);
+
+        for (int i = 0; i < resourceFiles.size(); i++) {
+            /**
+             * 这里读取的是原task detail里的资源文件表
+             * 用户发布任务时，并不修改task detail，而是把修改的内容直接保存到新增的job detail里去。
+             * 所以，这里有个问题，如果原来的task detail表，保存的图片时url，而此时，应该把此url也复制到job detail的资源表里去。
+             * 否则，清理oss时，可能造成误删除。即，删除task时，job的detail里的url指向的oss图片可能被删除掉了。
+             * 所以，在删除oss图片时，既要检查task detail，也要检查job detail，因为task detail里的url和job detail的url
+             * 可能指向同一张图片，删除task时，不能也把job的图片也删除了。
+             */
+            String fileName = resourceFiles.get(i).getFileName();
+            if (fileName != null) {
+                Integer fileIndex = job.getDetail().indexOf(fileName);
+                if (fileIndex !=-1) {
+                    //url存在，把jobId也保存到资源表里
+                    qIn=new HashMap();
+                    qIn.put("jobId", job.getJobId());
+                    qIn.put("fileId", resourceFiles.get(i).getFileId());
+                    iResourceFileService.updateResourceFile(qIn);
+                }
+            }
+        }
+
+        //如果有新的图片，就添加资源库
+        ArrayList fileList = (ArrayList) detailMap.get("fileList");
+        for (int i = 0; i < fileList.size(); i++) {
+            String url = ((Map) fileList.get(i)).get("url").toString();
+            String fileName = ((Map) fileList.get(i)).get("fileName").toString();
+            ResourceFile resourceFile = new ResourceFile();
+            resourceFile.setCreateTime(new Date());
+            resourceFile.setFileId(GogoTools.UUID());
+            resourceFile.setFileName(fileName);
+            resourceFile.setJobId(job.getJobId());
+            resourceFile.setUrl(url);
+            iResourceFileService.createResourceFile(resourceFile);
+        }
+
 
         //新增account记录，publish任务时在甲方账户扣除对应的任务金额
         Account account = new Account();
@@ -316,7 +439,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         iAccountService.createAccount(account);
 
         //刷新甲方账户的balance余额
-        Map qIn = new HashMap();
+        qIn = new HashMap();
         qIn.put("userId", job.getPartyAId());
         iCommonBusinessService.sumUserAccount(job.getPartyAId());
 
@@ -335,12 +458,12 @@ public class TaskBusinessService implements ITaskBusinessService {
             Task task = subTaskList.get(i);
             map.put("taskId", task.getTaskId());
 
-            String title=task.getTitle();
-            if(task.getJobId()!=null){
-                title+=" && "+task.getJobTitle();
+            String title = task.getTitle();
+            if (task.getJobId() != null) {
+                title += " && " + task.getJobTitle();
             }
-            if(task.getPartyBId()!=null){
-                title+=" && "+task.getPartyBName();
+            if (task.getPartyBId() != null) {
+                title += " && " + task.getPartyBName();
             }
 
             map.put("title", title);

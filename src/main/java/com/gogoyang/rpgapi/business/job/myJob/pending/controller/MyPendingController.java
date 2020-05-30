@@ -3,10 +3,10 @@ package com.gogoyang.rpgapi.business.job.myJob.pending.controller;
 import com.gogoyang.rpgapi.business.job.myJob.pending.service.IMyPendingBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
-import lombok.extern.flogger.Flogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +24,17 @@ import java.util.Map;
 public class MyPendingController {
     private final IMyPendingBusinessService iMyPendingBusinessService;
     private final ICommonBusinessService iCommonBusinessService;
+    private final IRPGFunction irpgFunction;
 
     private Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
     public MyPendingController(IMyPendingBusinessService iMyPendingBusinessService,
-                               ICommonBusinessService iCommonBusinessService) {
+                               ICommonBusinessService iCommonBusinessService,
+                               IRPGFunction irpgFunction) {
         this.iMyPendingBusinessService = iMyPendingBusinessService;
         this.iCommonBusinessService = iCommonBusinessService;
+        this.irpgFunction = irpgFunction;
     }
 
     /**
@@ -108,7 +111,8 @@ public class MyPendingController {
             in.put("code", request.getCode());
             in.put("days", request.getDays());
             in.put("price", request.getPrice());
-            in.put("jobDetail",request.getJobDetail());
+            Map detailMap=irpgFunction.processRichTextPics(request.getJobDetail());
+            in.put("detailMap",detailMap);
 
             logMap.put("GogoActType", GogoActType.UPDATE_JOB);
             logMap.put("token", token);

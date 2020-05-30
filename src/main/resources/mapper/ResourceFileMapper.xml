@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.resource.dao.ResourceFileDao">
+
+    <resultMap id="resourceFileMap" type="com.gogoyang.rpgapi.meta.resource.entity.ResourceFile">
+        <result property="fileId" column="file_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="createdTime" column="created_time"/>
+        <result property="taskId" column="task_id"/>
+        <result property="jobId" column="job_id"/>
+        <result property="usageId" column="usage_id"/>
+    </resultMap>
+
+    <insert id="createResourceFile" parameterType="com.gogoyang.rpgapi.meta.resource.entity.ResourceFile">
+        insert into resource_file
+        (file_id, file_name, task_id, job_id,
+         create_time, url, usage_id)
+        values
+        (#{fileId}, #{fileName}, #{taskId}, #{jobId},
+         #{createTime}, #{url}, #{usageId})
+    </insert>
+
+    <delete id="deleteResourceFile" parameterType="map">
+        delete from resource_file
+        where 1=1
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+        <choose>
+            <when test="taskId!=null">
+                and task_id=#{taskId}
+            </when>
+        </choose>
+        <choose>
+            <when test="fileId!=null">
+                and file_id=#{fileId}
+            </when>
+        </choose>
+    </delete>
+
+    <select id="listResourceFile" parameterType="map" resultMap="resourceFileMap">
+        select * from resource_file
+        where 1=1
+        <choose>
+            <when test="taskId!=null">
+                and task_id=#{taskId}
+            </when>
+        </choose>
+        <choose>
+            <when test="jobId!=null">
+                and job_id=#{jobId}
+            </when>
+        </choose>
+    </select>
+
+    <update id="updateResourceFile" parameterType="map">
+        update resource_file
+        <set>
+            <if test="jobId!=null">
+                job_id=#{jobId},
+            </if>
+            <if test="jobIdNull!=null">
+                job_id=null,
+            </if>
+            <if test="taskIdNull!=null">
+                task_id=null
+            </if>
+        </set>
+        where file_id=#{fileId}
+    </update>
+
+</mapper>

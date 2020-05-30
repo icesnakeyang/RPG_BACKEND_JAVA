@@ -16,3 +16,9 @@ loggin:
 logging:
   file:
     name: rpgapi.log
+oss:
+  imagesPath: gogopics/rpgpics
+  domain: https://oss-cn-shenzhen.aliyuncs.com
+  accessKeyId: 0O9R0XlXcfYcPUwB
+  accessKeySecret: Vhx4wv8LUrpkQkeLQ0BYKMPg9KV950
+  gogobuket: gogoyangbucket

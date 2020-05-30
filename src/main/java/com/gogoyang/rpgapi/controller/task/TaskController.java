@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.controller.task;
 
 import com.gogoyang.rpgapi.business.task.ITaskBusinessService;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,13 +24,16 @@ import java.util.Map;
 public class TaskController {
     private final ITaskBusinessService iTaskBusinessService;
     private final ICommonBusinessService iCommonBusinessService;
+    private final IRPGFunction irpgFunction;
 
     private Logger logger= LoggerFactory.getLogger(getClass());
 
     public TaskController(ITaskBusinessService iTaskBusinessService,
-                          ICommonBusinessService iCommonBusinessService) {
+                          ICommonBusinessService iCommonBusinessService,
+                          IRPGFunction irpgFunction) {
         this.iTaskBusinessService = iTaskBusinessService;
         this.iCommonBusinessService = iCommonBusinessService;
+        this.irpgFunction = irpgFunction;
     }
 
     /**
@@ -46,7 +51,8 @@ public class TaskController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("title", request.getTitle());
-            in.put("detail", request.getDetail());
+            Map detailMap=irpgFunction.processRichTextPics(request.getDetail());
+            in.put("detailMap", detailMap);
             in.put("code", request.getCode());
             in.put("days", request.getDays());
             in.put("pid", request.getPid());
@@ -238,7 +244,13 @@ public class TaskController {
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
             in.put("code", request.getCode());
-            in.put("detail", request.getDetail());
+
+            /**
+             * 图片分离操作
+             */
+            Map detailMap=irpgFunction.processRichTextPics(request.getDetail());
+
+            in.put("detailMap", detailMap);
             in.put("days", request.getDays());
             in.put("price", request.getPrice());
 
@@ -433,8 +445,8 @@ public class TaskController {
             in.put("price", request.getPrice());
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
-            in.put("detail", request.getDetail());
-
+            Map detailMap=irpgFunction.processRichTextPics(request.getDetail());
+            in.put("detailMap", detailMap);
             logMap.put("GogoActType", GogoActType.PUBLISH_TASK);
             logMap.put("token", token);
             logMap.put("taskId", request.getTaskId());
