@@ -6,6 +6,7 @@ import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ public class PublicJobBusinessService implements IPublicJobBusinessService{
         return out;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Map getJobDetail(Map in) throws Exception {
         String jobId=in.get("jobId").toString();

@@ -103,6 +103,8 @@ public class CommonBusinessService implements ICommonBusinessService {
         String os = (String) in.get("os");
         String token = (String) in.get("token");
         GogoStatus result=(GogoStatus)in.get("result");
+        String ip=(String)in.get("ip");
+        String cityName=(String)in.get("cityName");
 
         String userId=null;
 
@@ -119,6 +121,8 @@ public class CommonBusinessService implements ICommonBusinessService {
         userActLog.setUserId(userId);
         userActLog.setResult(result.toString());
         userActLog.setMemo(irpgFunction.convertMapToString(memoMap));
+        userActLog.setIp(ip);
+        userActLog.setCityName(cityName);
         iUserActionLogService.createUserActionLog(userActLog);
     }
 

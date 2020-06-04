@@ -9,10 +9,12 @@ import com.aliyuncs.IAcsClient;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
+import com.gogoyang.rpgapi.framework.outData.IOutDataBox;
 import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
 import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sun.misc.BASE64Decoder;
@@ -27,6 +29,7 @@ import java.util.regex.Pattern;
 @Service
 public class RPGFunction implements IRPGFunction {
     private final ISMSLogService ismsLogService;
+    private final IOutDataBox iOutDataBox;
 
     /**
      * 文件服务器域名
@@ -48,8 +51,10 @@ public class RPGFunction implements IRPGFunction {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public RPGFunction(ISMSLogService ismsLogService) {
+    public RPGFunction(ISMSLogService ismsLogService,
+                       IOutDataBox iOutDataBox) {
         this.ismsLogService = ismsLogService;
+        this.iOutDataBox = iOutDataBox;
     }
 
     /**
@@ -185,6 +190,8 @@ public class RPGFunction implements IRPGFunction {
          *
          */
         // 创建OSSClient实例。
+        Map boxIn=new HashMap();
+//        Map boxOut=iOutDataBox.getOutData(boxIn);
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         // 上传文件流。
         //创建缓存文件

@@ -73,8 +73,8 @@ public class PublicJobController {
      * @return
      */
     @ResponseBody
-    @GetMapping("getJobDetail/{jobId}")
-    public Response getJobDetail(@PathVariable String jobId,
+    @GetMapping("getJobDetail/{jobId}/{ip}/{cityName}")
+    public Response getJobDetail(@PathVariable String jobId, @PathVariable String cityName, @PathVariable String ip,
                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
         Map in = new HashMap();
@@ -89,6 +89,8 @@ public class PublicJobController {
             logMap.put("token", token);
             memoMap.put("jobId", jobId);
 
+            logMap.put("ip",ip);
+            logMap.put("cityName",cityName);
             Map out = iPublicJobBusinessService.getJobDetail(in);
             response.setData(out);
 

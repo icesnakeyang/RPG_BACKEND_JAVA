@@ -8,6 +8,8 @@
         <result property="createTime" column="create_time"/>
         <result property="userId" column="user_id"/>
         <result property="actType" column="act_type"/>
+        <result property="realName" column="real_name"/>
+        <result property="cityName" column="city_name"/>
     </resultMap>
 
     <!--创建一个用户行为日志-->
@@ -16,15 +18,30 @@
             keyProperty="ids"
             parameterType="com.gogoyang.rpgapi.meta.userAction.entity.UserActionLog">
         insert into user_action_log
-        (create_time, user_id, act_type, memo, result)
+        (create_time, user_id, act_type,
+         memo, result, ip, city_name)
         values
-        (#{createTime}, #{userId}, #{actType}, #{memo}, #{result})
+        (#{createTime}, #{userId}, #{actType},
+         #{memo}, #{result}, #{ip}, #{cityName})
     </insert>
 
     <!--查询用户行为记录-->
     <select id="listUserActionLog" parameterType="map"
             resultMap="userActionLogMap">
-        select * from user_action_log
+        select user_action_log.ids,
+           create_time,
+           user_action_log.user_id,
+           real_name,
+           act_type,
+           memo,
+           result,
+           phone,
+           account,
+           honor,
+           ip,
+           city_name
+        from user_action_log
+        left join user_info ui on user_action_log.user_id=ui.user_id
         order by ids desc
         limit #{offset}, #{size}
     </select>

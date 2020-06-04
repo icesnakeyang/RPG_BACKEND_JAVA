@@ -2,8 +2,11 @@ package com.gogoyang.rpgapi.business.admin.userActionLog;
 
 import com.gogoyang.rpgapi.business.admin.common.IAdminCommonBusinessService;
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
+import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.job.service.IJobService;
 import com.gogoyang.rpgapi.meta.userAction.entity.UserActionLog;
 import com.gogoyang.rpgapi.meta.userAction.service.IUserActionLogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,11 +17,14 @@ import java.util.Map;
 public class AdminUserActionLogBusinessService implements IAdminUserActionLogBusinessService{
     private final IAdminCommonBusinessService iAdminCommonBusinessService;
     private final IUserActionLogService iUserActionLogService;
+    private final IJobService iJobService;
 
     public AdminUserActionLogBusinessService(IAdminCommonBusinessService iAdminCommonBusinessService,
-                                             IUserActionLogService iUserActionLogService) {
+                                             IUserActionLogService iUserActionLogService,
+                                             IJobService iJobService) {
         this.iAdminCommonBusinessService = iAdminCommonBusinessService;
         this.iUserActionLogService = iUserActionLogService;
+        this.iJobService = iJobService;
     }
 
     /**
@@ -42,6 +48,18 @@ public class AdminUserActionLogBusinessService implements IAdminUserActionLogBus
         qIn.put("size", pageSize);
 
         ArrayList<UserActionLog> userActionLogs=iUserActionLogService.listUserActionLog(qIn);
+
+        for(int i=0;i<userActionLogs.size();i++){
+            UserActionLog userActionLog=userActionLogs.get(i);
+            Map map=new HashMap();
+            Integer jobIdIndex=userActionLog.getMemo().indexOf("jobId");
+            if(jobIdIndex!=-1){
+                jobIdIndex+=6;
+                String jobId=userActionLog.getMemo().substring(jobIdIndex,jobIdIndex+36);
+                Job job=iJobService.getJobTinyByJobId(jobId);
+                userActionLogs.get(i).setJobTitle(job.getTitle());
+            }
+        }
 
         Map out=new HashMap();
         out.put("userActionLogs", userActionLogs);

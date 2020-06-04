@@ -17,4 +17,14 @@ public class UserActionLog {
     private String memo;
 
     private String result;
+
+    private String ip;
+    private String cityName;
+
+    private String realName;
+
+    private String phone;
+    private String account;
+    private String honor;
+    private String jobTitle;
 }
