@@ -187,7 +187,7 @@ class JobService implements IJobService {
     }
 
     @Override
-    public ArrayList<Job> listPublicJob(Integer pageIndex, Integer pageSize) throws Exception {
+    public Map listPublicJob(Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         Integer offset=(pageIndex-1)*pageSize;
         qIn.put("offset", offset);
@@ -197,7 +197,19 @@ class JobService implements IJobService {
         statusList.add(JobStatus.MATCHING);
         qIn.put("statusList", statusList);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
-        return jobs;
+
+        Integer total= jobDao.totalJob(qIn);
+
+        Map out=new HashMap();
+        out.put("jobs", jobs);
+        out.put("totalJobs", total);
+        Integer pages=total/pageSize;
+        if(total%pageSize>0){
+            pages++;
+        }
+        out.put("totalJobs", total);
+        out.put("totalJobPages", pages);
+        return out;
     }
 
     @Override

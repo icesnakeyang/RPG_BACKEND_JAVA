@@ -4,6 +4,7 @@ import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public interface IJobService {
     public void insertJob(Job job) throws Exception;
@@ -85,7 +86,7 @@ public interface IJobService {
 
     public void deleteJob(String jobId) throws Exception;
 
-    public ArrayList<Job> listPublicJob(Integer pageIndex, Integer pageSize) throws Exception;
+    public Map listPublicJob(Integer pageIndex, Integer pageSize) throws Exception;
 
     public ArrayList<Job> listMyPartyAAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
 

@@ -14,7 +14,7 @@ public interface ITaskService {
 
     Task getTaskDetailByTaskId(String taskId) throws Exception;
 
-    ArrayList<Task> listTaskByUserId(String userId, Integer pageIndex, Integer pageSize) throws Exception;
+    Map listTaskByUserId(String userId, Integer pageIndex, Integer pageSize) throws Exception;
 
     void deleteTask(String taskId) throws Exception;
 

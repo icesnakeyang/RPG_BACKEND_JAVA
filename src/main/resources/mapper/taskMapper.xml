@@ -145,10 +145,26 @@
     <select id="totalTask" parameterType="map" resultType="java.lang.Integer">
         select count(*) as total
         from task
-        where 1=1
+        left join user_info create_user on created_user_id = user_id
+        left join job on job.task_id = task.task_id
+        left join user_info partyb on partyb_id = partyb.user_id
+        where 1 = 1
+        <choose>
+            <when test="titleKey!=null">
+                and task.title like '%'+#{titleKey}+'%'
+            </when>
+        </choose>
         <choose>
             <when test="pid!=null">
                 and pid=#{pid}
+            </when>
+            <otherwise>
+                and pid is null
+            </otherwise>
+        </choose>
+        <choose>
+            <when test="createdUserId!=null">
+                and created_user_id=#{createdUserId}
             </when>
         </choose>
     </select>

@@ -81,15 +81,24 @@ public class TaskService implements ITaskService {
      * @throws Exception
      */
     @Override
-    public ArrayList<Task> listTaskByUserId(String userId, Integer pageIndex, Integer pageSize) throws Exception {
+    public Map listTaskByUserId(String userId, Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         Integer offset=(pageIndex-1)*pageSize;
         qIn.put("createdUserId", userId);
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         ArrayList<Task> tasks=taskDao.listTask(qIn);
+        Integer total=taskDao.totalTask(qIn);
 
-        return tasks;
+        Map out=new HashMap();
+        out.put("tasks", tasks);
+        out.put("totalTasks", total);
+        Integer page=total/pageSize;
+        if(total%pageSize>0){
+            page++;
+        }
+        out.put("totalTaskPage", page);
+        return out;
     }
 
     /**

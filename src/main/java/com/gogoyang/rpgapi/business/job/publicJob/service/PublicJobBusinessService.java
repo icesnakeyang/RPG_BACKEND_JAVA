@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class PublicJobBusinessService implements IPublicJobBusinessService{
+public class PublicJobBusinessService implements IPublicJobBusinessService {
     private final IUserService iUserService;
     private final IJobService iJobService;
     private final IJobApplyService iJobApplyService;
@@ -29,22 +29,20 @@ public class PublicJobBusinessService implements IPublicJobBusinessService{
 
     @Override
     public Map listPublicJob(Map in) throws Exception {
-        Integer pageIndex=(Integer)in.get("pageIndex");
-        Integer pageSize=(Integer)in.get("pageSize");
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
 
-        ArrayList<Job> jobPage= iJobService.listPublicJob(pageIndex, pageSize);
+        Map out = iJobService.listPublicJob(pageIndex, pageSize);
 
-        Map out=new HashMap();
-        out.put("jobs", jobPage);
         return out;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Map getJobDetail(Map in) throws Exception {
-        String jobId=in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
         Job job = iJobService.getJobDetailByJobId(jobId);
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("job", job);
         return out;
     }

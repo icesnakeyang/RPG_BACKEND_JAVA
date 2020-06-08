@@ -141,6 +141,38 @@
         limit #{offset}, #{size}
     </select>
 
+    <!--统计查询的job任务总数-->
+    <select id="totalJob" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total
+        from job
+        left join user_info partya on partya_id=user_id
+        left join user_info partyb on partyb_id=partyb.user_id
+        where 1=1
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+        <choose>
+            <when test="statusList!=null">
+                and status in
+                <foreach item="item" collection="statusList" separator="," open="(" close=")" index="">
+                    #{item}
+                </foreach>
+            </when>
+        </choose>
+        <choose>
+            <when test="partyAId!=null">
+                and partya_id=#{partyAId}
+            </when>
+        </choose>
+        <choose>
+            <when test="partyBId!=null">
+                and partyb_id=#{partyBId}
+            </when>
+        </choose>
+    </select>
+
     <update id="updateJobTiny" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
         update job
         <set>

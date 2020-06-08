@@ -40,6 +40,17 @@ public interface JobDao {
      */
     ArrayList<Job> listJob(Map qIn);
 
+    /**
+     * 统计查询的job任务总数
+     * @param qIn
+     * status
+     * statusList
+     * partyAId
+     * partyBId
+     * @return
+     */
+    Integer totalJob(Map qIn);
+
     void createJob(Job job);
 
     void createJobDetail(Job job);

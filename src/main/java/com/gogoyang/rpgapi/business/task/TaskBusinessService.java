@@ -267,10 +267,7 @@ public class TaskBusinessService implements ITaskBusinessService {
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Task> tasks = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
-
-        Map out = new HashMap();
-        out.put("tasks", tasks);
+        Map out = iTaskService.listTaskByUserId(user.getUserId(), pageIndex, pageSize);
 
         return out;
     }
