@@ -129,7 +129,9 @@ public class TaskBusinessService implements ITaskBusinessService {
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
         task.setCode(code);
         task.setTitle(title);
-        task.setDetail(detailMap.get("detail").toString());
+        if(detailMap!=null) {
+            task.setDetail(detailMap.get("detail").toString());
+        }
         task.setDays(days);
         task.setPrice(price);
         iTaskService.updateTask(task);

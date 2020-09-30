@@ -26,7 +26,7 @@ public class TaskController {
     private final ICommonBusinessService iCommonBusinessService;
     private final IRPGFunction irpgFunction;
 
-    private Logger logger= LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public TaskController(ITaskBusinessService iTaskBusinessService,
                           ICommonBusinessService iCommonBusinessService,
@@ -51,7 +51,7 @@ public class TaskController {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("title", request.getTitle());
-            Map detailMap=irpgFunction.processRichTextPics(request.getDetail());
+            Map detailMap = irpgFunction.processRichTextPics(request.getDetail());
             in.put("detailMap", detailMap);
             in.put("code", request.getCode());
             in.put("days", request.getDays());
@@ -94,9 +94,9 @@ public class TaskController {
     public Response createSubTask(@RequestBody TaskRequest request,
                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
-        Map in=new HashMap();
-        Map logMap=new HashMap();
-        Map memoMap=new HashMap();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
@@ -124,7 +124,7 @@ public class TaskController {
         try {
             logMap.put("memo", memoMap);
             iCommonBusinessService.createUserActionLog(logMap);
-        }catch (Exception ex3){
+        } catch (Exception ex3) {
             logger.error(ex3.getMessage());
         }
         return response;
@@ -248,9 +248,12 @@ public class TaskController {
             /**
              * 图片分离操作
              */
-            Map detailMap=irpgFunction.processRichTextPics(request.getDetail());
-
+            if (request.getDetail() == null) {
+                request.setDetail("");
+            }
+            Map detailMap = irpgFunction.processRichTextPics(request.getDetail());
             in.put("detailMap", detailMap);
+
             in.put("days", request.getDays());
             in.put("price", request.getPrice());
 
@@ -360,15 +363,15 @@ public class TaskController {
     public Response listSubTask(@RequestBody TaskRequest request,
                                 HttpServletRequest httpServletRequest) {
         Response response = new Response();
-        Map in=new HashMap();
-        Map logMap=new HashMap();
-        Map memoMap=new HashMap();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
             in.put("pid", request.getPid());
 
-            logMap.put("GogoActType",GogoActType.LIST_SUB_TASK);
+            logMap.put("GogoActType", GogoActType.LIST_SUB_TASK);
             logMap.put("token", token);
             memoMap.put("pid", request.getPid());
             Map out = iTaskBusinessService.listTaskByPid(in);
@@ -387,7 +390,7 @@ public class TaskController {
         try {
             logMap.put("memo", memoMap);
             iCommonBusinessService.createUserActionLog(logMap);
-        }catch (Exception ex3){
+        } catch (Exception ex3) {
             logger.error(ex3.getMessage());
         }
         return response;
@@ -424,6 +427,7 @@ public class TaskController {
 
     /**
      * 用户发布任务
+     *
      * @param request
      * @param httpServletRequest
      * @return
@@ -433,9 +437,9 @@ public class TaskController {
     public Response publishNewJob(@RequestBody TaskRequest request,
                                   HttpServletRequest httpServletRequest) {
         Response response = new Response();
-        Map in=new HashMap();
-        Map logMap=new HashMap();
-        Map memoMap=new HashMap();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
         try {
             String token = httpServletRequest.getHeader("token");
             in.put("token", token);
@@ -445,13 +449,13 @@ public class TaskController {
             in.put("price", request.getPrice());
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
-            Map detailMap=irpgFunction.processRichTextPics(request.getDetail());
+            Map detailMap = irpgFunction.processRichTextPics(request.getDetail());
             in.put("detailMap", detailMap);
             logMap.put("GogoActType", GogoActType.PUBLISH_TASK);
             logMap.put("token", token);
             logMap.put("taskId", request.getTaskId());
             logMap.put("title", request.getTitle());
-            Map out=iTaskBusinessService.publishNewJob(in);
+            Map out = iTaskBusinessService.publishNewJob(in);
             logMap.put("result", GogoStatus.SUCCESS);
             response.setData(out);
         } catch (Exception ex) {
@@ -467,7 +471,7 @@ public class TaskController {
         try {
             logMap.put("memo", memoMap);
             iCommonBusinessService.createUserActionLog(logMap);
-        }catch (Exception ex3){
+        } catch (Exception ex3) {
             logger.error(ex3.getMessage());
         }
         return response;
