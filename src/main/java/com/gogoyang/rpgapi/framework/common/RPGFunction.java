@@ -121,7 +121,7 @@ public class RPGFunction implements IRPGFunction {
 
         long diff = (currentTime - theTime) / 1000 / 60;
 
-        if (diff > 15) {修改
+        if (diff > 15) {
             throw new Exception("30012");
         }
     }
