@@ -12,13 +12,12 @@ import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.outData.IOutDataBox;
 import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
 import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -67,10 +66,10 @@ public class RPGFunction implements IRPGFunction {
     @Override
     public String encoderByMd5(String string) throws Exception {
         MessageDigest md5 = MessageDigest.getInstance("MD5");
-        BASE64Encoder base64Encoder = new BASE64Encoder();
-        String newString = base64Encoder.encode(md5.digest(string.getBytes("utf-8")));
+        byte[] newpass = Base64.encodeBase64(md5.digest(string.getBytes("utf-8")));
+        String str = new String(newpass);
 
-        return newString;
+        return str;
     }
 
     /**
@@ -122,7 +121,7 @@ public class RPGFunction implements IRPGFunction {
 
         long diff = (currentTime - theTime) / 1000 / 60;
 
-        if (diff > 15) {
+        if (diff > 15) {修改
             throw new Exception("30012");
         }
     }
@@ -167,9 +166,8 @@ public class RPGFunction implements IRPGFunction {
     @Override
     public Map GenerateImage(String imgStr, Integer fileIndex) throws Exception {
         //对字节数组字符串进行Base64解码并生成图片
-        BASE64Decoder decoder = new BASE64Decoder();
         //Base64解码
-        byte[] b = decoder.decodeBuffer(imgStr);
+        byte[] b = Base64.decodeBase64(imgStr);
         for (int i = 0; i < b.length; ++i) {
             if (b[i] < 0) {//调整异常数据
                 b[i] += 256;
@@ -190,7 +188,7 @@ public class RPGFunction implements IRPGFunction {
          *
          */
         // 创建OSSClient实例。
-        Map boxIn=new HashMap();
+        Map boxIn = new HashMap();
 //        Map boxOut=iOutDataBox.getOutData(boxIn);
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         // 上传文件流。
@@ -241,11 +239,12 @@ public class RPGFunction implements IRPGFunction {
 
     /**
      * 删除oss服务器的文件
+     *
      * @param fileName
      * @throws Exception
      */
     @Override
-    public void deleteOSSFile(String fileName) throws Exception{
+    public void deleteOSSFile(String fileName) throws Exception {
         String endpoint = domainName;
         // 创建OSSClient实例。
 

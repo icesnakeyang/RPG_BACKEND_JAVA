@@ -2,7 +2,6 @@ package com.gogoyang.rpgapi.framework.common;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -108,7 +107,7 @@ public class GogoTools {
         cipher.init(Cipher.DECRYPT_MODE, keyspace);
 //        byte[] result = cipher.doFinal(Base64.decodeBase64(codec));
 
-        String src= new String(cipher.doFinal(new BASE64Decoder().decodeBuffer(codec)));
+        String src= new String(cipher.doFinal(Base64.decodeBase64(codec)));
 
 //        String src = new String(result);
         return src;
