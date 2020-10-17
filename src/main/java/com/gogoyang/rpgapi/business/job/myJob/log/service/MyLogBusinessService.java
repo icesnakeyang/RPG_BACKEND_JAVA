@@ -41,25 +41,25 @@ public class MyLogBusinessService implements IMyLogBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void createLog(Map in) throws Exception {
         String token = in.get("token").toString();
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
         String content = in.get("content").toString();
 
         //检查当前用户是否存在
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
         //检查job是否存在
-        Job job=iCommonBusinessService.getJobTinyByJobId(jobId);
+        Job job = iCommonBusinessService.getJobTinyByJobId(jobId);
 
         //检查当前用户是否甲方，或者乙方
-        String partyAId=null;
-        String partyBId=null;
-        if(user.getUserId().equals(job.getPartyAId())){
-            partyAId=user.getUserId();
+        String partyAId = null;
+        String partyBId = null;
+        if (user.getUserId().equals(job.getPartyAId())) {
+            partyAId = user.getUserId();
         }
-        if(user.getUserId().equals(job.getPartyBId())){
-            partyBId=user.getUserId();
+        if (user.getUserId().equals(job.getPartyBId())) {
+            partyBId = user.getUserId();
         }
-        if(partyAId==null && partyBId==null){
+        if (partyAId == null && partyBId == null) {
             //您没有创建任务日志的权限
             throw new Exception("30014");
         }
@@ -86,7 +86,7 @@ public class MyLogBusinessService implements IMyLogBusinessService {
      */
     @Override
     public ArrayList<JobLog> loadJobLog(Map in) throws Exception {
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
 
@@ -104,7 +104,7 @@ public class MyLogBusinessService implements IMyLogBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void setJobLogReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
@@ -114,5 +114,24 @@ public class MyLogBusinessService implements IMyLogBusinessService {
         qIn.put("jobId", jobId);
 
         iJobLogService.setJobLogReadTime(qIn);
+    }
+
+    @Override
+    public Map getJobLog(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String jobLogId = in.get("jobLogId").toString();
+
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
+
+        JobLog jobLog = iJobLogService.getJobLog(jobLogId);
+
+        if (jobLog == null) {
+            throw new Exception("30020");
+        }
+
+        Map out = new HashMap();
+        out.put("jobLog", jobLog);
+
+        return out;
     }
 }

@@ -22,4 +22,6 @@ public interface IMyLogBusinessService {
     ArrayList<JobLog> loadJobLog(Map in) throws Exception;
 
     void setJobLogReadTime(Map in)throws Exception;
+
+    Map getJobLog(Map in) throws Exception;
 }

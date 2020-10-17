@@ -8,4 +8,5 @@ public class LogRequest {
     private String content;
     private Integer pageIndex;
     private Integer pageSize;
+    private String jobLogId;
 }

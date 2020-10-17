@@ -1,17 +1,21 @@
 package com.gogoyang.rpgapi.controller.job.common;
 
 import com.gogoyang.rpgapi.business.job.common.IJobCommonBusinessService;
+import com.gogoyang.rpgapi.business.job.myJob.log.service.IMyLogBusinessService;
+import com.gogoyang.rpgapi.business.job.myJob.log.vo.LogRequest;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.GogoActType;
 import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
+import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,13 +24,16 @@ import java.util.Map;
 public class JobCommonController {
     private final IJobCommonBusinessService iJobCommonBusinessService;
     private final ICommonBusinessService iCommonBusinessService;
+    private final IMyLogBusinessService iMyLogBusinessService;
 
     private Logger logger= LoggerFactory.getLogger(getClass());
 
     public JobCommonController(IJobCommonBusinessService iJobCommonBusinessService,
-                               ICommonBusinessService iCommonBusinessService) {
+                               ICommonBusinessService iCommonBusinessService,
+                               IMyLogBusinessService iMyLogBusinessService) {
         this.iJobCommonBusinessService = iJobCommonBusinessService;
         this.iCommonBusinessService = iCommonBusinessService;
+        this.iMyLogBusinessService = iMyLogBusinessService;
     }
 
     /**
@@ -129,6 +136,37 @@ public class JobCommonController {
             iCommonBusinessService.createUserActionLog(logMap);
         }catch (Exception ex3){
             logger.error(ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * 读取一个任务日志详情
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getJobLog")
+    public Response getJobLog(@RequestBody LogRequest request,
+                               HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("jobLogId", request.getJobLogId());
+
+            Map out = iMyLogBusinessService.getJobLog(in);
+            response.setData(out);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
         }
         return response;
     }
