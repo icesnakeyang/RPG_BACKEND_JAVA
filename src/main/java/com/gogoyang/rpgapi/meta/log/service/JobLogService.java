@@ -176,4 +176,9 @@ public class JobLogService implements IJobLogService {
         Integer total = jobLogDao.totalJobLog(qIn);
         return total;
     }
+
+    @Override
+    public void deleteJobLog(String jobLogId) throws Exception {
+        jobLogDao.deleteJobLog(jobLogId);
+    }
 }

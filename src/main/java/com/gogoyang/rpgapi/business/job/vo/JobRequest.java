@@ -17,4 +17,5 @@ public class JobRequest {
     private Integer pageSize;
     private String remark;
     private String content;
+    private String jobLogId;
 }

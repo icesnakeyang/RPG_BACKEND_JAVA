@@ -61,4 +61,6 @@ public interface JobLogDao {
      * @return
      */
     Integer totalJobLog(Map qIn);
+
+    void deleteJobLog(String jobLogId);
 }

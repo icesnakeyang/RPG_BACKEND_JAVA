@@ -4,11 +4,13 @@ import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.meta.complete.service.IJobCompleteService;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
 import com.gogoyang.rpgapi.meta.job.service.IJobService;
+import com.gogoyang.rpgapi.meta.log.entity.JobLog;
 import com.gogoyang.rpgapi.meta.log.service.IJobLogService;
 import com.gogoyang.rpgapi.meta.stop.service.IJobStopService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -123,5 +125,32 @@ public class JobCommonBusinessService implements IJobCommonBusinessService {
         Map out = new HashMap();
         out.put("job", job);
         return out;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void deleteJobLog(Map in) throws Exception {
+        String token=in.get("token").toString();
+        String jobLogId=in.get("jobLogId").toString();
+
+        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+
+        JobLog jobLog=iJobLogService.getJobLog(jobLogId);
+        if(jobLog==null){
+            //没有找到该日志
+            throw new Exception("30020");
+        }
+
+        if(jobLog.getReadTime()!=null){
+            //日志已被对方阅读就不能删除了
+            throw new Exception("30021");
+        }
+
+        if(!jobLog.getCreatedUserId().endsWith(userInfo.getUserId())){
+            //用户只能删除自己创建的日志
+            throw new Exception("30022");
+        }
+
+        iJobLogService.deleteJobLog(jobLog.getJobLogId());
     }
 }

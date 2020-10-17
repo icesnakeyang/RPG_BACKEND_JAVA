@@ -2,9 +2,13 @@ package com.gogoyang.rpgapi.controller.job.common;
 
 import com.gogoyang.rpgapi.business.job.common.IJobCommonBusinessService;
 import com.gogoyang.rpgapi.business.job.vo.JobRequest;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
+import com.gogoyang.rpgapi.framework.constant.GogoActType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.vo.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +19,14 @@ import java.util.Map;
 @RequestMapping("/rpgapi/job/common")
 public class JobCommonController {
     private final IJobCommonBusinessService iJobCommonBusinessService;
+    private final ICommonBusinessService iCommonBusinessService;
 
     private Logger logger= LoggerFactory.getLogger(getClass());
 
-    public JobCommonController(IJobCommonBusinessService iJobCommonBusinessService) {
+    public JobCommonController(IJobCommonBusinessService iJobCommonBusinessService,
+                               ICommonBusinessService iCommonBusinessService) {
         this.iJobCommonBusinessService = iJobCommonBusinessService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -78,6 +85,50 @@ public class JobCommonController {
                 response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
+        }
+        return response;
+    }
+
+    /**
+     * 删除一个任务日志
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/deleteJobLog")
+    public Response deleteJobLog(@RequestBody JobRequest request,
+                                      HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
+        try {
+            String token=httpServletRequest.getHeader("token");
+            in.put("token",token);
+            in.put("jobLogId", request.getJobLogId());
+
+            logMap.put("token", token);
+            memoMap.put("jobLogId", request.getJobLogId());
+            logMap.put("GogoActType", GogoActType.DELETE_JOB_TASK_LOG);
+            iJobCommonBusinessService.deleteJobLog(in);
+
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
         }
         return response;
     }

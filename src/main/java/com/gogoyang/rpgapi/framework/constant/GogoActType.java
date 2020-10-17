@@ -39,5 +39,6 @@ public enum GogoActType {
     ACCEPT_JOB,
     LIST_ACCOUNT,
     UPDATE_JOB,
-    LIST_SUB_TASK
+    LIST_SUB_TASK,
+    DELETE_JOB_TASK_LOG
 }

@@ -69,4 +69,5 @@ public interface IJobLogService {
     Integer totalJobLog(Map qIn);
 
 
+    void deleteJobLog(String jobLogId) throws Exception;
 }

@@ -27,4 +27,6 @@ public interface IJobCommonBusinessService {
      * @throws Exception
      */
     Map getJobTinyByJobId(Map in) throws Exception;
+
+    void deleteJobLog(Map in) throws Exception;
 }
