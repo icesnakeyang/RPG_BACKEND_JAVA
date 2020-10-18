@@ -134,4 +134,30 @@ public class MyLogBusinessService implements IMyLogBusinessService {
 
         return out;
     }
+
+    /**
+     * 修改日志内容
+     * @param in
+     * @throws Exception
+     */
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateMyJobLog(Map in) throws Exception {
+        String token=in.get("token").toString();
+        String jobLogId=in.get("jobLogId").toString();
+        String content=in.get("content").toString();
+
+        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+        JobLog jobLog=iJobLogService.getJobLog(jobLogId);
+
+        if(!jobLog.getCreatedUserId().equals(userInfo.getUserId())){
+            throw new Exception("30023");
+        }
+        if(jobLog.getReadTime()!=null){
+            throw new Exception("30024");
+        }
+
+        jobLog.setContent(content);
+        iJobLogService.updateJobLog(jobLog);
+    }
 }

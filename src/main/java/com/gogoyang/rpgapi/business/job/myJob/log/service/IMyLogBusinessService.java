@@ -24,4 +24,11 @@ public interface IMyLogBusinessService {
     void setJobLogReadTime(Map in)throws Exception;
 
     Map getJobLog(Map in) throws Exception;
+
+    /**
+     * 修改任务日志内容
+     * @param in
+     * @throws Exception
+     */
+    void updateMyJobLog(Map in) throws Exception;
 }

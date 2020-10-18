@@ -181,4 +181,14 @@ public class JobLogService implements IJobLogService {
     public void deleteJobLog(String jobLogId) throws Exception {
         jobLogDao.deleteJobLog(jobLogId);
     }
+
+    /**
+     * 修改日志内容
+     * @param jobLog
+     * @throws Exception
+     */
+    @Override
+    public void updateJobLog(JobLog jobLog) throws Exception {
+        jobLogDao.updateJobLog(jobLog);
+    }
 }

@@ -156,4 +156,63 @@ public class MyLogController {
         }
         return response;
     }
+
+    /**
+     * 修改我的任务日志
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/updateMyJobLog")
+    public Response updateMyJobLog(@RequestBody LogRequest request,
+                                      HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in=new HashMap();
+        Map logMap=new HashMap();
+        Map memoMap=new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            String jobLogId = request.getJobLogId();
+            if(jobLogId==null){
+                //如果没有日志Id，退出
+                response.setErrorCode(3000);
+                return response;
+            }
+            String content=request.getContent();
+            if(content==null){
+                //如果没有日志内容，退出
+                response.setErrorCode(3000);
+                return response;
+            }
+
+            in.put("token", token);
+            in.put("jobLogId", jobLogId);
+            in.put("content", content);
+
+            logMap.put("token", token);
+            logMap.put("GogoActType", GogoActType.UPDATE_JOB_LOG);
+            memoMap.put("jobLogId", jobLogId);
+            iMyLogBusinessService.updateMyJobLog(in);
+
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        }catch (Exception ex3){
+            logger.error(ex3.getMessage());
+        }
+        return response;
+    }
 }

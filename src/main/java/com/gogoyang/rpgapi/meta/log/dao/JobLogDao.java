@@ -63,4 +63,11 @@ public interface JobLogDao {
     Integer totalJobLog(Map qIn);
 
     void deleteJobLog(String jobLogId);
+
+    /**
+     * 修改日志内容
+     * @param jobLog
+     * content
+     */
+    void updateJobLog(JobLog jobLog);
 }

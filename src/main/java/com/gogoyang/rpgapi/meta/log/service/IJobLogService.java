@@ -70,4 +70,11 @@ public interface IJobLogService {
 
 
     void deleteJobLog(String jobLogId) throws Exception;
+
+    /**
+     * 修改日志内容
+     * @param jobLog
+     * @throws Exception
+     */
+    void updateJobLog(JobLog jobLog) throws Exception;
 }

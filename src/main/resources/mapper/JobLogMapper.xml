@@ -162,4 +162,15 @@
         where job_log_id=#{jobLogId}
     </delete>
 
+    <!--修改日志内容-->
+    <update id="updateJobLog" parameterType="com.gogoyang.rpgapi.meta.log.entity.JobLog">
+        update job_log
+        <set>
+            <if test="content!=null">
+                content=#{content}
+            </if>
+        </set>
+        where job_log_id=#{jobLogId}
+    </update>
+
 </mapper>
