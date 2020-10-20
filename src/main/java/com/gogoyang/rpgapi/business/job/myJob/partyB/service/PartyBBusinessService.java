@@ -30,46 +30,55 @@ public class PartyBBusinessService implements IPartyBBusinessService {
 
     /**
      * 查询所有我是乙方的任务
+     *
      * @param in
      * @return
      * @throws Exception
      */
     @Override
-    public ArrayList<Job> listMyPartyBJob(Map in) throws Exception {
+    public Map listMyPartyBJob(Map in) throws Exception {
         String token = in.get("token").toString();
-        Integer pageIndex=(Integer)in.get("pageIndex");
-        Integer pageSize=(Integer)in.get("pageSize");
+        Integer pageIndex = (Integer) in.get("pageIndex");
+        Integer pageSize = (Integer) in.get("pageSize");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Job> jobList = iJobService.listPartyBJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
+        Map jobsMap = iJobService.listPartyBJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
 
-        /**
-         * 逐条统计未读日志数
-         */
-        for(int i=0;i<jobList.size();i++){
-            Map qIn=new HashMap();
-            qIn.put("jobId", jobList.get(i).getJobId());
-            qIn.put("token", token);
-            Map qOut=iJobCommonBusinessService.totalMyUnread(qIn);
-            Integer totalUnreadLog=(Integer)qOut.get("totalUnreadLog");
-            Integer totalUnreadComplete=(Integer)qOut.get("totalUnreadComplete");
-            Integer totalUnreadStop=(Integer)qOut.get("totalUnreadStop");
-            jobList.get(i).setTotalLogUnread(totalUnreadLog);
-            jobList.get(i).setTotalCompleteUnread(totalUnreadComplete);
-            jobList.get(i).setTotalStopUnread(totalUnreadStop);
+        ArrayList<Job> jobList = new ArrayList<>();
+
+        if (jobsMap.get("jobs") != null) {
+            jobList = (ArrayList<Job>) jobsMap.get("jobs");
+            /**
+             * 逐条统计未读日志数
+             */
+            for (int i = 0; i < jobList.size(); i++) {
+                Map qIn = new HashMap();
+                qIn.put("jobId", jobList.get(i).getJobId());
+                qIn.put("token", token);
+                Map qOut = iJobCommonBusinessService.totalMyUnread(qIn);
+                Integer totalUnreadLog = (Integer) qOut.get("totalUnreadLog");
+                Integer totalUnreadComplete = (Integer) qOut.get("totalUnreadComplete");
+                Integer totalUnreadStop = (Integer) qOut.get("totalUnreadStop");
+                jobList.get(i).setTotalLogUnread(totalUnreadLog);
+                jobList.get(i).setTotalCompleteUnread(totalUnreadComplete);
+                jobList.get(i).setTotalStopUnread(totalUnreadStop);
+            }
         }
-        return jobList;
+        Map out = new HashMap();
+        out.put("jobList", jobList);
+        out.put("totalJobs", jobsMap.get("totalJobs"));
+        return out;
     }
 
     @Override
     public Map getPartyBJobDetail(Map in) throws Exception {
-        String token=in.get("token").toString();
-        String jobId=in.get("jobId").toString();
+        String token = in.get("token").toString();
+        String jobId = in.get("jobId").toString();
 
-        UserInfo user=iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Job job=iJobService.getJobDetailByJobId(jobId);
+        Job job = iJobService.getJobDetailByJobId(jobId);
 
         /**
          * 增加统计信息
@@ -79,19 +88,19 @@ public class PartyBBusinessService implements IPartyBBusinessService {
          * 4、申诉总数
          */
 
-        Map qIn=new HashMap();
+        Map qIn = new HashMap();
         qIn.put("jobId", jobId);
         qIn.put("token", token);
-        Map qOut=iJobCommonBusinessService.totalMyLog(qIn);
-        Integer totalJobLog=(Integer)qOut.get("totalJobLog");
+        Map qOut = iJobCommonBusinessService.totalMyLog(qIn);
+        Integer totalJobLog = (Integer) qOut.get("totalJobLog");
         job.setTotalLog(totalJobLog);
-        Integer totalComplete=(Integer)qOut.get("totalComplete");
+        Integer totalComplete = (Integer) qOut.get("totalComplete");
         job.setTotalComplete(totalComplete);
-        Integer totalStop=(Integer)qOut.get("totalStop");
+        Integer totalStop = (Integer) qOut.get("totalStop");
         job.setTotalStop(totalStop);
 
-        Map out=new HashMap();
-        out.put("job",job);
+        Map out = new HashMap();
+        out.put("job", job);
         return out;
 
     }

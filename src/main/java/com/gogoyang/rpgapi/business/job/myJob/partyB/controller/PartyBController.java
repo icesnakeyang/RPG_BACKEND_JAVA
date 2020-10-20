@@ -37,8 +37,8 @@ public class PartyBController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
-            ArrayList<Job> jobPage = iPartyBBusinessService.listMyPartyBJob(in);
-            response.setData(jobPage);
+            Map out = iPartyBBusinessService.listMyPartyBJob(in);
+            response.setData(out);
         } catch (Exception ex) {
             try {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface IPartyBBusinessService {
-    ArrayList<Job> listMyPartyBJob(Map in) throws Exception;
+    Map listMyPartyBJob(Map in) throws Exception;
 
     Map getPartyBJobDetail(Map in) throws Exception;
 }

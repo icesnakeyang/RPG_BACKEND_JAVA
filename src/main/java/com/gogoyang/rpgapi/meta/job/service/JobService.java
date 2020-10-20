@@ -129,7 +129,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public ArrayList<Job> listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
+    public Map listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         qIn.put("partyAId",userId);
         qIn.put("status", jobStatus);
@@ -137,7 +137,12 @@ class JobService implements IJobService {
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
-        return jobs;
+        Integer totalJobs=jobDao.totalJob(qIn);
+
+        Map out=new HashMap();
+        out.put("totalJobs", totalJobs);
+        out.put("jobs", jobs);
+        return out;
     }
 
     /**
@@ -151,7 +156,7 @@ class JobService implements IJobService {
      * @throws Exception
      */
     @Override
-    public ArrayList<Job> listPartyBJob(String userId, JobStatus jobStatus,
+    public Map listPartyBJob(String userId, JobStatus jobStatus,
                                    Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         qIn.put("partyBId",userId);
@@ -160,11 +165,16 @@ class JobService implements IJobService {
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
-        return jobs;
+        Integer totalJobs=jobDao.totalJob(qIn);
+
+        Map out=new HashMap();
+        out.put("jobs", jobs);
+        out.put("totalJobs", totalJobs);
+        return out;
     }
 
     @Override
-    public ArrayList<Job> listMyPendingJob(String partyAId,
+    public Map listMyPendingJob(String partyAId,
                                       Integer pageIndex, Integer pageSize) throws Exception {
         ArrayList statusList=new ArrayList();
         statusList.add(JobStatus.PENDING);
@@ -176,7 +186,13 @@ class JobService implements IJobService {
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
-        return jobs;
+
+        Integer totalJob=jobDao.totalJob(qIn);
+
+        Map out=new HashMap();
+        out.put("jobs", jobs);
+        out.put("totalJob", totalJob);
+        return out;
     }
 
     @Override

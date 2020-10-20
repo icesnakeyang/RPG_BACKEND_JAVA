@@ -39,6 +39,7 @@ public class PartyABusinessService implements IPartyABusinessService {
 
     /**
      * 查询我是甲方的所有任务
+     *
      * @param in
      * @return
      * @throws Exception
@@ -51,33 +52,39 @@ public class PartyABusinessService implements IPartyABusinessService {
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Job> jobs = iJobService.listPartyAJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
+        Map jobsMap = iJobService.listPartyAJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
 
-        /**
-         * 统计任务的日志
-         */
-        for (int i = 0; i < jobs.size(); i++) {
-            Job job = jobs.get(i);
-            Map qIn=new HashMap();
-            qIn.put("jobId", jobs.get(i).getJobId());
-            qIn.put("token", token);
-            Map qOut = iJobCommonBusinessService.totalMyUnread(qIn);
-            Integer totalUnreadLog=(Integer)qOut.get("totalUnreadLog");
-            Integer totalUnreadComplete=(Integer)qOut.get("totalUnreadComplete");
-            Integer totalUnreadStop=(Integer)qOut.get("totalUnreadStop");
-            jobs.get(i).setTotalLogUnread(totalUnreadLog);
-            jobs.get(i).setTotalCompleteUnread(totalUnreadComplete);
-            jobs.get(i).setTotalStopUnread(totalUnreadStop);
+        ArrayList<Job> jobs = null;
+        if (jobsMap.get("jobs") != null) {
+            jobs = (ArrayList<Job>) jobsMap.get("jobs");
+            /**
+             * 统计任务的日志
+             */
+            for (int i = 0; i < jobs.size(); i++) {
+                Job job = jobs.get(i);
+                Map qIn = new HashMap();
+                qIn.put("jobId", jobs.get(i).getJobId());
+                qIn.put("token", token);
+                Map qOut = iJobCommonBusinessService.totalMyUnread(qIn);
+                Integer totalUnreadLog = (Integer) qOut.get("totalUnreadLog");
+                Integer totalUnreadComplete = (Integer) qOut.get("totalUnreadComplete");
+                Integer totalUnreadStop = (Integer) qOut.get("totalUnreadStop");
+                jobs.get(i).setTotalLogUnread(totalUnreadLog);
+                jobs.get(i).setTotalCompleteUnread(totalUnreadComplete);
+                jobs.get(i).setTotalStopUnread(totalUnreadStop);
+            }
         }
 
         Map out = new HashMap();
         out.put("jobs", jobs);
+        out.put("totalJobs", jobsMap.get("totalJobs"));
 
         return out;
     }
 
     /**
      * 甲方查询任务详情
+     *
      * @param in
      * @return
      * @throws Exception
@@ -91,7 +98,7 @@ public class PartyABusinessService implements IPartyABusinessService {
 
         Job job = iJobService.getJobDetailByJobId(jobId);
 
-        if(!job.getPartyAId().equals(user.getUserId())){
+        if (!job.getPartyAId().equals(user.getUserId())) {
             //当前登录用户不是甲方，没有查看任务权限
             throw new Exception("30003");
         }
@@ -104,15 +111,15 @@ public class PartyABusinessService implements IPartyABusinessService {
          * 4、申诉总数
          */
 
-        Map qIn=new HashMap();
+        Map qIn = new HashMap();
         qIn.put("jobId", jobId);
         qIn.put("token", token);
-        Map qOut=iJobCommonBusinessService.totalMyLog(qIn);
-        Integer totalJobLog=(Integer)qOut.get("totalJobLog");
+        Map qOut = iJobCommonBusinessService.totalMyLog(qIn);
+        Integer totalJobLog = (Integer) qOut.get("totalJobLog");
         job.setTotalLog(totalJobLog);
-        Integer totalComplete=(Integer)qOut.get("totalComplete");
+        Integer totalComplete = (Integer) qOut.get("totalComplete");
         job.setTotalComplete(totalComplete);
-        Integer totalStop=(Integer)qOut.get("totalStop");
+        Integer totalStop = (Integer) qOut.get("totalStop");
         job.setTotalStop(totalStop);
 
         Map out = new HashMap();

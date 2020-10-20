@@ -66,7 +66,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public ArrayList<Job> listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    public Map listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 读取我是乙方的所有任务
@@ -78,10 +78,10 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public ArrayList<Job> listPartyBJob(String userId, JobStatus jobStatus,
+    public Map listPartyBJob(String userId, JobStatus jobStatus,
                                         Integer pageIndex, Integer pageSize) throws Exception;
 
-    public ArrayList<Job> listMyPendingJob(String partyAId,
+    public Map listMyPendingJob(String partyAId,
                                            Integer pageIndex, Integer pageSize) throws Exception;
 
     public void deleteJob(String jobId) throws Exception;

@@ -55,9 +55,13 @@ public class MyPendingBusinessService implements IMyPendingBusinessService {
         UserInfo user = iUserService.getUserByToken(token);
 
         String partyAId = user.getUserId();
-        ArrayList<Job> jobs = iJobService.listMyPendingJob(partyAId, pageIndex, pageSize);
+        Map jobsMap = iJobService.listMyPendingJob(partyAId, pageIndex, pageSize);
         Map out = new HashMap();
-        out.put("jobs", jobs);
+        if(jobsMap.get("jobs")!=null){
+            out.put("jobs", jobsMap.get("jobs"));
+        }
+        out.put("totalJobs", jobsMap.get("totalJob"));
+
         return out;
     }
 
