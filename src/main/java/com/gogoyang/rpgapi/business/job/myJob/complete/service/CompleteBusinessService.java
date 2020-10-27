@@ -87,6 +87,14 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         jobComplete.setProcessUserId(job.getPartyAId());
         jobComplete.setStatus(LogStatus.PENDING.toString());
         iJobCompleteService.insertJobComplete(jobComplete);
+
+        /**
+         * 创建验收日志后，任务默认为完成状态，如果甲方拒绝，则回到进行中状态
+         */
+        Job updateJob=new Job();
+        updateJob.setJobId(job.getJobId());
+        updateJob.setStatus(JobStatus.COMPLETE.toString());
+        iJobService.updateJob(updateJob);
     }
 
     /**
