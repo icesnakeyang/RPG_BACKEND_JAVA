@@ -59,27 +59,20 @@ public interface IJobService {
     /**
      * 读取所有我是甲方的任务
      *
-     * @param userId
-     * @param jobStatus
-     * @param pageIndex
-     * @param pageSize
+     * @param qIn
      * @return
      * @throws Exception
      */
-    public Map listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+    public Map listPartyAJob(Map qIn) throws Exception;
 
     /**
      * 读取我是乙方的所有任务
      *
-     * @param userId
-     * @param jobStatus
-     * @param pageIndex
-     * @param pageSize
+     * @param qIn
      * @return
      * @throws Exception
      */
-    public Map listPartyBJob(String userId, JobStatus jobStatus,
-                                        Integer pageIndex, Integer pageSize) throws Exception;
+    public Map listPartyBJob(Map qIn) throws Exception;
 
     public Map listMyPendingJob(String partyAId,
                                            Integer pageIndex, Integer pageSize) throws Exception;

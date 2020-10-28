@@ -130,11 +130,7 @@
         <![CDATA[
         and created_user_id <> #{userId}
         ]]>
-        <choose>
-            <when test="jobId!=null">
-                and job_id = #{jobId}
-            </when>
-        </choose>
+        and job_id = #{jobId}
     </update>
 
     <!--设置处理结果的阅读时间-->
@@ -145,11 +141,7 @@
         and process_read_time is null
         and created_user_id=#{userId}
         and process_time is not null
-        <choose>
-            <when test="jobId!=null">
-                and job_id=#{jobId}
-            </when>
-        </choose>
+        and job_id=#{jobId}
     </update>
 
     <!--统计任务的完成验收日志数量-->

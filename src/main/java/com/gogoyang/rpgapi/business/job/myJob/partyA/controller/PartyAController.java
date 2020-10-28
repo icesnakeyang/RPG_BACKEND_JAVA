@@ -35,6 +35,7 @@ public class PartyAController {
             in.put("token", token);
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
+            in.put("statusList", request.getStatusList());
 
             Map out=iPartyABusinessService.listMyPartyAJob(in);
             response.setData(out);

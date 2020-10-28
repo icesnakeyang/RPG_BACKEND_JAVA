@@ -121,21 +121,12 @@ class JobService implements IJobService {
     /**
      * 读取所有我是甲方的任务
      *
-     * @param userId
-     * @param jobStatus
-     * @param pageIndex
-     * @param pageSize
+     * @param qIn
      * @return
      * @throws Exception
      */
     @Override
-    public Map listPartyAJob(String userId, JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception {
-        Map qIn=new HashMap();
-        qIn.put("partyAId",userId);
-        qIn.put("status", jobStatus);
-        Integer offset=(pageIndex-1)* pageSize;
-        qIn.put("offset", offset);
-        qIn.put("size", pageSize);
+    public Map listPartyAJob(Map qIn) throws Exception {
         ArrayList<Job> jobs=jobDao.listJob(qIn);
         Integer totalJobs=jobDao.totalJob(qIn);
 
@@ -148,22 +139,13 @@ class JobService implements IJobService {
     /**
      * 读取我是乙方的所有任务
      *
-     * @param userId
-     * @param jobStatus
-     * @param pageIndex
-     * @param pageSize
+     * @param qIn
      * @return
      * @throws Exception
      */
     @Override
-    public Map listPartyBJob(String userId, JobStatus jobStatus,
-                                   Integer pageIndex, Integer pageSize) throws Exception {
-        Map qIn=new HashMap();
-        qIn.put("partyBId",userId);
-        qIn.put("status", jobStatus);
-        Integer offset=(pageIndex-1)* pageSize;
-        qIn.put("offset", offset);
-        qIn.put("size", pageSize);
+    public Map listPartyBJob(Map qIn) throws Exception {
+
         ArrayList<Job> jobs=jobDao.listJob(qIn);
         Integer totalJobs=jobDao.totalJob(qIn);
 

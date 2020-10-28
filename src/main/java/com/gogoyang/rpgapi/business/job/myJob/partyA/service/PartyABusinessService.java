@@ -49,10 +49,19 @@ public class PartyABusinessService implements IPartyABusinessService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        ArrayList statusList=(ArrayList)in.get("statusList");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Map jobsMap = iJobService.listPartyAJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
+        Map qIn=new HashMap();
+        qIn.put("partyAId",user.getUserId());
+        Integer offset=(pageIndex-1)* pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+        if(statusList.size()>0) {
+            qIn.put("statusList", statusList);
+        }
+        Map jobsMap = iJobService.listPartyAJob(qIn);
 
         ArrayList<Job> jobs = null;
         if (jobsMap.get("jobs") != null) {
@@ -62,7 +71,7 @@ public class PartyABusinessService implements IPartyABusinessService {
              */
             for (int i = 0; i < jobs.size(); i++) {
                 Job job = jobs.get(i);
-                Map qIn = new HashMap();
+                qIn = new HashMap();
                 qIn.put("jobId", jobs.get(i).getJobId());
                 qIn.put("token", token);
                 Map qOut = iJobCommonBusinessService.totalMyUnread(qIn);

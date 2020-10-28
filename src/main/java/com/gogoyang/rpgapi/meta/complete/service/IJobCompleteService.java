@@ -78,10 +78,18 @@ public interface IJobCompleteService {
      */
     Integer totalUnreadComplete(Map in) throws Exception;
 
+    /**
+     * 把所有未阅读的验收日志设置为当前阅读时间
+     * @param qIn
+     * userId
+     * readTime
+     * jobId
+     * @throws Exception
+     */
     void setJobCompleteReadTime(Map qIn) throws Exception;
 
     /**
-     *
+     * 设置甲方对处理结果的阅读时间
      * @param qIn
      * jobId
      * processReadTime

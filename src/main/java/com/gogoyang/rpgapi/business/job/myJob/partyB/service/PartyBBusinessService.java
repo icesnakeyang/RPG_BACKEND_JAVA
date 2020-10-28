@@ -40,10 +40,20 @@ public class PartyBBusinessService implements IPartyBBusinessService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
+        ArrayList statusList=(ArrayList)in.get("statusList");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Map jobsMap = iJobService.listPartyBJob(user.getUserId(), JobStatus.PROGRESS, pageIndex, pageSize);
+        Map qIn=new HashMap();
+        qIn.put("partyBId",user.getUserId());
+        if(statusList.size()>0) {
+            qIn.put("statusList", statusList);
+        }
+        Integer offset=(pageIndex-1)* pageSize;
+        qIn.put("offset", offset);
+        qIn.put("size", pageSize);
+
+        Map jobsMap = iJobService.listPartyBJob(qIn);
 
         ArrayList<Job> jobList = new ArrayList<>();
 
@@ -53,7 +63,7 @@ public class PartyBBusinessService implements IPartyBBusinessService {
              * 逐条统计未读日志数
              */
             for (int i = 0; i < jobList.size(); i++) {
-                Map qIn = new HashMap();
+                qIn = new HashMap();
                 qIn.put("jobId", jobList.get(i).getJobId());
                 qIn.put("token", token);
                 Map qOut = iJobCommonBusinessService.totalMyUnread(qIn);

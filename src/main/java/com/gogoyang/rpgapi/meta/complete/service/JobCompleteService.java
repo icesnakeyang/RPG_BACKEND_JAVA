@@ -166,6 +166,14 @@ public class JobCompleteService implements IJobCompleteService {
         return totalUnreadComplete;
     }
 
+    /**
+     * 把所有未阅读的验收日志设置为当前阅读时间
+     * @param qIn
+     * userId
+     * readTime
+     * jobId
+     * @throws Exception
+     */
     @Override
     public void setJobCompleteReadTime(Map qIn) throws Exception {
         jobCompleteDao.setJobCompleteReadTime(qIn);

@@ -54,7 +54,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void createJobComplete(Map in) throws Exception {
         String token = in.get("token").toString();
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
         String content = in.get("content").toString();
 
         //job必须是progress状态
@@ -91,7 +91,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         /**
          * 创建验收日志后，任务默认为完成状态，如果甲方拒绝，则回到进行中状态
          */
-        Job updateJob=new Job();
+        Job updateJob = new Job();
         updateJob.setJobId(job.getJobId());
         updateJob.setStatus(JobStatus.COMPLETE.toString());
         iJobService.updateJob(updateJob);
@@ -106,15 +106,48 @@ public class CompleteBusinessService implements ICompleteBusinessService {
      */
     @Override
     public ArrayList<JobComplete> listMyComplete(Map in) throws Exception {
-        String token=in.get("token").toString();
+        String token = in.get("token").toString();
 
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
 
-        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
 
         ArrayList<JobComplete> completes = iJobCompleteService.loadJobCompleteByJobId(jobId, pageIndex, pageSize);
+        /**
+         * 设置阅读时间
+         */
+        for (int i = 0; i < completes.size(); i++) {
+            JobComplete jobComplete = completes.get(i);
+            if (jobComplete.getReadTime() == null) {
+                /**
+                 * 判断是否为对方
+                 */
+                if (!jobComplete.getCreatedUserId().equals(userInfo.getUserId())) {
+                    //非创建用户
+                    if (jobComplete.getProcessUserId().equals(userInfo.getUserId())) {
+                        completes.get(i).setReadTime(new Date());
+                        Map qIn = new HashMap();
+                        qIn.put("readTime", completes.get(i).getReadTime());
+                        qIn.put("userId", userInfo.getUserId());
+                        qIn.put("jobId", jobId);
+                        iJobCompleteService.setJobCompleteReadTime(qIn);
+                    }
+                }
+            } else {
+                if (jobComplete.getProcessReadTime() == null) {
+                    if (userInfo.getUserId().equals(jobComplete.getCreatedUserId())) {
+                        completes.get(i).setProcessReadTime(new Date());
+                        Map qIn = new HashMap();
+                        qIn.put("jobId", jobId);
+                        qIn.put("processReadTime", completes.get(i).getProcessReadTime());
+                        qIn.put("userId", userInfo.getUserId());
+                        iJobCompleteService.setJobCompleteProcessReadTime(qIn);
+                    }
+                }
+            }
+        }
         return completes;
     }
 
@@ -129,7 +162,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void setCompleteReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
@@ -141,7 +174,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iJobCompleteService.setJobCompleteReadTime(qIn);
 
         //设置处理结果的阅读时间
-        qIn=new HashMap();
+        qIn = new HashMap();
         qIn.put("processReadTime", new Date());
         qIn.put("jobId", jobId);
         qIn.put("userId", user.getUserId());
@@ -160,7 +193,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void rejectComplete(Map in) throws Exception {
         String token = in.get("token").toString();
-        String jobId =  in.get("jobId").toString();
+        String jobId = in.get("jobId").toString();
         String processRemark = (String) in.get("processRemark");
 
         //job status must be progress
@@ -179,10 +212,10 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         JobComplete jobComplete = iJobCompleteService.getUnprocessComplete(jobId);
-        if(jobComplete==null){
+        if (jobComplete == null) {
             throw new Exception("30015");
         }
-        JobComplete jobComplete1=new JobComplete();
+        JobComplete jobComplete1 = new JobComplete();
         jobComplete1.setCompleteId(jobComplete.getCompleteId());
         jobComplete1.setStatus(LogStatus.REJECT.toString());
         jobComplete1.setProcessRemark(processRemark);
@@ -211,9 +244,10 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         String processRemark = (String) in.get("processRemark");
 
         //首先判断任务状态，只有PROGRESS的任务可以操作完成
-        Job job=iCommonBusinessService.getJobTinyByJobId(jobId);
-        if (!job.getStatus().equals(JobStatus.PROGRESS.toString())) {
-            //只能验收任务状态为进行中的任务
+        Job job = iCommonBusinessService.getJobTinyByJobId(jobId);
+        if (!job.getStatus().equals(JobStatus.PROGRESS.toString()) ||
+                job.getStatus().equals(JobStatus.COMPLETE.toString())) {
+            //只能验收任务状态为进行中或已完成的任务
             throw new Exception("30016");
         }
 
@@ -250,7 +284,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         }
 
         //把job设置为accept
-        Job job1=new Job();
+        Job job1 = new Job();
         job1.setJobId(job.getJobId());
         job1.setStatus(JobStatus.ACCEPTANCE.toString());
         iJobService.updateJob(job1);
@@ -267,7 +301,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         iHonorService.createHonor(honor);
         //刷新甲方honor
         UserInfo userA = iUserService.getUserByUserId(job.getPartyAId());
-        UserInfo userAEdit=new UserInfo();
+        UserInfo userAEdit = new UserInfo();
         userAEdit.setUserId(userA.getUserId());
         Double ha = 0.0;
         if (userA != null) {
@@ -290,9 +324,10 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         honor.setCreatedTime(new Date());
         honor.setUserId(user.getUserId());
         iHonorService.createHonor(honor);
+
         //刷新乙方Honor
         UserInfo userB = iUserService.getUserByUserId(job.getPartyBId());
-        UserInfo userBEdit=new UserInfo();
+        UserInfo userBEdit = new UserInfo();
         userBEdit.setUserId(userB.getUserId());
         Double hb = 0.0;
         if (userB.getHonor() != null) {
@@ -332,6 +367,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
     /**
      * 读取我是乙方的所有已验收的任务
+     *
      * @param in
      * @return
      * @throws Exception
@@ -344,7 +380,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Job> jobs=iJobService.listMyPartyBAcceptJob(user.getUserId(), pageIndex, pageSize);
+        ArrayList<Job> jobs = iJobService.listMyPartyBAcceptJob(user.getUserId(), pageIndex, pageSize);
 
         Map out = new HashMap();
         out.put("jobs", jobs);
@@ -353,6 +389,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
     /**
      * 设置已验收任务的用户阅读时间
+     *
      * @param in
      * @throws Exception
      */
@@ -360,7 +397,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
     @Transactional(rollbackFor = Exception.class)
     public void setAcceptReadTime(Map in) throws Exception {
         String token = in.get("token").toString();
-        String completeId=in.get("completeId").toString();
+        String completeId = in.get("completeId").toString();
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
