@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -57,6 +59,17 @@ public class TeamBusinessService implements ITeamBusinessService {
 
     @Override
     public Map listMyTeam(Map in) throws Exception {
-        return null;
+        String token = in.get("token").toString();
+
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
+
+        Map qIn = new HashMap();
+        qIn.put("userId", userInfo.getUserId());
+        ArrayList<Team> teams = iTeamService.listTeam(qIn);
+
+        Map out = new HashMap();
+        out.put("teamList", teams);
+
+        return out;
     }
 }

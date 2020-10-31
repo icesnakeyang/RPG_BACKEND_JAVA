@@ -11,16 +11,23 @@
         <result property="skillTreeId" column="skill_tree_id"/>
     </resultMap>
 
+    <!--创建一个团队-->
     <select id="createTeam" parameterType="com.gogoyang.rpgapi.meta.team.entity.Team">
         insert into team
         (team_id, team_name, description,
          city, create_user_id,
-         created_time, status,
+         create_time, status,
           manager_id, skill_tree_id)
         values
         (#{teamId}, #{teamName}, #{description},
          #{city}, #{createUserId},
          #{createTime}, #{status},
          #{managerId}, #{skillTreeId})
+    </select>
+
+    <!--查询团队列表-->
+    <select id="listTeam" parameterType="map" resultMap="teamMap">
+        select * from team
+        where manager_id=#{userId}
     </select>
 </mapper>

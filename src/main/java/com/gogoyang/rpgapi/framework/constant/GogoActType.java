@@ -42,5 +42,6 @@ public enum GogoActType {
     LIST_SUB_TASK,
     DELETE_JOB_TASK_LOG,
     UPDATE_JOB_LOG,
-    CREATE_TEAM
+    CREATE_TEAM,
+    LIST_MY_TEAM
 }
