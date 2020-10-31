@@ -245,8 +245,8 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         //首先判断任务状态，只有PROGRESS的任务可以操作完成
         Job job = iCommonBusinessService.getJobTinyByJobId(jobId);
-        if (!job.getStatus().equals(JobStatus.PROGRESS.toString()) ||
-                job.getStatus().equals(JobStatus.COMPLETE.toString())) {
+        if (!job.getStatus().equals(JobStatus.PROGRESS.toString()) &&
+                !job.getStatus().equals(JobStatus.COMPLETE.toString())) {
             //只能验收任务状态为进行中或已完成的任务
             throw new Exception("30016");
         }
@@ -322,7 +322,7 @@ public class CompleteBusinessService implements ICompleteBusinessService {
         honor.setType(HonorType.JOB_ACCEPTED.toString());
         honor.setJobId(job.getJobId());
         honor.setCreatedTime(new Date());
-        honor.setUserId(user.getUserId());
+        honor.setCreatedUserId(user.getUserId());
         iHonorService.createHonor(honor);
 
         //刷新乙方Honor
