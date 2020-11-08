@@ -6,4 +6,6 @@ import lombok.Data;
 public class TeamRequest {
     private String description;
     private String teamName;
+    private String teamId;
+    private String userId;
 }

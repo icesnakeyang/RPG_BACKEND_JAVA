@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -218,6 +219,53 @@ public class UserController {
                 response.setErrorCode(30000);
                 logger.error(ex.getMessage());
             }
+        }
+        return response;
+    }
+
+    /**
+     * 查询用户列表
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/listUser")
+    public Response listUser(@RequestBody UserRequest request,
+                             HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("phone", request.getPhone());
+
+            logMap.put("token", token);
+            logMap.put("GogoActType", GogoActType.LIST_USER);
+            memoMap.put("phone", request.getPhone());
+
+            Map out = iUserBusinessService.listUser(in);
+            response.setData(out);
+
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                logger.error(ex.getMessage());
+            }
+            logMap.put("result", GogoStatus.FAIL);
+            logMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            logger.error(ex3.getMessage());
         }
         return response;
     }

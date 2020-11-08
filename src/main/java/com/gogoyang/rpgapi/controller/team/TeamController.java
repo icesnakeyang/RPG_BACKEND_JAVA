@@ -119,4 +119,99 @@ public class TeamController {
         }
         return response;
     }
+
+    /**
+     * 查询团队详情
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/getTeamDetail")
+    public Response getTeamDetail(@RequestBody TeamRequest request,
+                               HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("teamId", request.getTeamId());
+
+            logMap.put("GogoActType", GogoActType.GET_TEAM_DEAIL);
+            logMap.put("token", token);
+            memoMap.put("teamId", request.getTeamId());
+
+            Map out = iTeamBusinessService.getTeamDetail(in);
+            response.setData(out);
+
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                log.error("listMyTeam:" + ex.getMessage());
+            }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            log.error("User action log error:" + ex3.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * 添加一个团队成员
+     *
+     * @param request
+     * @param httpServletRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/addTeamMember")
+    public Response addTeamMember(@RequestBody TeamRequest request,
+                               HttpServletRequest httpServletRequest) {
+        Response response = new Response();
+        Map in = new HashMap();
+        Map logMap = new HashMap();
+        Map memoMap = new HashMap();
+        try {
+            String token = httpServletRequest.getHeader("token");
+            in.put("token", token);
+            in.put("teamId", request.getTeamId());
+            in.put("userId", request.getUserId());
+
+            logMap.put("GogoActType", GogoActType.ADD_TEAM_MEMBER);
+            logMap.put("token", token);
+            memoMap.put("teamId", request.getTeamId());
+            memoMap.put("userId", request.getUserId());
+
+            iTeamBusinessService.addTeamMember(in);
+
+            logMap.put("result", GogoStatus.SUCCESS);
+        } catch (Exception ex) {
+            try {
+                response.setErrorCode(Integer.parseInt(ex.getMessage()));
+            } catch (Exception ex2) {
+                response.setErrorCode(30000);
+                log.error("listMyTeam:" + ex.getMessage());
+            }
+            logMap.put("result", GogoStatus.FAIL);
+            memoMap.put("error", ex.getMessage());
+        }
+        try {
+            logMap.put("memo", memoMap);
+            iCommonBusinessService.createUserActionLog(logMap);
+        } catch (Exception ex3) {
+            log.error("User action log error:" + ex3.getMessage());
+        }
+        return response;
+    }
 }

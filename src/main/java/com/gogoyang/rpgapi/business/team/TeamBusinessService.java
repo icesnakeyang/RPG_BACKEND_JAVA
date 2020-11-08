@@ -4,6 +4,7 @@ import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.meta.team.entity.Team;
+import com.gogoyang.rpgapi.meta.team.entity.TeamUser;
 import com.gogoyang.rpgapi.meta.team.service.ITeamService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +72,65 @@ public class TeamBusinessService implements ITeamBusinessService {
         out.put("teamList", teams);
 
         return out;
+    }
+
+    @Override
+    public Map getTeamDetail(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String teamId = in.get("teamId").toString();
+
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
+
+        Team team = iCommonBusinessService.getTeamDetail(teamId);
+
+        Map out = new HashMap();
+        out.put("team", team);
+
+        return out;
+
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void addTeamMember(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String userId = in.get("userId").toString();
+        String teamId = in.get("teamId").toString();
+
+        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+
+        UserInfo addUser=iCommonBusinessService.getUserByUserId(userId);
+
+        Team team=iCommonBusinessService.getTeamDetail(teamId);
+
+        if(!team.getManagerId().equals(userInfo.getUserId())){
+            //不是团队管理员，不能添加成员
+            throw new Exception("30025");
+        }
+        if(userInfo.getUserId().equals(userId)){
+            //不能添加自己
+            throw new Exception("30026");
+        }
+
+        /**
+         * 检查是否已经添加过了
+         */
+        Map qIn=new HashMap();
+        qIn.put("userId", userId);
+        qIn.put("teamId", teamId);
+        qIn.put("status", GogoStatus.ACTIVE);
+        ArrayList<TeamUser> teamUsers=iTeamService.listTeamUser(qIn);
+        if(teamUsers.size()>0){
+            //已经添加了
+            throw new Exception("30027");
+        }
+
+        TeamUser teamUser=new TeamUser();
+        teamUser.setCreateTime(new Date());
+        teamUser.setUserId(userId);
+        teamUser.setTeamId(teamId);
+        teamUser.setStatus(GogoStatus.ACTIVE.toString());
+        teamUser.setMemberType(GogoStatus.NORMAL.toString());
+        iTeamService.createTeamUser(teamUser);
     }
 }

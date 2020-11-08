@@ -12,4 +12,6 @@ public interface IUserBusinessService {
     Map getPhone(Map in) throws Exception;
 
     Map getEmail(Map in) throws Exception;
+
+    Map listUser(Map in) throws Exception;
 }

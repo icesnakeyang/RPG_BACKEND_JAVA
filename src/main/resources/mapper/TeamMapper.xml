@@ -30,4 +30,9 @@
         select * from team
         where manager_id=#{userId}
     </select>
+
+    <select id="getTeamDetail" parameterType="java.lang.String" resultMap="teamMap">
+        select * from team
+        where team_id=#{teamId}
+    </select>
 </mapper>

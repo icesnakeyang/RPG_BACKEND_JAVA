@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.meta.user.service;
 
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface IUserService {
@@ -16,4 +17,12 @@ public interface IUserService {
     UserInfo getUserByPhone(String phoneNumber) throws Exception;
 
     UserInfo getuserbyEmail(String emailAddress) throws Exception;
+
+    /**
+     * 读取用户列表
+     * @param qIn
+     * phone
+     * @return
+     */
+    ArrayList<UserInfo> listUserInfo(Map qIn);
 }

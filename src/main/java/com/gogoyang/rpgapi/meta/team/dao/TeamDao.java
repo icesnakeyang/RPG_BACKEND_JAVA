@@ -22,4 +22,5 @@ public interface TeamDao {
      */
     ArrayList<Team> listTeam(Map qIn);
 
+    Team getTeamDetail(String teamId);
 }

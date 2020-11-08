@@ -2,6 +2,7 @@ package com.gogoyang.rpgapi.framework.common;
 
 import com.gogoyang.rpgapi.meta.admin.entity.Admin;
 import com.gogoyang.rpgapi.meta.job.entity.Job;
+import com.gogoyang.rpgapi.meta.team.entity.Team;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 
 import java.util.Map;
@@ -30,4 +31,8 @@ public interface ICommonBusinessService {
      * @throws Exception
      */
     Map sumUserAccount(String userId) throws Exception;
+
+    Team getTeamDetail(String teamId) throws Exception;
+
+    UserInfo getUserByUserId(String userId) throws Exception;
 }

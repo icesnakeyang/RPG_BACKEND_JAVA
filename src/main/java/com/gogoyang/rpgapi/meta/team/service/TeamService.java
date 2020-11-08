@@ -1,7 +1,9 @@
 package com.gogoyang.rpgapi.meta.team.service;
 
 import com.gogoyang.rpgapi.meta.team.dao.TeamDao;
+import com.gogoyang.rpgapi.meta.team.dao.TeamUserDao;
 import com.gogoyang.rpgapi.meta.team.entity.Team;
+import com.gogoyang.rpgapi.meta.team.entity.TeamUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,12 @@ import java.util.Map;
 @Service
 public class TeamService implements ITeamService {
     private final TeamDao teamDao;
+    private final TeamUserDao teamUserDao;
 
-    public TeamService(TeamDao teamDao) {
+    public TeamService(TeamDao teamDao,
+                       TeamUserDao teamUserDao) {
         this.teamDao = teamDao;
+        this.teamUserDao = teamUserDao;
     }
 
     /**
@@ -36,5 +41,22 @@ public class TeamService implements ITeamService {
     public ArrayList<Team> listTeam(Map qIn) {
         ArrayList<Team> teams = teamDao.listTeam(qIn);
         return teams;
+    }
+
+    @Override
+    public Team getTeamDetail(String teamId) {
+        Team team = teamDao.getTeamDetail(teamId);
+        return team;
+    }
+
+    @Override
+    public void createTeamUser(TeamUser teamUser) {
+        teamUserDao.createTeamUser(teamUser);
+    }
+
+    @Override
+    public ArrayList<TeamUser> listTeamUser(Map qIn) {
+        ArrayList<TeamUser> teamUsers = teamUserDao.listTeamUser(qIn);
+        return teamUsers;
     }
 }

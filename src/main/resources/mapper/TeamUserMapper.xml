@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gogoyang.rpgapi.meta.team.dao.TeamUserDao">
+
+    <resultMap id="teamUserMap" type="com.gogoyang.rpgapi.meta.team.entity.TeamUser">
+        <result property="teamId" column="team_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="memberType" column="member_type"/>
+    </resultMap>
+
+    <!--创建一个团队成员-->
+    <select id="createTeamUser" parameterType="com.gogoyang.rpgapi.meta.team.entity.TeamUser">
+        insert into team_user
+        (user_id, team_id, status, create_time, member_type)
+        values
+        (#{userId}, #{teamId}, #{status}, #{createTime},
+         #{memberType})
+    </select>
+
+    <!--查询团队成员列表-->
+    <select id="listTeamUser" parameterType="map" resultMap="teamUserMap">
+        select * from team_user
+        where 1=1
+        <choose>
+            <when test="userId!=null">
+                and user_id=#{userId}
+            </when>
+        </choose>
+        <choose>
+            <when test="teamId!=null">
+                and team_id=#{teamId}
+            </when>
+        </choose>
+        <choose>
+            <when test="status!=null">
+                and status=#{status}
+            </when>
+        </choose>
+    </select>
+</mapper>

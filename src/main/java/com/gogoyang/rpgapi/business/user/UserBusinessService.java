@@ -1,6 +1,7 @@
 package com.gogoyang.rpgapi.business.user;
 
 import com.gogoyang.rpgapi.framework.common.GogoTools;
+import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.LogStatus;
 import com.gogoyang.rpgapi.framework.constant.RoleType;
@@ -12,10 +13,10 @@ import com.gogoyang.rpgapi.meta.sms.entity.SMSLog;
 import com.gogoyang.rpgapi.meta.sms.service.ISMSLogService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import com.gogoyang.rpgapi.meta.user.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,19 +27,21 @@ public class UserBusinessService implements IUserBusinessService {
     private final IUserService iUserService;
     private final IPhoneService iPhoneService;
     private final IRPGFunction irpgFunction;
-    @Autowired
-    private ISMSLogService ismsLogService;
+    private final ICommonBusinessService iCommonBusinessService;
+    private final ISMSLogService ismsLogService;
 
     public UserBusinessService(IEmailService iEmailService,
                                IUserService iUserService,
                                IPhoneService iPhoneService,
                                IRPGFunction irpgFunction,
-                               ISMSLogService ismsLogService) {
+                               ISMSLogService ismsLogService,
+                               ICommonBusinessService iCommonBusinessService) {
         this.iEmailService = iEmailService;
         this.iUserService = iUserService;
         this.iPhoneService = iPhoneService;
         this.irpgFunction = irpgFunction;
         this.ismsLogService = ismsLogService;
+        this.iCommonBusinessService = iCommonBusinessService;
     }
 
     /**
@@ -228,6 +231,23 @@ public class UserBusinessService implements IUserBusinessService {
 
         Map out = new HashMap();
         out.put("user", user);
+
+        return out;
+    }
+
+    @Override
+    public Map listUser(Map in) throws Exception {
+        String token = in.get("token").toString();
+        String phone = in.get("phone").toString();
+
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
+
+        Map qIn = new HashMap();
+        qIn.put("phone", phone);
+        ArrayList<UserInfo> userInfos = iUserService.listUserInfo(qIn);
+
+        Map out = new HashMap();
+        out.put("userInfoList", userInfos);
 
         return out;
     }

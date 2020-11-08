@@ -5,11 +5,12 @@ import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class UserService implements IUserService{
+public class UserService implements IUserService {
     private final UserDao userDao;
 
     @Autowired
@@ -19,9 +20,9 @@ public class UserService implements IUserService{
 
     @Override
     public UserInfo getUserByUserId(String userId) throws Exception {
-        Map qIn=new HashMap();
+        Map qIn = new HashMap();
         qIn.put("userId", userId);
-        UserInfo userInfo=userDao.getUserInfo(qIn);
+        UserInfo userInfo = userDao.getUserInfo(qIn);
         return userInfo;
     }
 
@@ -32,9 +33,9 @@ public class UserService implements IUserService{
 
     @Override
     public UserInfo getUserByToken(String token) throws Exception {
-        Map qIn=new HashMap();
+        Map qIn = new HashMap();
         qIn.put("token", token);
-        UserInfo user=userDao.getUserInfo(qIn);
+        UserInfo user = userDao.getUserInfo(qIn);
         return user;
     }
 
@@ -45,17 +46,29 @@ public class UserService implements IUserService{
 
     @Override
     public UserInfo getUserByPhone(String phone) throws Exception {
-        Map qIn=new HashMap();
+        Map qIn = new HashMap();
         qIn.put("phone", phone);
-        UserInfo user=userDao.getUserInfo(qIn);
+        UserInfo user = userDao.getUserInfo(qIn);
         return user;
     }
 
     @Override
     public UserInfo getuserbyEmail(String emailAddress) throws Exception {
-        Map qIn=new HashMap();
+        Map qIn = new HashMap();
         qIn.put("email", emailAddress);
-        UserInfo user=userDao.getUserInfo(qIn);
+        UserInfo user = userDao.getUserInfo(qIn);
         return user;
+    }
+
+    /**
+     * 读取用户列表
+     * @param qIn
+     * phone
+     * @return
+     */
+    @Override
+    public ArrayList<UserInfo> listUserInfo(Map qIn) {
+        ArrayList<UserInfo> userInfos = userDao.listUserInfo(qIn);
+        return userInfos;
     }
 }
