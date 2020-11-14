@@ -40,18 +40,20 @@ public class PartyBBusinessService implements IPartyBBusinessService {
         String token = in.get("token").toString();
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
-        ArrayList statusList=(ArrayList)in.get("statusList");
+        ArrayList statusList = (ArrayList) in.get("statusList");
+        String searchKey = (String) in.get("searchKey");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        Map qIn=new HashMap();
-        qIn.put("partyBId",user.getUserId());
-        if(statusList.size()>0) {
+        Map qIn = new HashMap();
+        qIn.put("partyBId", user.getUserId());
+        if (statusList.size() > 0) {
             qIn.put("statusList", statusList);
         }
-        Integer offset=(pageIndex-1)* pageSize;
+        Integer offset = (pageIndex - 1) * pageSize;
         qIn.put("offset", offset);
         qIn.put("size", pageSize);
+        qIn.put("searchKey", searchKey);
 
         Map jobsMap = iJobService.listPartyBJob(qIn);
 

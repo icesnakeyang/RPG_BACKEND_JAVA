@@ -38,6 +38,7 @@ public class PartyBController {
             in.put("pageIndex", request.getPageIndex());
             in.put("pageSize", request.getPageSize());
             in.put("statusList", request.getStatusList());
+            in.put("searchKey", request.getSearchKey());
             Map out = iPartyBBusinessService.listMyPartyBJob(in);
             response.setData(out);
         } catch (Exception ex) {

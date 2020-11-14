@@ -21,4 +21,5 @@ public class JobRequest {
     private String content;
     private String jobLogId;
     private ArrayList statusList;
+    private String searchKey;
 }

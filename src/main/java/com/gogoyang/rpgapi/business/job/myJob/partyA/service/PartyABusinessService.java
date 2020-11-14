@@ -50,6 +50,7 @@ public class PartyABusinessService implements IPartyABusinessService {
         Integer pageIndex = (Integer) in.get("pageIndex");
         Integer pageSize = (Integer) in.get("pageSize");
         ArrayList statusList=(ArrayList)in.get("statusList");
+        String searchKey=(String)in.get("searchKey");
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
@@ -61,6 +62,7 @@ public class PartyABusinessService implements IPartyABusinessService {
         if(statusList.size()>0) {
             qIn.put("statusList", statusList);
         }
+        qIn.put("searchKey", searchKey);
         Map jobsMap = iJobService.listPartyAJob(qIn);
 
         ArrayList<Job> jobs = null;
