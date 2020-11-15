@@ -7,6 +7,7 @@
         <result property="userId" column="user_id"/>
         <result property="createTime" column="create_time"/>
         <result property="memberType" column="member_type"/>
+        <result property="realName" column="real_name"/>
     </resultMap>
 
     <!--创建一个团队成员-->
@@ -20,11 +21,19 @@
 
     <!--查询团队成员列表-->
     <select id="listTeamUser" parameterType="map" resultMap="teamUserMap">
-        select * from team_user
+        select team_user.ids,
+        team_user.user_id,
+        real_name,
+        team_id,
+        status,
+        create_time,
+        member_type
+        from team_user
+        left join user_info ui on team_user.user_id=ui.user_id
         where 1=1
         <choose>
             <when test="userId!=null">
-                and user_id=#{userId}
+                and team_user.user_id=#{userId}
             </when>
         </choose>
         <choose>

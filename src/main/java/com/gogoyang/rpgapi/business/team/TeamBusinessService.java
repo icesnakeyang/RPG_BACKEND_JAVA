@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.net.ssl.SSLEngineResult;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -85,6 +86,15 @@ public class TeamBusinessService implements ITeamBusinessService {
 
         Map out = new HashMap();
         out.put("team", team);
+
+        /**
+         * 读取团队成员列表
+         */
+        Map qIn=new HashMap();
+        qIn.put("teamId", team.getTeamId());
+        ArrayList<TeamUser> teamUsers=iTeamService.listTeamUser(qIn);
+
+        out.put("teamUserList", teamUsers);
 
         return out;
 

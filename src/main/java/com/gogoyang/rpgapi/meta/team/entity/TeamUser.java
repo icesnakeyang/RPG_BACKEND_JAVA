@@ -27,4 +27,6 @@ public class TeamUser {
     private String creatorName;
     private String description;
     private Date teamCreateTime;
+
+    private String realName;
 }
