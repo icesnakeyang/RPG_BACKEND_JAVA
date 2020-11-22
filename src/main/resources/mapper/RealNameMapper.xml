@@ -39,12 +39,28 @@
     <select id="listRealName" parameterType="map" resultMap="realNameMap">
         select * from real_name
         where 1=1
+        <choose>
+            <when test="verifyStatus!=null">
+                and verify=#{verifyStatus}
+            </when>
+        </choose>
         order by ids desc
         limit #{offset}, #{size}
     </select>
 
+    <!--统计实名信息数量-->
+    <select id="totalRealName" parameterType="map" resultType="java.lang.Integer">
+        select count(*) as total from real_name
+        where 1=1
+        <choose>
+            <when test="verifyStatus!=null">
+                and verify=#{verifyStatus}
+            </when>
+        </choose>
+    </select>
+
     <!--根据userId修改用户实名信息-->
-    <update id="updateRealName" parameterType="com.gogoyang.rpgapi.meta.realname.entity.RealName">
+    <update id="updateRealName" parameterType="map">
         update real_name
         <set>
             <if test="realName!=null">
@@ -57,7 +73,13 @@
                 idcard_no=#{idcardNo},
             </if>
             <if test="sex!=null">
-                sex=#{sex}
+                sex=#{sex},
+            </if>
+            <if test="verifyResult!=null">
+                verify=#{verifyResult},
+            </if>
+            <if test="remark!=null">
+                remark=#{remark}
             </if>
         </set>
         where user_id=#{userId}

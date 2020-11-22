@@ -1,10 +1,9 @@
-package com.gogoyang.rpgapi.business.user.profile.controller;
+package com.gogoyang.rpgapi.controller.user;
 
 import com.gogoyang.rpgapi.business.user.profile.service.IProfileBusinessService;
 import com.gogoyang.rpgapi.business.user.profile.vo.ProfileRequest;
 import com.gogoyang.rpgapi.framework.vo.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,12 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/rpgapi/user/profile")
 public class ProfileController {
     private final IProfileBusinessService iProfileBusinessService;
-
-    private Logger logger= LoggerFactory.getLogger(getClass());
 
     @Autowired
     public ProfileController(IProfileBusinessService iProfileBusinessService) {
@@ -70,7 +68,7 @@ public class ProfileController {
                 response.setErrorCode(Integer.parseInt(ex.getMessage()));
             } catch (Exception ex2) {
                 response.setErrorCode(30000);
-                logger.error(ex.getMessage());
+                log.error(ex.getMessage());
             }
         }
         return response;
@@ -150,7 +148,6 @@ public class ProfileController {
             in.put("token", token);
             in.put("realname", request.getRealName());
             in.put("idcardNo", request.getIdcardNo());
-            in.put("sex", request.getSex());
             iProfileBusinessService.saveRealName(in);
         }catch (Exception ex){
             try {

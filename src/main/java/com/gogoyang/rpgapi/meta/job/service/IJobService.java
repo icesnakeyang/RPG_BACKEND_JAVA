@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface IJobService {
-    public void insertJob(Job job) throws Exception;
+    void insertJob(Job job) throws Exception;
 
     /**
      * 读取Job的详细信息，包括jobDetail
@@ -16,7 +16,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public Job getJobDetailByJobId(String jobId) throws Exception;
+     Job getJobDetailByJobId(String jobId) throws Exception;
 
     /**
      * 读取job，不带detail
@@ -25,7 +25,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public Job getJobTinyByJobId(String jobId) throws Exception;
+     Job getJobTinyByJobId(String jobId) throws Exception;
 
     /**
      * 根据taskId读取job
@@ -34,7 +34,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public Job getJobByTaskId(String taskId) throws Exception;
+     Job getJobByTaskId(String taskId) throws Exception;
 
     /**
      * 根据jobStatus读取jobs
@@ -46,7 +46,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public ArrayList<Job> listJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
+     ArrayList<Job> listJobByStatus(JobStatus jobStatus, Integer pageIndex, Integer pageSize) throws Exception;
 
     /**
      * 修改job
@@ -54,7 +54,7 @@ public interface IJobService {
      * @param job
      * @throws Exception
      */
-    public void updateJob(Job job) throws Exception;
+     void updateJob(Job job) throws Exception;
 
     /**
      * 读取所有我是甲方的任务
@@ -63,7 +63,7 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public Map listPartyAJob(Map qIn) throws Exception;
+     Map listPartyAJob(Map qIn) throws Exception;
 
     /**
      * 读取我是乙方的所有任务
@@ -72,16 +72,16 @@ public interface IJobService {
      * @return
      * @throws Exception
      */
-    public Map listPartyBJob(Map qIn) throws Exception;
+     Map listPartyBJob(Map qIn) throws Exception;
 
-    public Map listMyPendingJob(String partyAId,
+     Map listMyPendingJob(String partyAId,
                                            Integer pageIndex, Integer pageSize) throws Exception;
 
-    public void deleteJob(String jobId) throws Exception;
+     void deleteJob(String jobId) throws Exception;
 
-    public Map listPublicJob(Integer pageIndex, Integer pageSize) throws Exception;
+     Map listPublicJob(Integer pageIndex, Integer pageSize) throws Exception;
 
-    public ArrayList<Job> listMyPartyAAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
+    Map listMyPartyAAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
 
-    public ArrayList<Job> listMyPartyBAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
+     ArrayList<Job> listMyPartyBAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception;
 }

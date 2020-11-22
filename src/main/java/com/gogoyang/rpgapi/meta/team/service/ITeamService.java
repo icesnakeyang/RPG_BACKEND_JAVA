@@ -38,4 +38,6 @@ public interface ITeamService {
      * @return
      */
     ArrayList<TeamUser> listTeamUser(Map qIn);
+
+    void deleteTeamUser(Integer ids);
 }

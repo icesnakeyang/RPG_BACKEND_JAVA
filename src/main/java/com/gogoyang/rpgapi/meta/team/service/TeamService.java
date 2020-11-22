@@ -59,4 +59,9 @@ public class TeamService implements ITeamService {
         ArrayList<TeamUser> teamUsers = teamUserDao.listTeamUser(qIn);
         return teamUsers;
     }
+
+    @Override
+    public void deleteTeamUser(Integer ids) {
+        teamUserDao.deleteTeamUser(ids);
+    }
 }

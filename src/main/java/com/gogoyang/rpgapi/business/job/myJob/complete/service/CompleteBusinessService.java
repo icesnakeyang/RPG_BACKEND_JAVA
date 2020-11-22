@@ -356,13 +356,9 @@ public class CompleteBusinessService implements ICompleteBusinessService {
 
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Job> jobs = iJobService.listMyPartyAAcceptJob(user.getUserId(), pageIndex, pageSize);
+        Map jobMap = iJobService.listMyPartyAAcceptJob(user.getUserId(), pageIndex, pageSize);
 
-        ArrayList list = new ArrayList();
-
-        Map out = new HashMap();
-        out.put("jobs", list);
-        return out;
+        return jobMap;
     }
 
     /**

@@ -23,4 +23,6 @@ public interface TeamUserDao {
      * @return
      */
     ArrayList<TeamUser> listTeamUser(Map qIn);
+
+    void deleteTeamUser(Integer ids);
 }

@@ -211,7 +211,7 @@ class JobService implements IJobService {
     }
 
     @Override
-    public ArrayList<Job> listMyPartyAAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception {
+    public Map listMyPartyAAcceptJob(String userId, Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
         Integer offset=(pageIndex-1)* pageSize;
         qIn.put("offset", offset);
@@ -219,7 +219,11 @@ class JobService implements IJobService {
         qIn.put("partyAId", userId);
         qIn.put("status", JobStatus.ACCEPTANCE);
         ArrayList<Job> jobs=jobDao.listJob(qIn);
-        return jobs;
+        Integer total=jobDao.totalJob(qIn);
+        Map out=new HashMap();
+        out.put("totalJobs", total);
+        out.put("jobList", jobs);
+        return out;
     }
 
     @Override

@@ -21,10 +21,12 @@
     <select id="createJob" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
         insert into job
         (job_id, code, task_id, title, days, price, partya_id,
-        created_time, category, status)
+        created_time, category, status, team_id, partyb_id,
+        contract_time)
         values
         (#{jobId}, #{code}, #{taskId}, #{title}, #{days}, #{price}, #{partyAId},
-        #{createdTime}, #{category}, #{status})
+        #{createdTime}, #{category}, #{status}, #{teamId}, #{partyBId},
+        #{contractTime})
     </select>
 
     <select id="createJobDetail" parameterType="com.gogoyang.rpgapi.meta.job.entity.Job">
@@ -92,7 +94,7 @@
     <select id="listJob" parameterType="map"
             resultMap="jobMap">
         select job.ids,
-        job_id,
+        job.job_id,
         code,
         task_id,
         title,
@@ -113,6 +115,7 @@
         from job
         left join user_info partya on partya_id=user_id
         left join user_info partyb on partyb_id=partyb.user_id
+        left join job_detail jd on jd.job_id=job.job_id
         where 1=1
         <choose>
             <when test="status!=null">
@@ -139,7 +142,10 @@
         </choose>
         <choose>
             <when test="searchKey!=null">
-                and title like concat('%', #{searchKey}, '%')
+                and (
+                    title like concat('%', #{searchKey}, '%')
+                    or detail like concat('%', #{searchKey}, '%')
+                )
             </when>
         </choose>
         order by ids desc

@@ -46,5 +46,7 @@ public enum GogoActType {
     LIST_MY_TEAM,
     GET_TEAM_DEAIL,
     LIST_USER,
-    ADD_TEAM_MEMBER
+    ADD_TEAM_MEMBER,
+    GET_OFF_TEAM_MEMBER,
+    LIST_TEAM_MEMBER
 }

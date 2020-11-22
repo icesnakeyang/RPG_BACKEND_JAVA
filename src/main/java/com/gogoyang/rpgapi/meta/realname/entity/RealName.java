@@ -14,4 +14,5 @@ public class RealName {
     private String idcardNo;
     private String sex;
     private String verify;
+    private String remark;
 }

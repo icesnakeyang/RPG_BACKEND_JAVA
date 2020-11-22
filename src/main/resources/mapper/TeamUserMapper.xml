@@ -47,4 +47,9 @@
             </when>
         </choose>
     </select>
+
+    <delete id="deleteTeamUser" parameterType="java.lang.Integer">
+        delete from team_user
+        where ids=#{ids}
+    </delete>
 </mapper>

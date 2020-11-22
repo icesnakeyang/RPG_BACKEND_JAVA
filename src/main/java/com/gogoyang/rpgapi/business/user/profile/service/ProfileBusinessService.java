@@ -69,7 +69,7 @@ public class ProfileBusinessService implements IProfileBusinessService {
         String token = in.get("token").toString();
         UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        ArrayList<Email> emails=iEmailService.listEmailByUserId(user.getUserId());
+        ArrayList<Email> emails = iEmailService.listEmailByUserId(user.getUserId());
 
         Map out = new HashMap();
         out.put("emails", emails);
@@ -78,13 +78,13 @@ public class ProfileBusinessService implements IProfileBusinessService {
 
     @Override
     public Map getUserProfile(Map in) throws Exception {
-        String token=in.get("token").toString();
+        String token = in.get("token").toString();
 
-        UserInfo user=iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        RealName realName=iRealNameService.getRealNameByUserId(user.getUserId());
+        RealName realName = iRealNameService.getRealNameByUserId(user.getUserId());
 
-        Map out=new HashMap();
+        Map out = new HashMap();
         out.put("realname", realName);
         return out;
     }
@@ -92,56 +92,43 @@ public class ProfileBusinessService implements IProfileBusinessService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveRealName(Map in) throws Exception {
-        String token=in.get("token").toString();
-        String realname=in.get("realname").toString();
-        String idcardNo=(String)in.get("idcardNo");
-        String sex=in.get("sex").toString();
+        String token = in.get("token").toString();
+        String realname = in.get("realname").toString();
+        String idcardNo = (String) in.get("idcardNo");
 
-        UserInfo user=iCommonBusinessService.getUserByToken(token);
+        UserInfo user = iCommonBusinessService.getUserByToken(token);
 
-        RealName realName=iRealNameService.getRealNameByUserId(user.getUserId());
-        if(realName==null){
+        RealName realName = iRealNameService.getRealNameByUserId(user.getUserId());
+        if (realName == null) {
             //insert
-            realName=new RealName();
+            realName = new RealName();
             realName.setCreatedTime(new Date());
             realName.setUserId(user.getUserId());
             realName.setRealName(realname);
             realName.setIdcardNo(idcardNo);
-            if(sex.equals(GenderType.Male.toString())){
-                realName.setSex(GenderType.Male.toString());
-            }else{
-                if(sex.equals(GenderType.Female.toString())){
-                    realName.setSex(GenderType.Female.toString());
-                }
-            }
             //新增时的状态只能是等待审核
             realName.setStatus(LogStatus.PENDING.toString());
             iRealNameService.insert(realName);
-        }else{
+        } else {
             /**
              * update
              * 已经认证的实名信息不能修改，所以只有PENDING状态的可以修改
              */
-            if(!realName.getStatus().equals(LogStatus.PENDING.toString())){
+            if (!realName.getVerify().equals(LogStatus.PENDING.toString())) {
                 throw new Exception("30004");
             }
-            realName.setRealName(realname);
-            realName.setIdcardNo(idcardNo);
-            if(sex.equals(GenderType.Male.toString())) {
-                realName.setSex(sex);
-            }else{
-                if(sex.equals(GenderType.Female.toString())){
-                    realName.setSex(sex);
-                }
-            }
-            iRealNameService.update(realName);
+            Map qIn = new HashMap();
+            qIn.put("realName", realname);
+            qIn.put("idcardNo", idcardNo);
+            qIn.put("userId", user.getUserId());
+            iRealNameService.update(qIn);
         }
 
         /**
          * update user
          * 修改userInfo表的real_name
          */
-        UserInfo userInfoEdit=new UserInfo();
+        UserInfo userInfoEdit = new UserInfo();
         userInfoEdit.setUserId(user.getUserId());
         userInfoEdit.setRealName(realname);
         iUserService.updateUserInfo(userInfoEdit);
@@ -149,6 +136,7 @@ public class ProfileBusinessService implements IProfileBusinessService {
 
     /**
      * 用户申请任务时填写的联系信息
+     *
      * @param in
      * @throws Exception
      */
@@ -165,17 +153,17 @@ public class ProfileBusinessService implements IProfileBusinessService {
          * 同时，jobApply申请表里需要增加phone，或者email的记录，以说明该用户使用哪个电话或email来进行该任务的联系
          *
          */
-        String token=in.get("token").toString();
-        String phoneStr=(String)in.get("phone");
-        String emailStr=(String)in.get("email");
-        String realNameStr=(String)in.get("realName");
+        String token = in.get("token").toString();
+        String phoneStr = (String) in.get("phone");
+        String emailStr = (String) in.get("email");
+        String realNameStr = (String) in.get("realName");
 
-        UserInfo userInfo=iCommonBusinessService.getUserByToken(token);
+        UserInfo userInfo = iCommonBusinessService.getUserByToken(token);
 
-        if(phoneStr!=null){
-            Phone phone=iPhoneService.getPhoneByPhone(phoneStr);
-            if(phone==null){
-                phone=new Phone();
+        if (phoneStr != null) {
+            Phone phone = iPhoneService.getPhoneByPhone(phoneStr);
+            if (phone == null) {
+                phone = new Phone();
                 phone.setPhoneId(GogoTools.UUID());
                 phone.setPhone(phoneStr);
                 phone.setCreatedTime(new Date());
@@ -185,10 +173,10 @@ public class ProfileBusinessService implements IProfileBusinessService {
             }
         }
 
-        if(emailStr!=null){
-            Email email=iEmailService.getEmailByEmail(emailStr);
-            if(emailStr==null){
-                email=new Email();
+        if (emailStr != null) {
+            Email email = iEmailService.getEmailByEmail(emailStr);
+            if (emailStr == null) {
+                email = new Email();
                 email.setEmailId(GogoTools.UUID());
                 email.setEmail(emailStr);
                 email.setUserId(userInfo.getUserId());
@@ -198,27 +186,27 @@ public class ProfileBusinessService implements IProfileBusinessService {
             }
         }
 
-        if(realNameStr!=null){
-            RealName realName=iRealNameService.getRealNameByUserId(userInfo.getUserId());
-            if(realName==null){
+        if (realNameStr != null) {
+            RealName realName = iRealNameService.getRealNameByUserId(userInfo.getUserId());
+            if (realName == null) {
                 //当前用户没有实名，先创建一个再说
-                realName=new RealName();
+                realName = new RealName();
                 realName.setRealName(realNameStr);
                 realName.setUserId(userInfo.getUserId());
                 realName.setVerify(LogStatus.PENDING.toString());
                 realName.setStatus(GogoStatus.ACTIVE.toString());
                 iRealNameService.insert(realName);
-            }else{
+            } else {
                 //有实名，检查是否已经验证
-                if(realName.getVerify().equals(GogoStatus.VERIFIED.toString())){
+                if (realName.getVerify().equals(GogoStatus.VERIFIED.toString())) {
                     //已认证，不能修改
                     throw new Exception("30010");
-                }else{
+                } else {
                     //修改实名
-                    RealName realNameEdit=new RealName();
-                    realNameEdit.setUserId(userInfo.getUserId());
-                    realNameEdit.setRealName(realNameStr);
-                    iRealNameService.update(realNameEdit);
+                    Map qIn=new HashMap();
+                    qIn.put("realName",realNameStr);
+                    qIn.put("userId",userInfo.getUserId());
+                    iRealNameService.update(qIn);
                 }
             }
         }

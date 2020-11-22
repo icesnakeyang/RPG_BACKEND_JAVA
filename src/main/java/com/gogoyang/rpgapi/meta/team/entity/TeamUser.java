@@ -9,7 +9,7 @@ import java.util.Date;
  */
 @Data
 public class TeamUser {
-    private String ids;
+    private Integer ids;
     private String userId;
     private String teamId;
     private Date createTime;

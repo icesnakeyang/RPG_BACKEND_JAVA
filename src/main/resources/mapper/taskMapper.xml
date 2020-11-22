@@ -96,6 +96,16 @@
                 and created_user_id=#{createdUserId}
             </when>
         </choose>
+        <choose>
+            <when test="partyAUserId!=null">
+                and partya_id=#{partyAUserId}
+            </when>
+        </choose>
+        <choose>
+            <when test="partyBUserId!=null">
+                and partyb_id=#{partyBUserId}
+            </when>
+        </choose>
         order by ids desc
         <choose>
             <when test="offset!=null">

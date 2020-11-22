@@ -78,4 +78,6 @@ public class Job {
      */
     private Integer totalSpotlight;
     private Integer totalSpotlightUnread;
+
+    private String teamId;
 }

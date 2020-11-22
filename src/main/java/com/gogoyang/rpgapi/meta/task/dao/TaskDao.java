@@ -31,6 +31,8 @@ public interface TaskDao {
      * titleKey:任务标题关键字模糊查询
      * pid：父任务jobId
      * createdUserId:任务创建人id
+     * partyAUserId：我是甲方
+     * partyBUserId：我是乙方
      * offset
      * size
      * @return

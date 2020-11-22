@@ -5,5 +5,6 @@ public enum GogoStatus {
     VERIFIED,
     SUCCESS,
     FAIL,
-    NORMAL
+    AGREE,
+    REJECT
 }

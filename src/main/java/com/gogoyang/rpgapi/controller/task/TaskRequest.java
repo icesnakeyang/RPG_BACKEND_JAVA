@@ -13,4 +13,6 @@ public class TaskRequest {
     private Integer pageSize;
     private String taskId;
     private Double price;
+    private String teamId;
+    private String memberId;
 }

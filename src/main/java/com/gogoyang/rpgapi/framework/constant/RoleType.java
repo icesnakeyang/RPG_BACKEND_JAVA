@@ -5,5 +5,6 @@ public enum RoleType {
     SUPER_ADMIN,
     ADMINISTRATOR,
     SECRETARY,
-    NORMAL
+    NORMAL,
+    MANAGER
 }

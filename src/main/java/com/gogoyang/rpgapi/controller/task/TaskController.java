@@ -449,12 +449,16 @@ public class TaskController {
             in.put("price", request.getPrice());
             in.put("taskId", request.getTaskId());
             in.put("title", request.getTitle());
+            in.put("teamId", request.getTeamId());
+            in.put("memberId", request.getMemberId());
+
             Map detailMap = irpgFunction.processRichTextPics(request.getDetail());
             in.put("detailMap", detailMap);
             logMap.put("GogoActType", GogoActType.PUBLISH_TASK);
             logMap.put("token", token);
             logMap.put("taskId", request.getTaskId());
             logMap.put("title", request.getTitle());
+
             Map out = iTaskBusinessService.publishNewJob(in);
             logMap.put("result", GogoStatus.SUCCESS);
             response.setData(out);

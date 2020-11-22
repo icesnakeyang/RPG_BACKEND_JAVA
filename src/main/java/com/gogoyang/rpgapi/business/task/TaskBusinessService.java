@@ -4,6 +4,7 @@ import com.gogoyang.rpgapi.framework.common.GogoTools;
 import com.gogoyang.rpgapi.framework.common.ICommonBusinessService;
 import com.gogoyang.rpgapi.framework.common.IRPGFunction;
 import com.gogoyang.rpgapi.framework.constant.AccountType;
+import com.gogoyang.rpgapi.framework.constant.GogoStatus;
 import com.gogoyang.rpgapi.framework.constant.JobStatus;
 import com.gogoyang.rpgapi.meta.account.entity.Account;
 import com.gogoyang.rpgapi.meta.account.service.IAccountService;
@@ -13,7 +14,10 @@ import com.gogoyang.rpgapi.meta.resource.entity.ResourceFile;
 import com.gogoyang.rpgapi.meta.resource.service.IResourceFileService;
 import com.gogoyang.rpgapi.meta.task.entity.Task;
 import com.gogoyang.rpgapi.meta.task.service.ITaskService;
+import com.gogoyang.rpgapi.meta.team.entity.Team;
+import com.gogoyang.rpgapi.meta.team.service.ITeamService;
 import com.gogoyang.rpgapi.meta.user.entity.UserInfo;
+import com.gogoyang.rpgapi.meta.user.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,19 +35,25 @@ public class TaskBusinessService implements ITaskBusinessService {
     private final ICommonBusinessService iCommonBusinessService;
     private final IResourceFileService iResourceFileService;
     private final IRPGFunction irpgFunction;
+    private final ITeamService iTeamService;
+    private final IUserService iUserService;
 
     @Autowired
     public TaskBusinessService(ITaskService iTaskService,
                                IJobService iJobService, IAccountService iAccountService,
                                ICommonBusinessService iCommonBusinessService,
                                IResourceFileService iResourceFileService,
-                               IRPGFunction irpgFunction) {
+                               IRPGFunction irpgFunction,
+                               ITeamService iTeamService,
+                               IUserService iUserService) {
         this.iTaskService = iTaskService;
         this.iJobService = iJobService;
         this.iAccountService = iAccountService;
         this.iCommonBusinessService = iCommonBusinessService;
         this.iResourceFileService = iResourceFileService;
         this.irpgFunction = irpgFunction;
+        this.iTeamService = iTeamService;
+        this.iUserService = iUserService;
     }
 
     @Override
@@ -129,7 +139,7 @@ public class TaskBusinessService implements ITaskBusinessService {
         Task task = iTaskService.getTaskDetailByTaskId(taskId);
         task.setCode(code);
         task.setTitle(title);
-        if(detailMap!=null) {
+        if (detailMap != null) {
             task.setDetail(detailMap.get("detail").toString());
         }
         task.setDays(days);
@@ -154,7 +164,7 @@ public class TaskBusinessService implements ITaskBusinessService {
                     //图片已经没有了，删除
                     irpgFunction.deleteOSSFile(fileName);
                     //删除资源文件库
-                    qIn=new HashMap();
+                    qIn = new HashMap();
                     qIn.put("fileId", resourceFiles.get(i).getFileId());
                     iResourceFileService.deleteResourceFile(qIn);
                 }
@@ -275,6 +285,20 @@ public class TaskBusinessService implements ITaskBusinessService {
     }
 
     @Override
+    public Map listTaskPartyA(Map in) throws Exception {
+        String token = in.get("token").toString();
+
+        Map out = new HashMap();
+        return out;
+
+    }
+
+    @Override
+    public Map listTaskPartyB(Map in) throws Exception {
+        return null;
+    }
+
+    @Override
     public Map totalSubTask(Map in) throws Exception {
         String pid = in.get("pid").toString();
         if (pid == null) {
@@ -347,6 +371,8 @@ public class TaskBusinessService implements ITaskBusinessService {
         Double price = (Double) in.get("price");
         String taskId = in.get("taskId").toString();
         String title = in.get("title").toString();
+        String teamId = (String) in.get("teamId");
+        String memberId = (String) in.get("memberId");
 
         //读取当前用户
         UserInfo user = iCommonBusinessService.getUserByToken(token);
@@ -380,6 +406,46 @@ public class TaskBusinessService implements ITaskBusinessService {
         job.setTaskId(taskId);
         job.setTitle(title);
         job.setDetail(detailMap.get("detail").toString());
+        /**
+         * 如果有指定的团队和成员，直接成交任务
+         * 1、检查指定的团队是否存在
+         * 2、检查指定的团队成员是否有效
+         * 3、设置乙方
+         * 4、设置任务为PROGRESS状态
+         * 5、增加乙方用户的account
+         */
+        if (teamId != null) {
+            if (memberId == null) {
+                //指定了团队就必须指定成员
+                throw new Exception("30032");
+            }
+            Team team = iTeamService.getTeamDetail(teamId);
+            if (team == null) {
+                throw new Exception("30029");
+            }
+            UserInfo userB = iUserService.getUserByUserId(memberId);
+            if (userB == null) {
+                throw new Exception("30030");
+            }
+            job.setPartyBId(userB.getUserId());
+            job.setTeamId(team.getTeamId());
+            job.setStatus(JobStatus.PROGRESS.toString());
+            job.setContractTime(new Date());
+            //把任务金额转给乙方
+            Account account = new Account();
+            account.setAccountId(GogoTools.UUID());
+            account.setAmount(job.getPrice());
+            account.setCreatedTime(new Date());
+            account.setType(AccountType.APPOINT_JOB.toString());
+            account.setUserId(userB.getUserId());
+            account.setJobId(job.getJobId());
+            iAccountService.createAccount(account);
+            //刷新乙方的账户余额
+            iCommonBusinessService.sumUserAccount(userB.getUserId());
+        }
+        /**
+         * 保存任务信息
+         */
         iJobService.insertJob(job);
 
         /**
@@ -403,9 +469,9 @@ public class TaskBusinessService implements ITaskBusinessService {
             String fileName = resourceFiles.get(i).getFileName();
             if (fileName != null) {
                 Integer fileIndex = job.getDetail().indexOf(fileName);
-                if (fileIndex !=-1) {
+                if (fileIndex != -1) {
                     //url存在，把jobId也保存到资源表里
-                    qIn=new HashMap();
+                    qIn = new HashMap();
                     qIn.put("jobId", job.getJobId());
                     qIn.put("fileId", resourceFiles.get(i).getFileId());
                     iResourceFileService.updateResourceFile(qIn);
