@@ -17,6 +17,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.KeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 public class GogoTools {
@@ -166,5 +167,12 @@ public class GogoTools {
         cipher.init(Cipher.ENCRYPT_MODE, pubKey);
         String outStr = Base64.encodeBase64String(cipher.doFinal(str.getBytes("UTF-8")));
         return outStr;
+    }
+
+    // 两个日期相减得到的毫秒数
+    public static long dateDiff(Date beginDate, Date endDate) {
+        long date1ms = beginDate.getTime();
+        long date2ms = endDate.getTime();
+        return date2ms - date1ms;
     }
 }

@@ -187,9 +187,11 @@ class JobService implements IJobService {
     @Override
     public Map listPublicJob(Integer pageIndex, Integer pageSize) throws Exception {
         Map qIn=new HashMap();
-        Integer offset=(pageIndex-1)*pageSize;
-        qIn.put("offset", offset);
-        qIn.put("size", pageSize);
+        if(pageIndex!=null) {
+            Integer offset = (pageIndex - 1) * pageSize;
+            qIn.put("offset", offset);
+            qIn.put("size", pageSize);
+        }
         ArrayList statusList=new ArrayList();
         statusList.add(JobStatus.PENDING);
         statusList.add(JobStatus.MATCHING);
@@ -201,10 +203,14 @@ class JobService implements IJobService {
         Map out=new HashMap();
         out.put("jobs", jobs);
         out.put("totalJobs", total);
-        Integer pages=total/pageSize;
-        if(total%pageSize>0){
-            pages++;
+        Integer pages=1;
+        if(pageSize!=null){
+            pages=total/pageSize;
+            if(total%pageSize>0){
+                pages++;
+            }
         }
+
         out.put("totalJobs", total);
         out.put("totalJobPages", pages);
         return out;
