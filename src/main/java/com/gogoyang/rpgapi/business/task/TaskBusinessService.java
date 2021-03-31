@@ -414,7 +414,7 @@ public class TaskBusinessService implements ITaskBusinessService {
          * 4、设置任务为PROGRESS状态
          * 5、增加乙方用户的account
          */
-        if (teamId != null) {
+        if (teamId != null && !teamId.equals("")) {
             if (memberId == null) {
                 //指定了团队就必须指定成员
                 throw new Exception("30032");
