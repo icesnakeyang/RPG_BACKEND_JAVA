@@ -33,4 +33,23 @@ public interface WithdrawLedgerDao {
     Integer totalWithdraw(Map qIn);
 
     ArrayList<Map<String, Object>> listWithdrawAdmin(Map qIn);
+
+    /**
+     * 管理员读取取现申请详情
+     * @param withdrawLedgerId
+     * @return
+     */
+    WithdrawLedger getWithdrawAdmin(String withdrawLedgerId);
+
+    /**
+     * 修改取现申请
+     * @param qIn
+     * status
+     * readTime
+     * processTime
+     * processRemark
+     * processReadTime
+     * withdrawLedgerId
+     */
+    void updateWithdraw(Map qIn);
 }

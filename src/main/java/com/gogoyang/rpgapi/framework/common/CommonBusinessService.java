@@ -159,8 +159,8 @@ public class CommonBusinessService implements ICommonBusinessService {
             String type = sum.get("type").toString();
 
             //乙方获得的任务合同总额
-            if (type.equals(AccountType.APPLY_SUCCESS)) {
-                Double APPLY_SUCCESS = (Double) sum.get("APPLY_SUCCESS");
+            if (type.equals(AccountType.APPLY_SUCCESS.toString())) {
+                Double APPLY_SUCCESS = (Double) sum.get("total");
                 if (APPLY_SUCCESS == null) {
                     APPLY_SUCCESS = 0.0;
                 }
@@ -168,18 +168,18 @@ public class CommonBusinessService implements ICommonBusinessService {
                 accountBalance += APPLY_SUCCESS;
             }
 
-            if (type.equals(AccountType.TOP_UP)) {
+            if (type.equals(AccountType.TOP_UP.toString())) {
                 //充值总额
-                Double TOP_UP = (Double) sum.get("TOP_UP");
+                Double TOP_UP = (Double) sum.get("total");
                 if (TOP_UP == null) {
                     TOP_UP = 0.0;
                 }
                 accountBalance += TOP_UP;
             }
 
-            if (type.equals(AccountType.WITHDRAW)) {
+            if (type.equals(AccountType.WITHDRAW.toString())) {
                 //取现总额
-                Double WITHDRAW = (Double) sum.get("WITHDRAW");
+                Double WITHDRAW = (Double) sum.get("total");
                 if (WITHDRAW == null) {
                     WITHDRAW = 0.0;
                 }
@@ -197,9 +197,9 @@ public class CommonBusinessService implements ICommonBusinessService {
                 accountBalance -= PUBLISH;
             }
 
-            if (type.equals(AccountType.REFUND_OUT)) {
+            if (type.equals(AccountType.REFUND_OUT.toString())) {
                 //退款支出总额
-                Double REFUND_OUT = (Double) sum.get("REFUND_OUT");
+                Double REFUND_OUT = (Double) sum.get("total");
                 if (REFUND_OUT == null) {
                     REFUND_OUT = 0.0;
                 }
@@ -207,9 +207,9 @@ public class CommonBusinessService implements ICommonBusinessService {
                 accountBalance -= REFUND_OUT;
             }
 
-            if (type.equals(AccountType.REFUND_IN)) {
+            if (type.equals(AccountType.REFUND_IN.toString())) {
                 //退款收入总额
-                Double REFUND_IN = (Double) sum.get("REFUND_IN");
+                Double REFUND_IN = (Double) sum.get("total");
                 if (REFUND_IN == null) {
                     REFUND_IN = 0.0;
                 }

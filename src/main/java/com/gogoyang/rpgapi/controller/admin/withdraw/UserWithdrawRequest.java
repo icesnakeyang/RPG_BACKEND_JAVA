@@ -5,5 +5,6 @@ import lombok.Data;
 
 @Data
 public class UserWithdrawRequest extends Request {
+    private String withdrawLedgerId;
 
 }

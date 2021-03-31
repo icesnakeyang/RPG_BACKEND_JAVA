@@ -42,7 +42,7 @@ public class WithdrawLedgerService implements IWithdrawLedgerService {
 
     @Override
     public ArrayList<Map<String, Object>> listWithdrawAdmin(Map qIn) throws Exception {
-        ArrayList<Map<String, Object>> list=withdrawLedgerDao.listWithdrawAdmin(qIn);
+        ArrayList<Map<String, Object>> list = withdrawLedgerDao.listWithdrawAdmin(qIn);
         return list;
     }
 
@@ -57,5 +57,16 @@ public class WithdrawLedgerService implements IWithdrawLedgerService {
     public Integer totalWithdraw(Map qIn) throws Exception {
         Integer total = withdrawLedgerDao.totalWithdraw(qIn);
         return total;
+    }
+
+    @Override
+    public WithdrawLedger getWithdrawAdmin(String withdrawLedgerId) throws Exception {
+        WithdrawLedger withdrawLedger = withdrawLedgerDao.getWithdrawAdmin(withdrawLedgerId);
+        return withdrawLedger;
+    }
+
+    @Override
+    public void updateWithdraw(Map qIn) throws Exception {
+        withdrawLedgerDao.updateWithdraw(qIn);
     }
 }

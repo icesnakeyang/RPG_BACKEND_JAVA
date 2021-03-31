@@ -18,9 +18,8 @@
             useGeneratedKeys="true"
             keyProperty="ids">
         insert into withdraw_ledger
-        (withdraw_ledger_id, user_id, create_time, amount, remark, status)
-        values
-        (#{withdrawLedgerId}, #{userId}, #{createTime}, #{amount}, #{remark}, #{status})
+            (withdraw_ledger_id, user_id, create_time, amount, remark, status)
+        values (#{withdrawLedgerId}, #{userId}, #{createTime}, #{amount}, #{remark}, #{status})
     </insert>
 
     <!--查询用户取现记录-->
@@ -70,7 +69,7 @@
         email,
         phone
         from withdraw_ledger
-        left join user on withdraw_ledger.user_id=user.user_id
+        left join user_info user on withdraw_ledger.user_id=user.user_id
         where 1=1
         <choose>
             <when test="userId!=null">
@@ -79,5 +78,35 @@
         </choose>
 
     </select>
+
+    <!--管理员读取取现申请详情-->
+    <select id="getWithdrawAdmin" parameterType="java.lang.String" resultMap="withdrawLedgerMap">
+        select *
+        from withdraw_ledger
+        where withdraw_ledger_id = #{withdrawLedgerId}
+    </select>
+
+    <!--修改取现申请-->
+    <update id="updateWithdraw" parameterType="map">
+        update withdraw_ledger
+        <set>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="readTime!=null">
+                read_time=#{readTime},
+            </if>
+            <if test="processTime!=null">
+                process_time=#{processTime},
+            </if>
+            <if test="processRemark!=null">
+                process_remark=#{processRemark},
+            </if>
+            <if test="processReadTime!=null">
+                process_read_time=#{processReadTime}
+            </if>
+        </set>
+        where withdraw_ledger_id=#{withdrawLedgerId}
+    </update>
 
 </mapper>
